@@ -1,6 +1,7 @@
 package com.marf.colonization.decompile.cmodules;
 
 import static com.marf.colonization.decompile.cmodules.Data.*;
+import static com.marf.colonization.decompile.cmodules.Module1b.*;
 
 /**
  * Base Description: ??
@@ -33,7 +34,8 @@ public class Module1a {
 
 
 
-
+    // Module 1a, Segment 0016
+    ///////////////////////////////
 
     public static int FUN_8d1c_000a_module_1a_16_load_ss_sprite_sheet(String spritesheetName, int inAX) {
         // Block 1: Initialization & Setup
@@ -46,6 +48,7 @@ public class Module1a {
         cleanedFileName = cleanedFileName.toUpperCase();
 
         // Block 4: Archive Header Processing
+        Module1b.MadspackHeader madspackHeader = FUN_8d90_0000_module_1b_open_madspack_archive(cleanedFileName, "rb");
 
 
 
