@@ -1,0 +1,216 @@
+orders:
+  - no order
+  - sentry
+  - trade route
+  - go to
+  - 0x04
+  - 0x05
+  - fortify
+  - 0x07
+  - plow
+  - road
+
+controls:
+  - player
+  - ai
+  - withdrawn from new world
+
+difficulties:
+  - Discoverer
+  - Explorer
+  - Conquistador
+  - Governor
+  - Viceroy
+
+occupations:
+  - Farmer         
+  - Sugar planter
+  - Tobacco planter
+  - Cotton planter
+  - Fur trapper
+  - Lumberjack
+  - Ore miner
+  - Silver miner
+  - Fisherman
+  - Distiller
+  - Tobacconist
+  - Weaver
+  - Fur Trader
+  - Carpenter
+  - Blacksmith
+  - Gunsmith
+  - Preacher
+  - Statesman
+  - Teacher
+  - unknown (0x13)
+  - Pioneer
+  - Vet. Soldier
+  - Scout
+  - Veteran dragoon
+  - Missionary
+  - Ind. Servant
+  - Criminal
+  - Indian convert
+  - Free colonist
+  - Armed brave
+  - Mounted brave
+  - unknown (0x1f)
+
+directions:
+  - N
+  - E
+  - S
+  - W
+  - NW
+  - NE
+  - SE
+  - SW
+
+buildings:
+  - Stockade
+  - Fort
+  - Fortress
+  - Armory
+  - Magazine
+  - Arsenal
+  - Docks
+  - Drydock
+  - Shipyard
+  - Town hall
+  - Town hall
+  - Town hall
+  - Schoolhouse
+  - College
+  - University
+  - Warehouse
+  - Warehouse Exp
+  - Stable
+  - Custom house
+  - Printing press
+  - Newspaper
+  - Weavers house
+  - Weavers shop
+  - Textile mill
+  - Tobacconists house
+  - Tobacconists shop
+  - Cigar factory
+  - Rum distillers house
+  - Rum distillers shop
+  - Rum factory
+  - Capitol
+  - Capitol Exp
+  - Fur traders house
+  - Fur traders shop
+  - Fur factory
+  - Carpenters shop
+  - Lumber mill
+  - Church
+  - Cathedral
+  - Blacksmiths house
+  - Blacksmiths shop
+  - Iron works
+  - Artillery
+  - Wagon Train
+  - Caravel
+  - Merchantman
+  - Galleon
+  - Privateer
+  - Frigate
+  - Nothing
+
+goods:
+  - Food
+  - Sugar
+  - Tabacco
+  - Cotton
+  - Furs
+  - Lumber
+  - Ore
+  - Silver
+  - Horses
+  - Rum
+  - Cigars
+  - Cloth
+  - Coats
+  - Trade Goods
+  - Tools
+  - Muskets
+
+nations:
+  - English 
+  - French
+  - Spanish
+  - Dutch
+  - Inca
+  - Aztec
+  - Arawak
+  - Iroquios
+  - Cherokee
+  - Apache
+  - Sioux
+  - Tupi
+
+units:
+  - Colonist
+  - Soldier
+  - Pioneer
+  - Missionary
+  - Veteran dragoon
+  - Scout
+  - Regular (Tory Army)
+  - Cavalery (Continental Army)
+  - Cavalery (Tory Army)
+  - Regular (Continental Army)
+  - Treasure
+  - Artillery
+  - Wagon Train
+  - Caravel
+  - Merchantman
+  - Galleon
+  - Privateer
+  - Frigate
+  - Man-O-War (Continental Army)
+  - Brave
+  - Armed Brave
+  - Mounted Brave
+
+foundingFathers:
+  - Adam Smith
+  - Jakob Fugger
+  - Peter Minuit
+  - Peter Stuyvesant
+  - Jan de Witt
+  - Ferdinand Magellan
+  - Francisco Coronado
+  - Hernando de Soto
+  - Henry Hudson
+  - Sieur De La Salle
+  - Hernan Cortes
+  - George Washington
+  - Paul Revere
+  - Francis Drake
+  - John Paul Jones
+  - Thomas Jefferson
+  - Pocahontas
+  - Thomas Paine
+  - Simon Bolivar
+  - Benjamin Franklin
+  - William Brewster
+  - William Penn
+  - Jean de Brebeuf
+  - Juan de Sepulveda
+  - Bartolme de las Casas
+
+terrain:
+  - sea lane 00
+  - ocean 01
+  - tundra 00
+  - desert 01
+  - plains 02
+  - prairie 03
+  - grassland 04
+  - savanna 05
+  - marsh 06
+  - swamp 07
+  - scrub forest 08
+  - artic 09

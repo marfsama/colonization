@@ -1,0 +1,287 @@
+- name:  FUN_19da_0100_io_create_filename_and_open_it
+  segment: 09da
+  from: "0100"
+  to: "0129"
+  local-stack-size: "50"
+  local-vars:
+    - savedSi
+    - savedBx
+  parameters:
+    - name: something_on_stack1
+    - name: data_segment_2b4d
+    - name: unknown3
+    - name: something_on_stack_copy
+
+- name: FUN_1d01_26d4_file_open_create_truncate
+  segment: 0d01
+  from: 26d4
+  to: 27cf
+  local-vars:
+    - unknwon1
+    - unknown2
+  parameters:
+    - name: filename_ptr
+      type: string
+    - name: attribute_and_flags
+    - name: open_mode
+    - name: unknown
+- name: FUN_1d01_168a_sth_io_with_filename
+  segment: 0d01
+  from: 168a
+  to: "1771"
+  local-vars:
+    - unknown1
+    - unknown2
+    - unknown3
+    - unknown4
+    - unknown5
+    - unknown6
+  parameters:
+    - name: filename_ptr
+      type: string
+    - name: unknown1
+    - name: unknown2
+    - name: unknown3   # return value from FUN_1d01_1dd4(), if != 0
+- name: FUN_1d01_04b4_io_with_filename_trunk
+  segment: 0d01
+  from: 04b4
+  to: 04df
+  local-vars:
+    - savedSi
+  parameters:
+    - name: filename_ptr
+      type: string
+    - name: open_mode
+      type: string
+    - name: unknown2
+
+- name: FUN_1d01_04e0_stdio_fopen
+  segment: 0d01
+  from: "04e0"
+  to: 04f4
+  local-vars: []
+  parameters:
+    - name: filename_ptr
+      type: string
+    - name: open_mode
+      type: string
+
+- name: FUN_1d01_0156_main_entry_and_setup_stack
+  segment: "0d01"
+  from: "0156"
+  to: "0218"
+  stack-frame: false
+  call-near: true
+  local-vars: []
+  parameters: []
+
+
+- name:  FUN_20fe_154f_dynamic_call
+  segment: 10fe
+  from: "154f"
+  to: "155d"
+
+  local-vars: []
+  parameters: []
+
+- name: FUN_20fe_052e_fread
+  segment: 0d01
+  from: "052e"
+  to: "0611"
+
+  local-vars: [var1, var2]
+  parameters:
+    - name: destination
+    - name: size
+    - name: nmemb
+    - name: filehandle
+
+- name: FUN_20fe_2982_add_call_to_stack
+  segment: 10fe
+  from: "2982"
+  to: "2a0b"
+  stack-frame: false
+  call-near: true
+  local-vars: [DI, AX, DX, ES]
+  parameters: []
+
+- name: FUN_20fe_0e52_module_alternative3
+  segment: 10fe
+  from: "0e52"
+  to: "1213"
+  stack-frame: false
+  local-vars: [ES, DS, SI, DX, BX, AX, Flags]
+  parameters: []
+
+- name: Module_dispatcher
+  segment: "1810"
+  from: "0000"
+  to: "000c"
+  stack-frame: false
+  local-vars: []
+  parameters:
+    - name: var1
+    - name: var2
+    - name: var3
+    - name: segment
+
+- name: FUN_8883_018c_module_18_read_config_col
+  segment: "00e5"
+  module: "18"
+  from: "018c"
+  to: "025d"
+  local-vars: [local1]
+  parameters: []
+
+- name: FUN_8883_025e_module_18
+  segment: "00e5"
+  module: "18"
+  from: "025e"
+  to: "0331"
+  local-vars: [local1, local2, local3, local4, DI, SI]
+  parameters:
+    - name: param1
+    - name: param2
+    - name: param3
+
+- name: FUN_8eac_0000_module_1d_sth_with_load_viceroy_pal
+  segment: "0031"
+  module: "1d"
+  from: "0000"
+  to: "0061"
+  local-vars: []
+  local-stack-size: "0302"
+  parameters:
+    - name: destination
+      type: SegmentOffset
+
+- name: FUN_8a1f_2a58_module_19_119_load_game_resources
+  segment: "0119"
+  module: "19"
+  from: "2a58"
+  to: "2e1b"
+  local-stack-size: "000C"
+  local-vars: []
+  parameters: []
+
+- name: FUN_8d90_0000_module_1b_open_madspack_archive
+  segment: "0000"
+  module: "1b"
+  from: "0000"
+  to: "0206"
+  local-stack-size: "0012"
+  local-vars: []
+  parameters:
+    - name: filename
+      type: farstring
+    - name: buffer_offset
+    - name: buffer_segment
+
+
+- name: FUN_8d7f_0008_module_1a_79_madspack_get_entry
+  segment: "0079"
+  module: "1a"
+  from: "0008"
+  to: "0105"
+  local-stack-size: "013e"
+  local-vars: [SI, DI, BX]
+  parameters:
+    - name: filename
+    - name: filename2
+
+- name: FUN_1b73_000c_blit_bitmap
+  segment: "0b73"
+  from: "000c"
+  to: "00fd"
+  local-stack-size: "0e"
+  local-vars: [SI, DI, AX, DX, BX]
+  parameters:
+    - name: height
+    - name: source_dimension
+      type: SegmentOffset
+    - name: source
+      type: SegmentOffset
+    - name: destination_dimension
+      type: SegmentOffset
+    - name: destination
+      type: SegmentOffset
+
+- name: FUN_8a1f_24f8_module_19_119_main_menu
+  segment: "0119"
+  module: "19"
+  from: "24f8"
+  to: "2a38"
+  local-stack-size: "03f4"
+  local-vars: []
+  parameters: []
+
+- name:  FUN_8778_001a_module_17_text_file_read_section
+  segment: "0000"
+  module: "17"
+  from: "001a"
+  to: "0105"
+  local-stack-size: "00a2"
+  local-vars: []
+  parameters:
+    - name: section
+      type: string
+    - name: file
+      type: string
+
+- name:  FUN_8a1f_14bc_module_19_119_read_config_text_labels_pedia
+  segment: "0119"
+  module: "19"
+  from: "14bc"
+  to: "1e2c"
+  local-stack-size: "000e"
+  local-vars: [DI, SI]
+  parameters: []
+
+- name:  FUN_8d1c_000a_module_1a_16_load_ss_sprite_sheet
+  segment: "0016"
+  module: "1A"
+  from: "0005"
+  to: "0450"
+  local-stack-size: "020e"
+  local-vars: [DI, SI, BX, AX]
+  parameters: []
+
+- name:  FUN_8d72_0006_module_1a_6c_open_pik_file
+  segment: "006C"
+  module: "1A"
+  from: "0006"
+  to: "00d0"
+  local-stack-size: "0126"
+  local-vars: [DI, SI]
+  parameters:
+    - name: filename
+      type: string
+    - name: param_2
+    - name: param_3
+    - name: param_4
+    - name: param_5
+    - name: param_6
+    - name: param_7
+    - name: param_8
+
+- name:  FUN_8906_0b0a_module_19_read_sprite_sheet
+  segment: "0000"
+  module: "19"
+  from: "0b0a"
+  to: "0bbd"
+  local-stack-size: "0024"
+  local-vars: [DI, SI]
+  parameters:
+    - name: filename
+      type: string
+
+- name:  FUN_8906_0bbe_module_19_read_terrain_sprites
+  segment: "0000"
+  module: "19"
+  from: "0bbe"
+  to: "0be0"
+  stack-frame: false
+  local-vars: [SI]
+  parameters: []
+
+
