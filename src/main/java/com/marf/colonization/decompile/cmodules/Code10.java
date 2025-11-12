@@ -1,9 +1,8 @@
 package com.marf.colonization.decompile.cmodules;
 
-import static com.marf.colonization.decompile.cmodules.Code07.*;
-import static com.marf.colonization.decompile.cmodules.Code29.FUN_1a3c_0391_get_mouse_status;
-import static com.marf.colonization.decompile.cmodules.Code33.FUN_1acb_0008_check_for_keystroke_available;
-import static com.marf.colonization.decompile.cmodules.Code61.*;
+import static com.marf.colonization.decompile.cmodules.Code12.*;
+import static com.marf.colonization.decompile.cmodules.Code1a.*;
+import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 
 /**
@@ -12,7 +11,7 @@ import static com.marf.colonization.decompile.cmodules.Data.*;
  * Status:
  * - ??
  */
-public class Code01 {
+public class Code10 {
 
 
     public static int FUN_1009_0036_wait_for_input_with_timeout() {

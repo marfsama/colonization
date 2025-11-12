@@ -55,7 +55,11 @@ public class Data {
 
     static int DAT_2360_available_sprite_sheet_memory;
     static int DAT_2364_sprite_sheets_loaded_counter;
-    static int DAT_238c;
+    static int DAT_2386_load_sprite_sheet_last_error;
+    static int DAT_2388_palette_destination;
+    static int DAT_238a;
+    static Module1a.SpriteSheetSomeStructure DAT_238c;
+
 
 
     static int DAT_2c8e_width;

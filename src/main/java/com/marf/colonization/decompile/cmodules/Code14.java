@@ -1,10 +1,10 @@
 package com.marf.colonization.decompile.cmodules;
 
-import static com.marf.colonization.decompile.cmodules.Code15.*;
+import static com.marf.colonization.decompile.cmodules.Code13.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 import static com.marf.colonization.decompile.cmodules.Module16.*;
 
-public class Code18 {
+public class Code14 {
 
 
     /**
@@ -97,7 +97,7 @@ public class Code18 {
             FUN_83d9_042c_module_16_store_int_parameter(x, 0);
             FUN_83d9_042c_module_16_store_int_parameter(y, 1);
             int unitOwner = FUN_1373_0318_surface_get_unit_owner(x, y);
-            int powerTextIndex = Code20.FUN_15a1_01e8_get_power_name_textindex_singular(unitOwner);
+            int powerTextIndex = Code15.FUN_15a1_01e8_get_power_name_textindex_singular(unitOwner);
             // prepare placeholder
             FUN_83d9_03ec_copy_string_from_string_table_to_string_parameter(0, powerTextIndex);
             // display text: Unit Flags Error (%NUMBER0, %NUMBER1) (%STRING0).

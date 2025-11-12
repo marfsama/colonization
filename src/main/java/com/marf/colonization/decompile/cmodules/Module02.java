@@ -1,5 +1,6 @@
 package com.marf.colonization.decompile.cmodules;
 
+import static com.marf.colonization.decompile.cmodules.Code15.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 
 /**
@@ -47,6 +48,6 @@ public class Module02 {
         Colony colony = DAT_5cfe_colonies_list.get(colonyIndex);
 
         colony.field_x_0xba[power] = colony.num_colonists;
-        colony.field_x_0xba[4] = (byte) Code22.FUN_15d9_03e0_get_building_level(colonyIndex, 0);
+        colony.field_x_0xba[4] = (byte) FUN_15d9_03e0_get_building_level(colonyIndex, 0);
     }
 }

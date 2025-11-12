@@ -2,6 +2,10 @@ package com.marf.colonization.decompile.cmodules;
 
 public class Code1a {
 
+    public static int FUN_1a3c_0391_get_mouse_status() {
+        return 0;
+    }
+
     /**
      * AL: Width in bytes top copy from source to destination
      * AH: Height (number of rows to copy)
@@ -14,6 +18,10 @@ public class Code1a {
 
     }
 
+    /** checks if a keystroke is available, returns true (!= 0)/false (1) */
+    public static boolean FUN_1acb_0008_check_for_keystroke_available()  {
+        return true;
+    }
 
     public static int FUN_1ae6_0004_load_stuff_from_file(int filehandle, int size, Object buffer) {
         // return number of bytes read

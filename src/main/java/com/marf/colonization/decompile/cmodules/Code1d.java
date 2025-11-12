@@ -14,4 +14,8 @@ public class Code1d {
 
     }
 
+    public static void FUN_1d01_0a44_stdio_fseek(int fileHandle, int position) {
+
+    }
+
 }

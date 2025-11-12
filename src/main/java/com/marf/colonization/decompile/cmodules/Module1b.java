@@ -41,7 +41,7 @@ public class Module1b {
             // jump to label: exitFunction
             return null;
         }
-        header.field_0x18 = 0;
+        header.current_section = 0;
         header.field_0x02_read_only_flag = readOnly;
 
         if (readOnly == 1) {
@@ -90,6 +90,22 @@ public class Module1b {
     }
 
 
+    /** closes the madspack and releases the memory. */
+    public static void FUN_8d90_021c_close_madspack(MadspackHeader madspackHeader) {
+
+    }
+
+    public static void FUN_8dbb_0000_module_1b_read_entry_from_madspack(int size, MadspackHeader madspackHeader, Object destination, int unknown1, int unknown2) {
+        // note: it seems that the sections are read sequentially and not in random order. So there is no need to
+        // have a "sectionId" parameter.
+
+
+        madspackHeader.current_section++;
+    }
+
+
+
+
 
     public static class MadspackHeader {
         /** 0x00 - word */
@@ -107,8 +123,8 @@ public class Module1b {
         // [..]
         /** 0x14 - dword */
         public int total_uncompressed_size;
-        /** 0x18 - word */
-        public int field_0x18;
+        /** 0x18 - word - current section at which the file is currently positioned */
+        public int current_section;
         /** 0x1a - byte[12] */
         public byte[] magicString = new byte[12];
         /** 0x26 - word */
@@ -117,6 +133,7 @@ public class Module1b {
         public int sectionCount;
         /** 0x2a - 16 * 10 (0x10 * 0xA) = 0xA0 */
         public MadspackSection[] sections;
+        // size: 0xCA (202 bytes)
     }
 
     public static class MadspackSection {
@@ -126,5 +143,6 @@ public class Module1b {
         int uncompressed_size;
         /** 0x06 - word */
         int compressed_size;
+        // size: 0xA (10 bytes)
     }
 }

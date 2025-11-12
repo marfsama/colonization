@@ -1,8 +1,12 @@
 package com.marf.colonization.decompile.cmodules;
 
-import static com.marf.colonization.decompile.cmodules.Code1c.FUN_1cf5_0022_draw_sprite_to_vga_memory_0xA000;
-
-public class Code_1b {
+/**
+ * Base Description: Timer stuff
+ * Segment: 0x1bf0
+ * Status:
+ * - ??
+ */
+public class Code1b {
     public static void FUN_1b83_0000_fill_rectangle(Sprite backscreen_sprite, int x, int y, int width, int height, int color) {
 
     }
@@ -24,5 +28,10 @@ public class Code_1b {
         FUN_1a3c_02e6();
 
          */
+    }
+
+
+    public static int FUN_1bf0_000c_get_clock_ticks() {
+        return 0;
     }
 }
