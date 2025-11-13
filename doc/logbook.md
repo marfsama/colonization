@@ -456,6 +456,18 @@ sprite:
 * terrain - base terrain tiles
 * phys0 - everything on the surface
 
+# Introduction to AI 
+
+I'm reverse engineering the old MS DOS Game Colonization from 1994. The game resulting artifacts is X86 Real Mode Assembly. Parts of the game is hand written assembly and parts are c.
+
+I want to rewrite the functions in java to ease the cross referencing of functions and fields, as far as it is possible.
+I've moved all global data (DAT_2b4d_*) to its own "Data" class with static fields for each data item. The data class im imported with a wildcard import.
+The naming for the global data fields is DAT_<offset>_<purpose>, so I removed the segment part (2b4d) from the name.   
+
+
+I send you some assembly functions and you should:
+a) analyze the purpose of the function
+b) if the function is small enough, do a deep analyze
 
 # TODO
 

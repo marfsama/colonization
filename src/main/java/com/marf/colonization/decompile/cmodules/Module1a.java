@@ -1,7 +1,5 @@
 package com.marf.colonization.decompile.cmodules;
 
-import java.awt.image.BufferedImage;
-
 import static com.marf.colonization.decompile.cmodules.Code1d.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 import static com.marf.colonization.decompile.cmodules.Module1b.*;
@@ -15,7 +13,14 @@ import static com.marf.colonization.decompile.cmodules.Module1c.*;
  *
  */
 public class Module1a {
-    public SpriteSheetSomeStructure FUN_8d06_0054_module1a_load_sprite_sheet(String spriteSheetName, int inAX) {
+    private static void FUN_8d06_0000_module_1a_initialize_spritesheet_reading() {
+        DAT_2364_sprite_sheets_loaded_counter = 0x0;
+        DAT_a5d6_sprite_sheet_next_free = DAT_235c;
+        DAT_2360_available_sprite_sheet_memory = 0x13880; // 80000 decimal
+    }
+
+
+    public static SpriteSheetSomeStructure FUN_8d06_0054_module1a_load_sprite_sheet(String spriteSheetName, int inAX) {
 
         DAT_238c = null; // DAT_a5d6_sprite_sheet_next_free;
         DAT_a5de = DAT_2360_available_sprite_sheet_memory;
@@ -35,6 +40,39 @@ public class Module1a {
         return spriteSheetAddress;
     }
 
+
+    public static int FUN_8d06_00bc_initialize_sprite_sheets() {
+        int result = 1;
+
+        FUN_8d06_0000_module_1a_initialize_spritesheet_reading();
+        // load phys0.ss
+        DAT_016a_phys0_sprite_sheet = FUN_8d06_0054_module1a_load_sprite_sheet("phys0", 0x4000);
+        if (DAT_016a_phys0_sprite_sheet == null) {
+            return result;
+        }
+        // load icons.ss
+        DAT_082e_icons_sprite_sheet = FUN_8d06_0054_module1a_load_sprite_sheet("icons", 0x4000);
+        if (DAT_082e_icons_sprite_sheet == null) {
+            return result;
+        }
+        // load building.ss
+        DAT_0832_buildings_sprite_sheet = FUN_8d06_0054_module1a_load_sprite_sheet("icons", 0x4000);
+        if (DAT_0832_buildings_sprite_sheet == null) {
+            return result;
+        }
+
+        if (DAT_2364_sprite_sheets_loaded_counter < 3) {
+            FUN_8e33_03d6_module_1c_show_game_error(
+                    DAT_2360_available_sprite_sheet_memory & 0xffff,
+                    (DAT_2360_available_sprite_sheet_memory >> 16) & 0xffff,
+                    DAT_a5da_sprite_sheet_size & 0xffff,
+                    (DAT_a5da_sprite_sheet_size >> 16) & 0xffff
+            );
+            return result;
+        }
+
+        return 0;
+    }
 
 
     // Module 1a, Segment 0016

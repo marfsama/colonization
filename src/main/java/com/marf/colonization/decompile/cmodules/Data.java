@@ -32,12 +32,17 @@ public class Data {
     /**
      * TODO: sprite type
      */
-    static int DAT_0162_terrain_sprites = 0;
-    /**
-     * TODO: sprite type
-     */
-    static int DAT_016a_phys0_sprite_sheet = 0;
+    static Module1a.SpriteSheetSomeStructure DAT_0162_terrain_sprites;
+    static Module1a.SpriteSheetSomeStructure DAT_016a_phys0_sprite_sheet;
 
+    public static int DAT_0172_some_x;
+    public static int DAT_0174_some_y;
+    public static int DAT_0176_map_size_lower;
+    public static int DAT_0178_map_size_upper;
+    public static int DAT_017a_maybe_zoom_level;
+
+    /** 0 - map view, 1 = colony view */
+    public static int DAT_0180_maybe_colony_vs_map_view;
     static byte DAT_0184_show_hidden_terrain_state = 0;
 
     /**
@@ -51,8 +56,12 @@ public class Data {
 
     static int DAT_07dc;
 
+    static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
+    static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
+
     static Sprite DAT_14a0_some_address_of_sprite;
 
+    static int DAT_235c;
     static int DAT_2360_available_sprite_sheet_memory;
     static int DAT_2364_sprite_sheets_loaded_counter;
     static int DAT_2386_load_sprite_sheet_last_error;
@@ -88,15 +97,24 @@ public class Data {
 
 
     static Player[] DAT_53c6_player_list = new Player[4];
+
+    public static int DAT_5a8c_tile_pixel_size;
+
+    // Tribe[]
+    public static int tribe_ARRAY_2b4d_5a8e;
+
     static List<Colony> DAT_5cfe_colonies_list = new ArrayList<>();
 
 
+    static int DAT_82de_tile_pixel_size;
     static int DAT_82e2_game_window_x_min = 0;
     static int DAT_82e6_game_window_y_min = 0;
 
     // map width and height in tiles
     static int DAT_84e6_map_width = 0;
     static int DAT_84e8_map_height = 0;
+    static int DAT_84ea_number_of_x_tiles_in_viewport;
+    static int DAT_84ec_number_of_y_tiles_in_viewport;
 
 
     static int DAT_87aa_game_window_x_max = 0;
