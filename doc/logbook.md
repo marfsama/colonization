@@ -481,9 +481,11 @@ DS = 2B4D
 Module 0    4000
 Module 1    43d0
 Module 9    5fea
-Module f    7478
 Module a    6158
 Module b    61e8
+Module d    6ddb
+Module f    7478
+Module 10   77e9
 Module 12	7adf
 Module 16 	83d9
 Module 17   8778
