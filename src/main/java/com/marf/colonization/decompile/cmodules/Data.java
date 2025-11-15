@@ -46,7 +46,7 @@ public class Data {
     public static int DAT_0176_map_size_lower;
     public static int DAT_0178_map_size_upper;
     public static int DAT_017a_zoom_level;
-    public static int DAT_017c;
+    public static int DAT_017c_zoom_level_percent;
     public static int DAT_017e;
 
     /** 0 - map view, 1 = colony view */
@@ -58,6 +58,9 @@ public class Data {
      */
     public static byte DAT_0186;
     public static int[] DAT_0188_maybe_prime_resource_per_terrain_type = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
+
+    public static int DAT_1e72_camera_x_maybe;
+    public static int DAT_1e73_camera_y_maybe;
 
     public static int DAT_033e_some_flag;
     public static int DAT_0342_some_flag;
@@ -153,17 +156,24 @@ public class Data {
     /** Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots. */
     public static String[] DAT_9c82_string_placeholder_array = new String[5];
 
+    public static int DAT_a544_first_map_pointer;
     public static int DAT_a548_terrain_map_pointer_to_current_position;
+    public static int DAT_a54c_third_map_pointer;
+
+    public static int DAT_a554_some_x;
+    public static int DAT_a556_some_y;
+
     public static int DAT_a5d6_sprite_sheet_next_free;
     public static int DAT_a5da_sprite_sheet_size;
     public static int DAT_a5de;
+
 
     // stuff for calculating adjected land tiles
     public static int DAT_a865_current_terrain; // byte
     public static int DAT_a866_adjusted_current_terrain_type; // byte
     public static int DAT_a867_adjected_land_tiles_count; // byte
-    public static int DAT_a868; //
-    public static int DAT_a869; //
+    public static int DAT_a868_lower_bound; //
+    public static int DAT_a869_upper_bound; //
     public static int DAT_a86a_adjected_land_bitmask; // byte
 
     public static byte[] DAT_8d08_building_type_stuff = new byte[16];
