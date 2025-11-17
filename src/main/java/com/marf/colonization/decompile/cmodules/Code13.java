@@ -32,28 +32,25 @@ public class Code13 {
     }
 
     /**
-     * unknown yet
+     * unknown yet. The function seems to check distance from the center and returns true or false depending on the distance
+     * and the flag.
      */
-    public static boolean FUN_1373_0040(int param_1, int param_2, int param_3) {
+    public static boolean FUN_1373_0040_should_draw_depending_on_distance_maybe(int x, int y, int flag_colony_or_map_view) {
         boolean bVar1;
 
-        if (param_1 < 1) {
-            param_1 = ~param_1 + 1;
-        }
+        x = Math.abs(x);
+        y = Math.abs(y);
 
-        if (param_2 < 1) {
-            param_2 = ~param_2 + 1;
-        }
-        bVar1 = (param_2 + param_1) < 2;
-        if (param_3 != 1) {
-            if ((param_1 < 2) && (param_2 < 2)) {
+        bVar1 = (y + x) < 2;
+        if (flag_colony_or_map_view != 1) {
+            if ((x < 2) && (y < 2)) {
                 bVar1 = true;
             }
 // not clear what this does
-//            if (((param_3 != 2) && (bVar1 = (bVar1 | (int) (param_2 + param_1) < 3),param_3 != 3)) &&
-//            ((param_1 < 2 || (param_2 < 2)))){
+//            if (((param_3_flag_colony_or_map_view != 2) &&
+//                    (bVar1 = (bool)(bVar1 | (int)(param_2_y + param_1_x) < 3),
+//            param_3_flag_colony_or_map_view != 3)) && (((int)param_1_x < 2 || ((int)param_2_y < 2)))) {
 //                bVar1 = true;
-//            }
         }
         return bVar1;
     }

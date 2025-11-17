@@ -7,7 +7,8 @@ package com.marf.colonization.decompile.cmodules;
  * - ??
  */
 public class Code1b {
-    public static void FUN_1b83_0000_fill_rectangle(Sprite backscreen_sprite, int x, int y, int width, int height, int color) {
+    /** fills the rectangle from 0,0 - width,height */
+    public static void FUN_1b83_0000_clear_image(Sprite destination, int color) {
 
     }
 
@@ -30,8 +31,14 @@ public class Code1b {
          */
     }
 
+    /** Draws a sprite (as in "sprite sheet"). This seems to support tile repeating to fill the drawing area. */
+    public static void FUN_1bd9_0006_draw_sprite_with_clipping(Sprite destination, int source, int x, int y, short width, short height, int maybe_tile_index, int maybe_flags) {
+
+    }
+
 
     public static int FUN_1bf0_000c_get_clock_ticks() {
         return 0;
     }
+
 }

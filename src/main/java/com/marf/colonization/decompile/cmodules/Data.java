@@ -15,7 +15,7 @@ public class Data {
     public static int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
 
     /** maybe "map loaded" flag or so */
-    public static int DAT_0150;
+    public static int DAT_0150_some_flag;
 
     /**
      * pointer to the allocated terrain type layer
@@ -67,6 +67,7 @@ public class Data {
 
     public static int DAT_07dc;
 
+    public static int DAT_081c_address_of_woodtile_sprite_maybe;
     public static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
     public static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
 
@@ -120,11 +121,11 @@ public class Data {
 
 
     public static int DAT_82de_tile_pixel_size;
+    public static int DAT_82e0_viewport_x_offset;
     public static int DAT_82e2_viewport_x_min = 0;
+    public static int DAT_82e4_viewport_y_offset;
     public static int DAT_82e6_viewport_y_min = 0;
 
-    public static int DAT_82e0_viewport_x_offset;
-    public static int DAT_82e4_viewport_y_offset;
     // map width and height in tiles
     public static int DAT_84e6_map_width = 0;
     public static int DAT_84e8_map_height = 0;
@@ -141,12 +142,14 @@ public class Data {
     public static int DAT_87ac_game_window_y_max = 0;
     public static Europe[] DAT_87e2_europe = new Europe[4];
 
+    public static int DAT_a862;
+
     /** shorts, text index into power names: 46 (0x2e): English, 47 (0x2f): French, 48 (0x30): Spanish, 49 (0x31): Dutch */
     public static int[] DAT_8cb0_power_names = new int[4];
     /** ie: 268 (0x10c): Incas, 269 (0x10d): Inca, 270 (0x10e): Jewelled Relics */
     public static TribesNames[] DAT_8cb8_tribes_names = new TribesNames[8];
 
-
+    public static byte[] DAT_8d08_building_type_stuff = new byte[16];
     public static Colony DAT_8d6c_current_colony_ptr;
 
 
@@ -156,12 +159,16 @@ public class Data {
     /** Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots. */
     public static String[] DAT_9c82_string_placeholder_array = new String[5];
 
-    public static int DAT_a544_first_map_pointer;
+    public static int DAT_a544_surface_map_pointer;
     public static int DAT_a548_terrain_map_pointer_to_current_position;
-    public static int DAT_a54c_third_map_pointer;
+    public static int DAT_a54c_visibility_map_pointer;
 
-    public static int DAT_a554_some_x;
-    public static int DAT_a556_some_y;
+    public static int DAT_a550_draw_map_x_in_tiles;
+    public static int DAT_a552_draw_map_y_in_tiles;
+    public static int DAT_a554_draw_map_x_in_pixels;
+    public static int DAT_a556_draw_map_y_in_tiles;
+
+    public static int DAT_a558;
 
     public static int DAT_a5d6_sprite_sheet_next_free;
     public static int DAT_a5da_sprite_sheet_size;
@@ -176,7 +183,6 @@ public class Data {
     public static int DAT_a869_upper_bound; //
     public static int DAT_a86a_adjected_land_bitmask; // byte
 
-    public static byte[] DAT_8d08_building_type_stuff = new byte[16];
 
     public static byte DAT_a85b_colony_valid_flag;
 

@@ -9,6 +9,14 @@ public class Code1c {
 
     }
 
+    public static void FUN_1c6d_000c(Sprite destination, int x, int y, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+
+    }
+
+    public static void FUN_1c8e_000a(Sprite destination, int x, int y, int zoomLevelPercent, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+
+    }
+
     /**
      * Draws the sprite to the vga memory at 0xA000
      * */
