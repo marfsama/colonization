@@ -1,7 +1,8 @@
 package com.marf.colonization.decompile.cmodules;
 
 public class Code1c {
-    public static void FUN_1c1b_0000_maybe_draw_compressed_sprite(Sprite destination, int x, int y, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+    public static void FUN_1c1b_0000_draw_compressed_sprite(Sprite destination, int x, int y, int spriteIndex, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+
 
     }
 

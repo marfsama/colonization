@@ -256,7 +256,8 @@ public class Code13 {
     }
 
 
-    public static int FUN_1373_0458_maybe_place_land_prime_resources(int x,int y) {
+    /** returns the prime resource at this position or -1 if there should not be a prime resource. */
+    public static int FUN_1373_0458_get_prime_resource_at(int x, int y) {
         // check some global flag
         if (DAT_0186 == 0) {
             return -1;
@@ -304,7 +305,8 @@ public class Code13 {
         return local_8;
     }
 
-    public static int FUN_1373_0540_maybe_map_generation_stuff(int x,int y) {
+    /** returns 1 when a rumor is at this position, else 0 */
+    public static int FUN_1373_0540_get_rumor_at(int x, int y) {
         if (DAT_0186 == 0) {
             return 0;
         }
@@ -327,7 +329,7 @@ public class Code13 {
         // empty. maybe debug stuff removed by preprocessor flags
     }
 
-    public static int FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(byte terrainType) {
+    public static int FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(int terrainType) {
         // don't change sea or arctic
         int plainTerrain = terrainType & 0x1f;
         if (plainTerrain >= 0x18) {
@@ -414,7 +416,7 @@ public class Code13 {
         // update last visitor of field
         int lastVisitor = FUN_1373_0204_visitor_get_last_visitor(x,y);
         if (lastVisitor < 0) {
-            int maybeMountain = FUN_1373_0540_maybe_map_generation_stuff(x,y);
+            int maybeMountain = FUN_1373_0540_get_rumor_at(x,y);
             if (maybeMountain == 0) {
                 FUN_1373_022c_visitor_set_last_visited(x, y, power);
             }

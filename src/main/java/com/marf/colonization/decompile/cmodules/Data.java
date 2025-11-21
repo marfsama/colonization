@@ -11,6 +11,9 @@ public class Data {
 
     public static String DAT_0042 = "$STRING";
 
+    public static int[] DAT_00a8;
+    public static int[] DAT_00ae;
+
     public static int[] DAT_00b4_directions_x = new int[] {0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
     public static int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
 
@@ -59,8 +62,8 @@ public class Data {
     public static byte DAT_0186;
     public static int[] DAT_0188_maybe_prime_resource_per_terrain_type = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
-    public static int DAT_1e72_camera_x_maybe;
-    public static int DAT_1e73_camera_y_maybe;
+    public static int DAT_1e72_sub_tile_x;
+    public static int DAT_1e73_sub_tile_y;
 
     public static int DAT_033e_some_flag;
     public static int DAT_0342_some_flag;
@@ -90,7 +93,7 @@ public class Data {
     public static int DAT_2c92_x;
     public static int DAT_2c94_y;
 
-    public static int[] DAT_2cec_adjection_land_stuff = new int[4];
+    public static int[] DAT_2cec_adjection_land_stuff = new int[] {};
 
 
     /** Memory Block structure pointing to a list of null terminated strings. */
@@ -142,7 +145,7 @@ public class Data {
     public static int DAT_87ac_game_window_y_max = 0;
     public static Europe[] DAT_87e2_europe = new Europe[4];
 
-    public static int DAT_a862;
+    public static int DAT_a862_maybe_fog_of_war_mask;
 
     /** shorts, text index into power names: 46 (0x2e): English, 47 (0x2f): French, 48 (0x30): Spanish, 49 (0x31): Dutch */
     public static int[] DAT_8cb0_power_names = new int[4];
@@ -176,6 +179,8 @@ public class Data {
 
 
     // stuff for calculating adjected land tiles
+    public static int DAT_a863_value_from_surface_map;
+    public static int DAT_a864_value_from_visibility_map;
     public static int DAT_a865_current_terrain; // byte
     public static int DAT_a866_adjusted_current_terrain_type; // byte
     public static int DAT_a867_adjected_land_tiles_count; // byte
