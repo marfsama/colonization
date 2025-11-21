@@ -26,6 +26,10 @@ public class Code1a {
     public static int FUN_1ae6_0004_load_stuff_from_file(int filehandle, int size, Object buffer) {
         // return number of bytes read
         return 0;
+    }
 
+    public static int FUN_1a32_000e_get_pixel_address(Sprite sprite, int x, int y) {
+        // return sprite.address + y * sprite.height + x;
+        return 0;
     }
 }

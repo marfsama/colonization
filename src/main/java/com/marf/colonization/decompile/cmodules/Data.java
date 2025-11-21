@@ -159,8 +159,19 @@ public class Data {
     public static Building[] DAT_8f2c_buildings_table = new Building[42];
 
     public static int[] DAT_9c60_int_placeholder;
+    public static int DAT_9c7a_minimap_min_y;
+    public static int DAT_9c7c_minimap_min_x;
     /** Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots. */
     public static String[] DAT_9c82_string_placeholder_array = new String[5];
+
+    public static int[] DAT_a526_terrain_minimap_pixel = new int[8];
+    public static int[] DAT_a52e_terrain_minimap_pixel = new int[8];
+    public static int[] DAT_a536_terrain_minimap_pixel = new int[8];
+    public static int DAT_a53e_terrain_minimap_pixel_arctic;
+    public static int DAT_a53f_terrain_minimap_pixel_sea;
+    public static int DAT_a540_terrain_minimap_pixel_sealane;
+    public static int DAT_a541_terrain_minimap_pixel_0x21;
+    public static int DAT_a542_terrain_minimap_pixel_0x31;
 
     public static int DAT_a544_surface_map_pointer;
     public static int DAT_a548_terrain_map_pointer_to_current_position;

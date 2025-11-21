@@ -2,7 +2,7 @@ package com.marf.colonization.decompile.cmodules;
 
 public class Code11 {
 
-    public static void FUN_1101_0050_blit_terrain_tile(Module1a.SpriteSheetSomeStructure terrainSprites, int neighboursBitmap, Sprite destination, int x, int y) {
+    public static void FUN_1101_0050_blit_terrain_tile(Module1a.SpriteSheetSomeStructure terrainSprites, int spriteIndex, Sprite destination, int x, int y) {
 
     }
 
