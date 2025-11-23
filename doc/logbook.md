@@ -456,6 +456,13 @@ sprite:
 * terrain - base terrain tiles
 * phys0 - everything on the surface
 
+
+# 22.11.2025: analyze of draw minimap (FUN_7f05_0360)
+
+    bp 19FD:0e22 (2810:0e22)
+    => bp 966E:0360
+
+
 # Introduction to AI 
 
 I'm reverse engineering the old MS DOS Game Colonization from 1994. The game resulting artifacts is X86 Real Mode Assembly. Parts of the game is hand written assembly and parts are c.

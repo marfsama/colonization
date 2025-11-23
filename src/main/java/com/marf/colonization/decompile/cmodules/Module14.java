@@ -3,9 +3,11 @@ package com.marf.colonization.decompile.cmodules;
 import static com.marf.colonization.decompile.cmodules.Code11.*;
 import static com.marf.colonization.decompile.cmodules.Code12.*;
 import static com.marf.colonization.decompile.cmodules.Code13.*;
-import static com.marf.colonization.decompile.cmodules.Code1a.FUN_1a32_000e_get_pixel_address;
+import static com.marf.colonization.decompile.cmodules.Code1a.*;
+import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Code1c.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
+import static java.lang.Math.max;
 
 public class Module14 {
     public static int FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(int spriteIndex) {
@@ -75,7 +77,85 @@ public class Module14 {
 
         int pixelAddress = FUN_1a32_000e_get_pixel_address(DAT_2638_backscreen, x + 252, y + 9);
 
-
+        // TODO...complete the function
 
     }
+
+    public static void FUN_7f05_0346_module_14_draw_minimap(int power) {
+        FUN_7f05_0118_module_14_draw_minimap(DAT_9c7c_minimap_min_x, DAT_9c7a_minimap_min_y, 70, 39, power, 0);
+    }
+
+    public static void FUN_7f05_0360_module_14_draw_minimap(int param_1_x, int param_2_y, int param_width, int param_height, boolean param_5_flush_to_screen, int power, int some_flag) {
+        FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds();
+
+        int min_y = DAT_9c7a_minimap_min_y;
+        int min_x = DAT_9c7c_minimap_min_x;
+
+        int y = max(min_y, param_2_y);
+        int height = max(0, Math.min(min_y + 0x26, param_height - 1) - y);
+
+        // note: x and height needs to be chacked against assembly (just copied the part from y)
+        int x = max(min_x, param_1_x);
+        int width = max(0, Math.min(min_x + 0x37, param_width - 1) - x);
+
+        if (width == 0 || height == 0) {
+            return;
+        }
+
+        // draw the minimap
+        FUN_7f05_0118_module_14_draw_minimap(x,y,width, height, power, some_flag);
+
+        // DAT_2638_backscreen
+        // max(min_y + 0x26, game_window_y_max) - min_y + 9
+        // 15
+        // AX = max(viewport_min_x,  min_x) - min_x + 252
+        // BX = max(min_x + 0x37, game_window_x_max) - min_x + 252
+        // DX = max(viewport_min_y, min_y) - min_y + 9
+        // draws the current viewport as a rectangle in the minimap
+        FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 15,
+                /* AX */ max(DAT_82e2_viewport_x_min,  min_x) - min_x + 252,
+                /* param_1 */ max(min_y + 0x26, DAT_87ac_game_window_y_max) - min_y + 9,
+                /* BX */ max(min_x + 0x37, DAT_87aa_game_window_x_max) - min_x + 252,
+                /* DX */ max(DAT_82e6_viewport_y_min, min_y) - min_y + 9
+                );
+
+        if (param_5_flush_to_screen) {
+            FUN_1b54_0040_flip_backscreen_rectangle(x - min_x + 252, y - min_y + 9, x - min_x + 252, y - min_y + 9, width, height);
+        }
+
+    }
+
+    public static void FUN_7f05_048a(boolean param_1_flush_to_screen,int param_2_power) {
+        FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds();
+        if (DAT_081c_address_of_woodtile_sprite_maybe != 0) {
+            FUN_1bd9_0006_draw_sprite_sheet_entry(DAT_2638_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 241, 8, 79, 41, 0, 0);
+        } else {
+            // param_1_color
+            // param_2_height
+            // param_3_destination
+            // bx - width
+            // dx - y
+            // ax - x
+            FUN_1b83_0000_fill_rectangle(241, 8, 79, 41, DAT_2638_backscreen, 0);
+        }
+
+        // draw orange border around minimap
+        FUN_1bae_0008_draw_rectangle (DAT_2638_backscreen, 6, 251,8,308,48);
+
+        // draw minimap
+        FUN_7f05_0346_module_14_draw_minimap(param_2_power);
+
+        //
+
+        if (param_1_flush_to_screen) {
+            FUN_1b54_0040_flip_backscreen_rectangle(241, 8, 241, 8, 79, 41);
+        }
+
+        //
+    }
+
+
+
+
+
 }

@@ -969,7 +969,7 @@ public class Module14_102 {
         // if the map is smaller than the viewport (so it does not cover all space), draw wood tiles as background
         if (DAT_82e0_viewport_x_offset > 0 || DAT_82e4_viewport_y_offset > 0) {
             if (DAT_081c_address_of_woodtile_sprite_maybe != 0) {
-                FUN_1bd9_0006_draw_sprite_with_clipping(DAT_2640_2nd_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 0, 0,
+                FUN_1bd9_0006_draw_sprite_sheet_entry(DAT_2640_2nd_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 0, 0,
                         DAT_2640_2nd_backscreen.width, DAT_2640_2nd_backscreen.height, 0, -8);
             } else {
                 FUN_1b83_0000_clear_image(DAT_2640_2nd_backscreen, 0);
