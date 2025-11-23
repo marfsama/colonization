@@ -15,6 +15,12 @@ public class Code1b {
     }
 
     /**
+     */
+    public static void FUN_1b8e_000c_draw_sprite(Sprite destination, Sprite source) {
+
+    }
+
+    /**
      * params:
      * - param_1_color
      * - param_2_y2

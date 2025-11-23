@@ -8,6 +8,7 @@ import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Code1c.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 import static java.lang.Math.max;
+import static java.lang.Math.min;
 
 public class Module14 {
     public static int FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(int spriteIndex) {
@@ -92,11 +93,11 @@ public class Module14 {
         int min_x = DAT_9c7c_minimap_min_x;
 
         int y = max(min_y, param_2_y);
-        int height = max(0, Math.min(min_y + 0x26, param_height - 1) - y);
+        int height = max(0, min(min_y + 0x26, param_height - 1) - y);
 
         // note: x and height needs to be chacked against assembly (just copied the part from y)
         int x = max(min_x, param_1_x);
-        int width = max(0, Math.min(min_x + 0x37, param_width - 1) - x);
+        int width = max(0, min(min_x + 0x37, param_width - 1) - x);
 
         if (width == 0 || height == 0) {
             return;
@@ -125,7 +126,11 @@ public class Module14 {
 
     }
 
-    public static void FUN_7f05_048a(boolean param_1_flush_to_screen,int param_2_power) {
+    /**
+     * draws the minimap (wood) panel, the border around the minimap, the minimap itself and the current viewport as a
+     * rectangle over the minimap.
+     * */
+    public static void FUN_7f05_048a_module_14_draw_minimap_panel(boolean param_1_flush_to_screen,int param_2_power) {
         FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds();
         if (DAT_081c_address_of_woodtile_sprite_maybe != 0) {
             FUN_1bd9_0006_draw_sprite_sheet_entry(DAT_2638_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 241, 8, 79, 41, 0, 0);
@@ -145,13 +150,58 @@ public class Module14 {
         // draw minimap
         FUN_7f05_0346_module_14_draw_minimap(param_2_power);
 
-        //
+        // draw current viewport
+        int y1 = max(DAT_82e6_viewport_y_min, DAT_9c7a_minimap_min_y) + 9;
+        int y2 = min(DAT_87ac_game_window_y_max, DAT_9c7a_minimap_min_y + 0x26) - DAT_9c7a_minimap_min_y + 9;
+        int x1 = max(DAT_82e2_viewport_x_min, DAT_9c7c_minimap_min_x) + 0xfc;
+        int x2 = min(DAT_9c7c_minimap_min_x + 0x37, DAT_87aa_game_window_x_max) + 0xfc;
+        FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 15, x1, y1, x2, y2);
 
+        // flip minimap part of the screen when requested
         if (param_1_flush_to_screen) {
             FUN_1b54_0040_flip_backscreen_rectangle(241, 8, 241, 8, 79, 41);
         }
+    }
 
-        //
+    /** Note: the parameters are all pointers (word*), so they are all output parameters as well. */
+    public static void FUN_7f61_0004_module_14_5c_clamp_to_viewport(int x1, int y1, int x2, int y2) {
+        x1 = max(x1, DAT_82e2_viewport_x_min);
+        y1 = max(y1, DAT_82e6_viewport_y_min);
+        x2 = min(x2, DAT_87aa_game_window_x_max);
+        y2 = min(y2, DAT_87ac_game_window_y_max);
+        // note: return x1, y1, x2, y2
+    }
+
+    public static void FUN_7f61_004a_module_14_5c_clamp_to_viewport(int x, int y, int width, int height) {
+        // Calculate right and bottom edges
+        int rightEdge = x + width - 1;
+        int bottomEdge = y + height - 1;
+
+        // Clip X-axis
+        // Clamp right edge to game window maximum X
+        int clampedRight = Math.min(rightEdge, DAT_87aa_game_window_x_max);
+
+        // Clamp left edge to viewport minimum X
+        int clampedLeft = Math.max(x, DAT_82e2_viewport_x_min);
+        x = clampedLeft;
+
+        // Recalculate width
+        int newWidth = Math.max(clampedRight - clampedLeft + 1, 0);
+        width = newWidth;
+
+        // Clip Y-axis
+        // Clamp bottom edge to game window maximum Y
+        int clampedBottom = Math.min(bottomEdge, DAT_87ac_game_window_y_max);
+
+        // Clamp top edge to viewport minimum Y
+        int clampedTop = Math.max(y, DAT_82e6_viewport_y_min);
+        y = clampedTop;
+
+        // Recalculate height
+        int newHeight = Math.max(clampedBottom - clampedTop + 1, 0);
+        height = newHeight;
+
+        // return x,y,width,height
     }
 
 
