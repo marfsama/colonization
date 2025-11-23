@@ -476,6 +476,10 @@ I send you some assembly functions and you should:
 a) analyze the purpose of the function
 b) if the function is small enough, do a deep analyze
 
+The calling convention is usually cdecl, depending on the function sometimes parameters are supplied via registers.
+In some functions the register parameters are pushed on the stack and then used like local variables.
+
+
 # TODO
 
 * FUN_20fe_1ebd_load_module_entry: check which flags are set in moduleConfig 
