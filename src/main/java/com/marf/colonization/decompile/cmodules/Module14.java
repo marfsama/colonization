@@ -115,8 +115,8 @@ public class Module14 {
         // draws the current viewport as a rectangle in the minimap
         FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 15,
                 /* AX */ max(DAT_82e2_viewport_x_min,  min_x) - min_x + 252,
-                /* param_1 */ max(min_y + 0x26, DAT_87ac_game_window_y_max) - min_y + 9,
-                /* BX */ max(min_x + 0x37, DAT_87aa_game_window_x_max) - min_x + 252,
+                /* param_1 */ max(min_y + 0x26, DAT_87ac_viewport_y_max) - min_y + 9,
+                /* BX */ max(min_x + 0x37, DAT_87aa_viewport_x_max) - min_x + 252,
                 /* DX */ max(DAT_82e6_viewport_y_min, min_y) - min_y + 9
                 );
 
@@ -152,9 +152,9 @@ public class Module14 {
 
         // draw current viewport
         int y1 = max(DAT_82e6_viewport_y_min, DAT_9c7a_minimap_min_y) + 9;
-        int y2 = min(DAT_87ac_game_window_y_max, DAT_9c7a_minimap_min_y + 0x26) - DAT_9c7a_minimap_min_y + 9;
+        int y2 = min(DAT_87ac_viewport_y_max, DAT_9c7a_minimap_min_y + 0x26) - DAT_9c7a_minimap_min_y + 9;
         int x1 = max(DAT_82e2_viewport_x_min, DAT_9c7c_minimap_min_x) + 0xfc;
-        int x2 = min(DAT_9c7c_minimap_min_x + 0x37, DAT_87aa_game_window_x_max) + 0xfc;
+        int x2 = min(DAT_9c7c_minimap_min_x + 0x37, DAT_87aa_viewport_x_max) + 0xfc;
         FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 15, x1, y1, x2, y2);
 
         // flip minimap part of the screen when requested
@@ -167,8 +167,8 @@ public class Module14 {
     public static void FUN_7f61_0004_module_14_5c_clamp_to_viewport(int x1, int y1, int x2, int y2) {
         x1 = max(x1, DAT_82e2_viewport_x_min);
         y1 = max(y1, DAT_82e6_viewport_y_min);
-        x2 = min(x2, DAT_87aa_game_window_x_max);
-        y2 = min(y2, DAT_87ac_game_window_y_max);
+        x2 = min(x2, DAT_87aa_viewport_x_max);
+        y2 = min(y2, DAT_87ac_viewport_y_max);
         // note: return x1, y1, x2, y2
     }
 
@@ -179,7 +179,7 @@ public class Module14 {
 
         // Clip X-axis
         // Clamp right edge to game window maximum X
-        int clampedRight = Math.min(rightEdge, DAT_87aa_game_window_x_max);
+        int clampedRight = Math.min(rightEdge, DAT_87aa_viewport_x_max);
 
         // Clamp left edge to viewport minimum X
         int clampedLeft = Math.max(x, DAT_82e2_viewport_x_min);
@@ -191,7 +191,7 @@ public class Module14 {
 
         // Clip Y-axis
         // Clamp bottom edge to game window maximum Y
-        int clampedBottom = Math.min(bottomEdge, DAT_87ac_game_window_y_max);
+        int clampedBottom = Math.min(bottomEdge, DAT_87ac_viewport_y_max);
 
         // Clamp top edge to viewport minimum Y
         int clampedTop = Math.max(y, DAT_82e6_viewport_y_min);

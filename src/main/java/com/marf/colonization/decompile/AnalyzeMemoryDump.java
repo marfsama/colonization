@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AnalyzeMemoryDump extends BaseReader {
 
@@ -88,8 +87,8 @@ public class AnalyzeMemoryDump extends BaseReader {
 
             analyzer.printVariousProperties();
 
-            analyzer.readStack(entries);
-            analyzer.readStringTable();
+            //analyzer.readStack(entries);
+            //analyzer.readStringTable();
 
             SegmentOffset foo1 = new SegmentOffset(cpuState.getDs(), new Address(0x8d6c));
             System.out.println("foo1: "+foo1+" "+foo1.toLinearAddress());
@@ -286,6 +285,15 @@ public class AnalyzeMemoryDump extends BaseReader {
         System.out.println("----");
         readShortValue(stream, 0x399b, "segment (paragraph) to list of module headers?");
         readShortValue(stream, 0x399d, "stackelement[8]");
+
+        System.out.println("----");
+        readShortValue(stream, 0x0172, "viewport_center_x");
+        readShortValue(stream, 0x0174, "viewport_center_y");
+        readShortValue(stream, 0x82e2, "viewport_min_x");
+        readShortValue(stream, 0x82e6, "viewport_min_y");
+        readShortValue(stream, 0x84e6, "map_size_width");
+        readShortValue(stream, 0x84e6, "map_size_height");
+
 
         System.out.println("--- Module Loader ---");
         readByteValue(stream, 0x39e1, "set to -1 after a relocated module function is called, maybe busy flag");

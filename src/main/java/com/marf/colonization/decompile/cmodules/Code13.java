@@ -59,10 +59,10 @@ public class Code13 {
      * checks if the coordinate is in the currently visible game window
      */
     public static boolean FUN_1373_00c4_is_in_visible_window(int x, int y) {
-        if ((x < DAT_82e2_viewport_x_min) || (DAT_87aa_game_window_x_max < x)) {
+        if ((x < DAT_82e2_viewport_x_min) || (DAT_87aa_viewport_x_max < x)) {
             return false;
         }
-        if ((y < DAT_82e6_viewport_y_min) || (DAT_87ac_game_window_y_max < y)) {
+        if ((y < DAT_82e6_viewport_y_min) || (DAT_87ac_viewport_y_max < y)) {
             return false;
         }
         return true;

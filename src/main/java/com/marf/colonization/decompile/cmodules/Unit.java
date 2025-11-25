@@ -1,9 +1,5 @@
 package com.marf.colonization.decompile.cmodules;
 
-import com.marf.colonization.saves.section.TableValue;
-
-import java.util.List;
-
 public class Unit {
     public int x;
     public int y;
@@ -21,7 +17,7 @@ public class Unit {
     public byte[] cargoTypes = new byte[3];
     public byte[] cargoAmount = new byte[6];
     public byte dummy4;
-    public TableValue profession;
+    public int profession;
     /** Unit id. maybe fist unit in transport? */
     public int transportChain1;
     /** Unit id. maybe last unit in transport? */

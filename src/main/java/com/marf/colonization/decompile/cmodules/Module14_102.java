@@ -74,11 +74,11 @@ public class Module14_102 {
 
         // Final zoom-dependent calculations
         DAT_017c_zoom_level_percent = 0x64 >> DAT_017a_zoom_level;  // 100 >> zoomLevel
-        DAT_017e = (0x5 << DAT_017a_zoom_level) + 0x5;
+        DAT_017e_maybe_scroll_amount = (0x5 << DAT_017a_zoom_level) + 0x5;
 
         // Calculate window maximum bounds
-        DAT_87aa_game_window_x_max = DAT_82e2_viewport_x_min + DAT_84ea_number_of_x_tiles_in_viewport - 1;
-        DAT_87ac_game_window_y_max = DAT_82e6_viewport_y_min + DAT_84ec_number_of_y_tiles_in_viewport - 1;
+        DAT_87aa_viewport_x_max = DAT_82e2_viewport_x_min + DAT_84ea_number_of_x_tiles_in_viewport - 1;
+        DAT_87ac_viewport_y_max = DAT_82e6_viewport_y_min + DAT_84ec_number_of_y_tiles_in_viewport - 1;
     }
 
     private static void calculateSpecialDisplayDimensions() {
@@ -862,17 +862,17 @@ public class Module14_102 {
 
         FUN_8007_000c_module_14_102_calculate_viewport();
 
-        if (x_min >= DAT_87aa_game_window_x_max || y_min >= DAT_87ac_game_window_y_max) {
+        if (x_min >= DAT_87aa_viewport_x_max || y_min >= DAT_87ac_viewport_y_max) {
             return;
         }
 
         int x_max = x_min + width_in_tiles;
         int y_max = y_min + height_in_tiles;
-        if (x_max >= DAT_87aa_game_window_x_max) {
-            x_max = DAT_87aa_game_window_x_max;
+        if (x_max >= DAT_87aa_viewport_x_max) {
+            x_max = DAT_87aa_viewport_x_max;
         }
-        if (y_max >= DAT_87ac_game_window_y_max) {
-            y_max = DAT_87ac_game_window_y_max;
+        if (y_max >= DAT_87ac_viewport_y_max) {
+            y_max = DAT_87ac_viewport_y_max;
         }
 
         if (x_min < DAT_82e2_viewport_x_min) {

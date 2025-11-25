@@ -50,7 +50,7 @@ public class Data {
     public static int DAT_0178_map_size_upper;
     public static int DAT_017a_zoom_level;
     public static int DAT_017c_zoom_level_percent;
-    public static int DAT_017e;
+    public static int DAT_017e_maybe_scroll_amount;
 
     /** 0 - map view, 1 = colony view */
     public static int DAT_0180_maybe_colony_vs_map_view;
@@ -141,8 +141,8 @@ public class Data {
     public static int DAT_84f4_some_y;
 
 
-    public static int DAT_87aa_game_window_x_max = 0;
-    public static int DAT_87ac_game_window_y_max = 0;
+    public static int DAT_87aa_viewport_x_max = 0;
+    public static int DAT_87ac_viewport_y_max = 0;
     public static Europe[] DAT_87e2_europe = new Europe[4];
 
     public static int DAT_a862_maybe_fog_of_war_mask;
