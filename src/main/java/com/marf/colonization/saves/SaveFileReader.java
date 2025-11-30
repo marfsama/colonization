@@ -72,8 +72,6 @@ public class SaveFileReader extends BaseReader {
             // Read map data (dynamic size based on mapSize)
             saveFile.setMap(readObject(GameMap::new, (gameMap, s) -> this.readGameMap(gameMap, s, saveFile.getHeader().getMapSize())));
 
-            // Read final padding (320 bytes)
-            saveFile.setPaddingFinal(readBytes(stream, 320));
 
         } catch (IOException e) {
             addGlobalError("Fatal error reading file: " + e.getMessage());
@@ -452,19 +450,26 @@ public class SaveFileReader extends BaseReader {
         gameMap.setHeight(mapSize.getY());
 
         int mapDataSize = mapSize.getX() * mapSize.getY(); // Adjust based on actual format
-        byte[] mapData = new byte[mapDataSize];
-        stream.readFully(mapData);
-        List<Integer> tiles = new ArrayList<>();
-        for (byte b : mapData) {
-            tiles.add(b & 0xff);
+        byte[] terrain = new byte[mapDataSize];
+        stream.readFully(terrain);
+        gameMap.setTerrain(terrain);
+
+        byte[] surface = new byte[mapDataSize];
+        stream.readFully(surface);
+        gameMap.setSurface(surface);
+
+        byte[] visitor = new byte[mapDataSize];
+        stream.readFully(visitor);
+        gameMap.setVisitor(visitor);
+
+        byte[] visibility = new byte[mapDataSize];
+        stream.readFully(visibility);
+        gameMap.setVisibility(visibility);
+
+        for (byte b : terrain) {
             gameMap.getTiles().add(new Tile(b & 0xff));
         }
-        gameMap.setTerrain(tiles);
 
-        gameMap.setOtherStuff(new ArrayList<>());
-        for (int i = 0; i < mapSize.getX() * mapSize.getY(); i++) {
-            gameMap.getOtherStuff().add(stream.readUnsignedByte());
-        }
 
         // calculate neighbors bitmasks
         gameMap.postProcess();

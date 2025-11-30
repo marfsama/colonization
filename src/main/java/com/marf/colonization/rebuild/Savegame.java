@@ -22,7 +22,7 @@ public class Savegame {
     /** FUN_8a1f_073c_module_19_load_savegame */
     public void loadSavegame(String filename) {
 
-        try (FileImageInputStream stream = new FileImageInputStream(new File("src/main/resources/COLONY01.SAV").getAbsoluteFile())) {
+        try (FileImageInputStream stream = new FileImageInputStream(new File("src/main/resources/"+filename).getAbsoluteFile())) {
             ObjectMapper tableMapper = new ObjectMapper(new YAMLFactory());
             Tables tables = tableMapper.readValue(SavesReader.class.getResourceAsStream("/tables.yaml"), Tables.class);
 
@@ -30,13 +30,19 @@ public class Savegame {
             SaveFile saveFile = reader.readAll();
 
             // header stuff
-            gameData.mapSize = new Dimension(saveFile.getHeader().getMapSize().getX(), saveFile.getHeader().getMapSize().getY());
+            gameData.gameMap.mapSize = new Dimension(saveFile.getHeader().getMapSize().getX(), saveFile.getHeader().getMapSize().getY());
             // player
 
             // viewport
             Viewport viewport = saveFile.getViewports().get(saveFile.getHeader().getViewportPower());
             gameData.viewportCenter = new Point(viewport.getX(), viewport.getY());
             gameData.zoomLevel = viewport.getZoom();
+
+            // maps
+            gameData.gameMap.terrain = saveFile.getMap().getTerrain();
+            gameData.gameMap.surface = saveFile.getMap().getSurface();
+            gameData.gameMap.visitor = saveFile.getMap().getVisitor();
+            gameData.gameMap.visibility = saveFile.getMap().getVisibility();
 
 
         }

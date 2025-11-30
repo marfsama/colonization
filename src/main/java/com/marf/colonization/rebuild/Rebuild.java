@@ -28,7 +28,6 @@ public class Rebuild extends JPanel {
     }
 
     public static void main(String[] args) throws IOException {
-
         DefaultPicoContainer pico = new DefaultPicoContainer(new Caching());
         pico.addComponent(Resources.load());
         pico.addComponent(Canvas.class);
@@ -40,8 +39,12 @@ public class Rebuild extends JPanel {
         Rebuild rebuild = new Rebuild(pico);
         rebuild.canvas.clear();
 
+        Savegame savegame = pico.getComponent(Savegame.class);
+        savegame.loadSavegame("COLONY01.SAV");
         Minimap minimap = pico.getComponent(Minimap.class);
-        minimap.renderMinimap();
+        minimap.init();
+        minimap.calculateViewport();
+        minimap.renderMinimapPanel(0);
 
 
         JFrame frame = new JFrame();

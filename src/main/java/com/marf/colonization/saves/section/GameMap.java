@@ -15,11 +15,12 @@ import java.util.function.Function;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class GameMap extends GameDataSection {
-    // Map structure will be defined later
     private int width;
     private int height;
-    private List<Integer> terrain;
-    private List<Integer> otherStuff;
+    private byte[] terrain;
+    private byte[] surface;
+    private byte[] visitor;
+    private byte[] visibility;
 
     private List<Tile> tiles = new ArrayList<>();
 

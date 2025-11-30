@@ -3,6 +3,7 @@ package com.marf.colonization.decompile.cmodules;
 import static com.marf.colonization.decompile.cmodules.Code11.*;
 import static com.marf.colonization.decompile.cmodules.Code12.*;
 import static com.marf.colonization.decompile.cmodules.Code13.*;
+import static com.marf.colonization.decompile.cmodules.Code14.*;
 import static com.marf.colonization.decompile.cmodules.Code1a.*;
 import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Code1c.*;
@@ -65,39 +66,118 @@ public class Module14 {
     }
 
 
-    public static void FUN_7f05_0118_module_14_draw_minimap(int x, int y, int width, int height, int player, int param_6) {
+    public static void FUN_7f05_0118_module_14_draw_minimap(int xPos, int yPos, int width, int height, int player, boolean showFullMap) {
         int playerMask = 0;
         if (player != 0) {
             playerMask = 0x10 << player;
         }
 
-        int terrainOffset = FUN_1373_00fa_get_terrain_type_offset_at(x,y);
-        int surfaceOffset = FUN_1373_012e_get_surface_offset_at(x,y);
-        int visibilityOffset = FUN_1373_02e4_visibility_get_offset_at(x,y);
-        int visitorOffset = FUN_1373_0198_get_visitor_offset_at(x,y);
+        int terrainOffset = FUN_1373_00fa_get_terrain_type_offset_at(xPos,yPos);
+//        int surfaceOffset = FUN_1373_012e_get_surface_offset_at(xPos,yPos);
+//        int visibilityOffset = FUN_1373_02e4_visibility_get_offset_at(xPos,yPos);
+//        int visitorOffset = FUN_1373_0198_get_visitor_offset_at(xPos,yPos);
 
-        int pixelAddress = FUN_1a32_000e_get_pixel_address(DAT_2638_backscreen, x + 252, y + 9);
+        int pixelAddress = FUN_1a32_000e_get_pixel_address(DAT_2638_backscreen, xPos + 252, yPos + 9);
 
-        // TODO...complete the function
+        if (height <= 0) {
+            return;
+        }
 
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int terrainType = DAT_0152_game_map_terrain[terrainOffset];
+                int visitor = DAT_015a_game_map_visitor[terrainOffset];
+                int surface = DAT_0156_game_map_surface[terrainOffset];
+                int visibility = DAT_015e_game_map_visibility[terrainOffset];
+                terrainOffset++;
+
+                int color = determineMinimapColor(terrainType, visitor, surface, visibility, player, playerMask, showFullMap, xPos + x, yPos + y);
+
+                // *pixelAddress = color;
+                pixelAddress++;
+            }
+
+            // Move to next row in data arrays
+            int rowSkip = DAT_84e6_map_width - width;
+            terrainOffset += rowSkip;
+
+            // Move to next row in pixel buffer
+            pixelAddress += DAT_2638_backscreen.width - width;
+        }
+    }
+
+    private static int determineMinimapColor(
+            int terrainType, int visitorData, int surfaceFlags, int visibilityData,
+            int currentPlayer, int playerMask, boolean forceVisibility,
+            int tileX, int tileY) {
+
+        // Force visibility override
+        if (forceVisibility) {
+            return 0x0F; // Bright white
+        }
+
+        // Check player visibility
+        if (playerMask != 0 && (visibilityData & playerMask) == 0) {
+            return 0x00; // Black (fog of war)
+        }
+
+        // Check for village/tribe
+        if ((surfaceFlags & 0x02) != 0) {
+            int index = (visitorData >> 4) & 0x0F;
+            return DAT_0838_minimap_fractions_colors_table[index];
+        }
+
+        // Check for units
+        if ((surfaceFlags & 0x01) != 0) {
+            int unitId = FUN_1415_0064_get_unit_at(tileX, tileY);
+            Unit unit = DAT_30fc_units_list[unitId];
+
+            int color = 0;
+
+            if (unit != null) {
+                // Check if unit belongs to current player
+                if ((unit.nationIndex & playerMask) != 0 || DAT_5338_savegame_header.field_0x22 != 0) {
+                    int index = (visitorData >> 4) & 0x0F;
+                    color = Data.DAT_0838_minimap_fractions_colors_table[index];
+                }
+
+                // Check for privateer
+                if (unit.type == 0x10 && DAT_5338_savegame_header.field_0x22 != 0 && unit.transportChain1 < 0) {
+                    color = 0x08; // don't show color
+                }
+
+                return color;
+            }
+        }
+
+        // Default: terrain-based color
+        if ((terrainType & 0x20) != 0) {
+            // Special terrain handling
+            boolean specialCondition = (terrainType & 0x80) != 0;
+            return  (byte)(specialCondition ? 0x1B : 0x1C);
+        } else {
+            // Normal terrain color mapping
+            int terrainIndex = terrainType & 0x1F;
+            return DAT_a526_terrain_minimap_colors[terrainIndex];
+        }
     }
 
     public static void FUN_7f05_0346_module_14_draw_minimap(int power) {
-        FUN_7f05_0118_module_14_draw_minimap(DAT_9c7c_minimap_min_x, DAT_9c7a_minimap_min_y, 70, 39, power, 0);
+        FUN_7f05_0118_module_14_draw_minimap(DAT_9c7c_minimap_min_x, DAT_9c7a_minimap_min_y, 70, 39, power, false);
     }
 
-    public static void FUN_7f05_0360_module_14_draw_minimap(int param_1_x, int param_2_y, int param_width, int param_height, boolean param_5_flush_to_screen, int power, int some_flag) {
+    public static void FUN_7f05_0360_module_14_draw_minimap(int param_1_x, int param_2_y, int param_width, int param_height, boolean param_5_flush_to_screen, int power, boolean some_flag) {
         FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds();
 
         int min_y = DAT_9c7a_minimap_min_y;
         int min_x = DAT_9c7c_minimap_min_x;
 
         int y = max(min_y, param_2_y);
-        int height = max(0, min(min_y + 0x26, param_height - 1) - y);
+        int height = max(0, min(min_y + 38, param_height - 1) - y);
 
-        // note: x and height needs to be chacked against assembly (just copied the part from y)
+        // note: x and height needs to be checked against assembly (just copied the part from y)
         int x = max(min_x, param_1_x);
-        int width = max(0, min(min_x + 0x37, param_width - 1) - x);
+        int width = max(0, min(min_x + 55, param_width - 1) - x);
 
         if (width == 0 || height == 0) {
             return;
@@ -154,7 +234,7 @@ public class Module14 {
         int y1 = max(DAT_82e6_viewport_y_min, DAT_9c7a_minimap_min_y) + 9;
         int y2 = min(DAT_87ac_viewport_y_max, DAT_9c7a_minimap_min_y + 0x26) - DAT_9c7a_minimap_min_y + 9;
         int x1 = max(DAT_82e2_viewport_x_min, DAT_9c7c_minimap_min_x) + 0xfc;
-        int x2 = min(DAT_9c7c_minimap_min_x + 0x37, DAT_87aa_viewport_x_max) + 0xfc;
+        int x2 = min(DAT_87aa_viewport_x_max, DAT_9c7c_minimap_min_x + 0x37) + 0xfc;
         FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 15, x1, y1, x2, y2);
 
         // flip minimap part of the screen when requested

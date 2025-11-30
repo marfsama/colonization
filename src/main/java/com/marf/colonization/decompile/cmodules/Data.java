@@ -74,6 +74,13 @@ public class Data {
     public static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
     public static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
 
+    public static int[] DAT_0838_minimap_fractions_colors_table = new int[] {
+               0xC, 0x9, 0xE, 0xD,
+               0xF, 0x95, 0x36, 0xB,
+               0x43, 0x6F, 0x75, 0x47,
+               0x7, 0xB, 0x9, 0xA
+    };
+
     public static Sprite DAT_14a0_some_address_of_sprite;
 
     public static int DAT_235c;
@@ -177,6 +184,11 @@ public class Data {
     public static int DAT_a548_terrain_map_pointer_to_current_position;
     public static int DAT_a54c_visibility_map_pointer;
 
+
+    public static int[] DAT_a526_terrain_minimap_colors = new int[] {
+
+    };
+
     public static int DAT_a550_draw_map_x_in_tiles;
     public static int DAT_a552_draw_map_y_in_tiles;
     public static int DAT_a554_draw_map_x_in_pixels;
@@ -201,6 +213,7 @@ public class Data {
 
 
     public static byte DAT_a85b_colony_valid_flag;
+
 
 
 }

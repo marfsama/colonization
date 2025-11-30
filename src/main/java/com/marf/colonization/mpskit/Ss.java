@@ -1,6 +1,7 @@
 package com.marf.colonization.mpskit;
 
 import com.marf.colonization.util.ByteArrayImageInputStream;
+import lombok.Getter;
 import lombok.ToString;
 
 import javax.imageio.ImageIO;
@@ -29,10 +30,8 @@ public class Ss {
         this.madspack = madspack;
     }
 
-    public List<BufferedImage> getImages() throws IOException {
+    public List<Sprite> getSprites() throws IOException {
         Header header = readHeader(madspack.getSection(0));
-        System.out.println(header);
-
 
         List<Sprite> sprites = getSpriteHeaders(header);
 
@@ -44,10 +43,28 @@ public class Ss {
         stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
 
         for (Sprite sprite : sprites) {
-            sprite.image = readSprite(sprite, palette, stream);
+            sprite.indexedImage = readSprite(sprite, stream);
+            sprite.image = indexedToImage(sprite, sprite.indexedImage, palette);
+        }
+        return sprites;
+    }
+
+    public List<BufferedImage> getImages() throws IOException {
+        return getSprites().stream().map(Sprite::getImage).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    private BufferedImage indexedToImage(Sprite sprite, byte[] indexedImage, Color[] palette) {
+        BufferedImage image = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_4BYTE_ABGR);
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                int colorIndex = (indexedImage[y * sprite.getWidth() + x]) & 0xff;
+                image.setRGB(x,y, palette[colorIndex].getRGB());
+            }
+
         }
 
-        return sprites.stream().map(Sprite::getImage).filter(Objects::nonNull).collect(Collectors.toList());
+        return image;
     }
 
     /**
@@ -94,14 +111,14 @@ public class Ss {
      *  everything other - either part of the command or a single pixel color index.
      * </pre>
      */
-    private BufferedImage readSprite(Sprite sprite, Color[] palette, ImageInputStream stream) throws IOException {
+    private byte[] readSprite(Sprite sprite, ImageInputStream stream) throws IOException {
         stream.seek(sprite.start_offset);
 
         if (sprite.width < 1 || sprite.height < 1) {
-            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            return new byte[1];
         }
 
-        BufferedImage img = new BufferedImage(sprite.width, sprite.height, BufferedImage.TYPE_INT_ARGB);
+        byte[] indexedImage = new byte[sprite.width * sprite.height];
 
 
         int x = 0;
@@ -137,12 +154,12 @@ public class Ss {
                     if (command == 0xFE) {
                         int count = stream.read();
                         int color = stream.read();
-                        fill(img, x, y, count, color, palette);
+                        fill(indexedImage, x, y, count, color, sprite);
                         x += count;
                     } else {
                         // single pixel (skip transparant pixels)
                         if (command != TRANSPARENT_PIXEL_INDEX) {
-                            img.setRGB(x, y, palette[command].getRGB());
+                            indexedImage[y* sprite.width + x] = (byte) command;
                         }
                         x++;
                     }
@@ -150,7 +167,7 @@ public class Ss {
                     // multipixel mode, always runlength encoded
                     int count = command;
                     int color = stream.read();
-                    fill(img, x, y, count, color, palette);
+                    fill(indexedImage, x, y, count, color, sprite);
                     x += count;
                 }
 
@@ -158,7 +175,7 @@ public class Ss {
         }
 
 
-        return img;
+        return indexedImage;
     }
 
     private void fill(BufferedImage img, int x, int y, int count, int color, Color[] palette) {
@@ -166,6 +183,15 @@ public class Ss {
         if (color != TRANSPARENT_PIXEL_INDEX) {
             for (int i = 0; i < count; i++) {
                 img.setRGB(x + i, y, palette[color].getRGB());
+            }
+        }
+    }
+
+    private void fill(byte[] img, int x, int y, int count, int color, Sprite sprite) {
+        // skip transparent pixels
+        if (color != TRANSPARENT_PIXEL_INDEX) {
+            for (int i = 0; i < count; i++) {
+                img[y * sprite.width + x ] = (byte) color;
             }
         }
     }
@@ -242,7 +268,8 @@ public class Ss {
     }
 
     @ToString
-    private static class Sprite {
+    @Getter
+    public static class Sprite {
         /** 0x00 - dword */
         int start_offset;
         /** 0x04 - dword */
@@ -255,11 +282,9 @@ public class Ss {
         int width;
         /** 0x0e - word */
         int height;
+        byte[] indexedImage;
         BufferedImage image;
 
-        public BufferedImage getImage() {
-            return image;
-        }
     }
 
     @ToString

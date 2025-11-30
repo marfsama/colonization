@@ -47,8 +47,12 @@ public class GameData {
     /**
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_84e6_map_width
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_84e8_map_height
-     */
-    public Dimension mapSize = new Dimension();
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_0152_game_map_terrain
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_015a_game_map_visitor
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_0156_game_map_surface
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_015e_game_map_visibility
+     * */
+    public GameMap gameMap = new GameMap();
 
     /**
      * false - map view
@@ -63,4 +67,8 @@ public class GameData {
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_82de_tile_pixel_size
      */
     public int tileSize;
+
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0150_some_flag */
+    public boolean DAT_0150_some_flag;
+
 }

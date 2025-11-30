@@ -1,6 +1,6 @@
 package com.marf.colonization.rebuild;
 
-import lombok.Data;
+import com.marf.colonization.mpskit.Ss;
 import lombok.Getter;
 
 import java.awt.*;
@@ -46,11 +46,11 @@ public class Canvas {
     /**
      * FUN_1bd9_0006_draw_sprite_sheet_entry
      */
-    public void drawSpriteSheetEntry(List<BufferedImage> spriteSheet, int x, int y, int width, int height, int spriteIndex, int maybeFlags) {
+    public void drawSpriteSheetEntry(List<Ss.Sprite> spriteSheet, int x, int y, int width, int height, int spriteIndex, int maybeFlags) {
         Graphics graphics = backscreen.getGraphics();
         graphics.setClip(x, y, width, height);
 
-        BufferedImage sprite = spriteSheet.get(spriteIndex);
+        BufferedImage sprite = spriteSheet.get(spriteIndex).getImage();
         int cols = (width + sprite.getWidth() - 1) / sprite.getWidth();
         int rows = (height + sprite.getHeight() - 1) / sprite.getHeight();
 
@@ -62,5 +62,29 @@ public class Canvas {
 
         graphics.dispose();
 
+    }
+
+    public void setPixel(int x, int y, int color) {
+        if (x >= backscreen.getWidth()) {
+            System.out.println("x > width-1: "+x+" > "+backscreen.getWidth());
+            return;
+        }
+        if (y >= backscreen.getHeight()) {
+            System.out.println("y > height-1: "+y+" > "+backscreen.getHeight());
+            return;
+        }
+        backscreen.setRGB(x,y, resources.getPalette()[color].getRGB());
+    }
+
+    public void setPixelRgb(int x, int y, int color) {
+        if (x >= backscreen.getWidth()) {
+            System.out.println("x > width-1: "+x+" > "+backscreen.getWidth());
+            return;
+        }
+        if (y >= backscreen.getHeight()) {
+            System.out.println("y > height-1: "+y+" > "+backscreen.getHeight());
+            return;
+        }
+        backscreen.setRGB(x,y, color);
     }
 }
