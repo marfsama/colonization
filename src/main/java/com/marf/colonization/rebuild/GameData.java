@@ -1,5 +1,7 @@
 package com.marf.colonization.rebuild;
 
+import com.marf.colonization.decompile.cmodules.SavegameHeader;
+
 /** Data parts of the game. Note that the order of the properties do not need to be the same as in the original file. */
 public class GameData {
 
@@ -70,5 +72,9 @@ public class GameData {
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0150_some_flag */
     public boolean DAT_0150_some_flag;
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0186 */
+    public int DAT_0186 = 1;
 
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_5338_savegame_header */
+    public SavegameHeader savegameHeader;
 }

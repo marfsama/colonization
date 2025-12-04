@@ -70,7 +70,7 @@ public class Data {
 
     public static int DAT_07dc;
 
-    public static int DAT_081c_address_of_woodtile_sprite_maybe;
+    public static Sprite DAT_081c_address_of_woodtile_sprite_maybe;
     public static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
     public static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
 
@@ -81,7 +81,7 @@ public class Data {
                0x7, 0xB, 0x9, 0xA
     };
 
-    public static Sprite DAT_14a0_some_address_of_sprite;
+    public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
 
     public static int DAT_235c;
     public static int DAT_2360_available_sprite_sheet_memory;
@@ -152,7 +152,7 @@ public class Data {
     public static int DAT_87ac_viewport_y_max = 0;
     public static Europe[] DAT_87e2_europe = new Europe[4];
 
-    public static int DAT_a862_maybe_fog_of_war_mask;
+    public static int DAT_a862_power_mask;
 
     /** shorts, text index into power names: 46 (0x2e): English, 47 (0x2f): French, 48 (0x30): Spanish, 49 (0x31): Dutch */
     public static int[] DAT_8cb0_power_names = new int[4];
@@ -192,7 +192,7 @@ public class Data {
     public static int DAT_a550_draw_map_x_in_tiles;
     public static int DAT_a552_draw_map_y_in_tiles;
     public static int DAT_a554_draw_map_x_in_pixels;
-    public static int DAT_a556_draw_map_y_in_tiles;
+    public static int DAT_a556_draw_map_y_in_pixels;
 
     public static int DAT_a558;
 
@@ -202,7 +202,7 @@ public class Data {
 
 
     // stuff for calculating adjected land tiles
-    public static int DAT_a863_value_from_surface_map;
+    public static int DAT_a863_value_from_terrain_map;
     public static int DAT_a864_value_from_visibility_map;
     public static int DAT_a865_current_terrain; // byte
     public static int DAT_a866_adjusted_current_terrain_type; // byte

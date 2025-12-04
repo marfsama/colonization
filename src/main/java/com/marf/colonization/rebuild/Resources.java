@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import javax.imageio.stream.FileImageInputStream;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
@@ -16,8 +17,9 @@ import java.util.List;
 public class Resources {
     /** viceroy.pal */
     private Color[] palette;
-    private List<Ss.Sprite> woodTile;
+    private BufferedImage woodTile;
     private List<Ss.Sprite> terrain;
+    private List<Ss.Sprite> surface;
 
 
     /**
@@ -26,8 +28,9 @@ public class Resources {
     public static Resources load() throws IOException {
         Resources resources = new Resources();
         resources.palette = resources.loadPalette("VICEROY.PAL");
-        resources.woodTile = resources.loadSpriteSheet("WOODTILE.SS");
+        resources.woodTile = resources.loadSpriteSheet("WOODTILE.SS").get(0).getImage();
         resources.terrain = resources.loadSpriteSheet("TERRAIN.SS");
+        resources.surface = resources.loadSpriteSheet("PHYS0.SS");
         return resources;
     }
 

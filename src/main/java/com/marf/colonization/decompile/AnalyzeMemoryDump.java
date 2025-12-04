@@ -6,8 +6,12 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.marf.colonization.reader.BaseReader;
 import com.marf.colonization.reader.IoFunction;
 
+import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
@@ -299,11 +303,60 @@ public class AnalyzeMemoryDump extends BaseReader {
         readByteValue(stream, 0x39e1, "set to -1 after a relocated module function is called, maybe busy flag");
         readByteValue(stream, 0x39e2, "Module Loader Flag, maybe global error");
         readSegmentOffsetValue(stream, 0x3a07, "offset where the file position is standing");
+
+        System.out.println("--- Back screens ---");
+        readShortValue(stream, cpuState.getDs(), 0x2638, "back screen 1  - width");
+        readShortValue(stream, cpuState.getDs(), 0x263a, "back screen 1  - height");
+        readSegmentOffsetValue(stream, cpuState.getDs(), 0x263c, "back screen 1  - segment");
+
+        readShortValue(stream, cpuState.getDs(), 0x2640, "back screen 2  - width");
+        readShortValue(stream, cpuState.getDs(), 0x2642, "back screen 2  - height");
+        readSegmentOffsetValue(stream, cpuState.getDs(), 0x2644, "back screen 2  - segment");
+
+        readImage(new SegmentOffset(cpuState.getDs(), new Address(0x2638)), getPalette(), "backscreen1");
+        readImage(new SegmentOffset(cpuState.getDs(), new Address(0x2640)), getPalette(), "backscreen2");
+
+
+    }
+
+    private void readImage(SegmentOffset sprite, Color[] palette, String name) throws IOException {
+        stream.seek(sprite.toLinearAddress());
+        int height = stream.readUnsignedShort();
+        int width = stream.readUnsignedShort();
+
+        SegmentOffset imagePointer = readSegmentOffset(new SegmentOffset(), stream);
+
+        stream.seek(imagePointer.toLinearAddress());
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int color = stream.read();
+                image.setRGB(x,y,palette[color].getRGB());
+            }
+        }
+        ImageIO.write(image, "png", new File(name+".png"));
+
+        System.out.println(width+" x "+height +" @ "+imagePointer);
+
+    }
+
+    private Color[] getPalette() throws IOException {
+        byte[] colorData = Files.readAllBytes(Path.of("src/main/resources/VICEROY.PAL"));
+
+        Color[] palette = new Color[colorData.length / 3];
+        for (int i = 0; i < palette.length; i++) {
+            palette[i] = new Color((colorData[i * 3] & 0xff) / 64.0f, (colorData[i * 3 + 1] & 0xff) / 64.0f, (colorData[i * 3 + 2] & 0xff) / 64.0f);
+        }
+        return palette;
     }
 
     private void readSegmentOffsetValue(ImageInputStream stream, int value, String desc2) throws IOException {
         stream.seek(new SegmentOffset(MAIN_CODE_SEGMENT.sub(0xe13), new Address(value)).toLinearAddress());
+        System.out.printf("0x%04x - %s: %s%n", value, desc2, readSegmentOffset(new SegmentOffset(), stream));
+    }
 
+    private void readSegmentOffsetValue(ImageInputStream stream, Address segment, int value, String desc2) throws IOException {
+        stream.seek(new SegmentOffset(segment, new Address(value)).toLinearAddress());
         System.out.printf("0x%04x - %s: %s%n", value, desc2, readSegmentOffset(new SegmentOffset(), stream));
     }
 
@@ -312,8 +365,18 @@ public class AnalyzeMemoryDump extends BaseReader {
         System.out.printf("0x%04x - %s: %04x%n", value, desc2, stream.readUnsignedShort());
     }
 
+    private void readShortValue(ImageInputStream stream, Address segment, int value, String desc2) throws IOException {
+        stream.seek(new SegmentOffset(segment, new Address(value)).toLinearAddress());
+        System.out.printf("0x%04x - %s: %04x%n", value, desc2, stream.readUnsignedShort());
+    }
+
     private void readByteValue(ImageInputStream stream, int value, String desc2) throws IOException {
         stream.seek(new SegmentOffset(MAIN_CODE_SEGMENT.sub(0xe13), new Address(value)).toLinearAddress());
+        System.out.printf("0x%04x - %s: %04x%n", value, desc2, stream.readUnsignedByte());
+    }
+
+    private void readByteValue(ImageInputStream stream, Address segment, int value, String desc2) throws IOException {
+        stream.seek(new SegmentOffset(segment, new Address(value)).toLinearAddress());
         System.out.printf("0x%04x - %s: %04x%n", value, desc2, stream.readUnsignedByte());
     }
 

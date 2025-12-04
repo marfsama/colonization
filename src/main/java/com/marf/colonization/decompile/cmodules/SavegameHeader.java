@@ -15,7 +15,7 @@ public class SavegameHeader {
     /** 0x1e	0x2	short */
     public int num_colonies;
     /** 0x22	0x2	short */
-    public int field_0x22;
+    public int field_0x22_maybe_current_turn;
     // [..]
     /** 0x50	0x2	short */
     public int field27_0x50;

@@ -15,8 +15,9 @@ public class Code1b {
     }
 
     /**
+     * Draws a rectangular region sourceX,sourceY - width, height to the destination x,y
      */
-    public static void FUN_1b8e_000c_draw_sprite(Sprite destination, Sprite source) {
+    public static void FUN_1b8e_000c_draw_sprite(Sprite destination, Sprite source, int width, int height, int destinationX, int destinationY, int sourceX, int sourceY) {
 
     }
 
@@ -67,10 +68,48 @@ public class Code1b {
     }
 
     /**
-     * Draws a sprite (as in "sprite sheet"). This seems to support tile repeating to fill the drawing area.
+     * Tiles a sprite over a bigger area.
+     * The first row and column is offset by offset_x and offset_y
      */
-    public static void FUN_1bd9_0006_draw_sprite_sheet_entry(Sprite destination, int source, int x, int y, int width, int height, int maybe_tile_index, int maybe_flags) {
+    public static void FUN_1bd9_0006_draw_sprite_tiled(Sprite destination, Sprite source, int x, int y, int width, int height, int offset_x, int offset_y) {
+        if ((source.height == 0) || (source.width == 0)) {
+            return;
+        }
+        int tileOffsetX = Math.abs(x - offset_x) % source.height;
+        int tileOffsetY = Math.abs(y - offset_y) % source.width;
+        int maxX = x + width;
+        int maxY = y + height;
 
+        for (int currentY = y; currentY < maxY; y += (currentY - tileOffsetY) + source.width) {
+            for (int currentX = x; currentX < maxX; x += (currentX - tileOffsetX) + source.height) {
+                // Calculate source position for this tile
+                int sourceX = currentX - tileOffsetX;
+                int sourceWidth = source.width - tileOffsetX;
+
+                // Calculate how much of this tile we can draw
+                int tileWidth = Math.min(sourceWidth, maxX - currentX);
+
+                // Calculate destination Y position and tile height
+                int sourceY = currentY - tileOffsetY;
+                int sourceHeight = source.height - tileOffsetY;
+                int tileHeight = Math.min(sourceHeight, maxY - currentY);
+
+                FUN_1b8e_000c_draw_sprite(
+                        destination,
+                        source,
+                        tileWidth,
+                        tileHeight,
+                        currentX,
+                        currentY,
+                        sourceX,
+                        sourceY
+                );
+                tileOffsetX = 0;
+            }
+            tileOffsetY = 0;
+        }
+
+        return;
     }
 
 

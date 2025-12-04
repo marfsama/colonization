@@ -14,4 +14,9 @@ public class Code12 {
         }
         return value;
     }
+
+    public static void FUN_12e8_0092_copy_sprite_to_sprite
+            (Sprite param_1_dest,Sprite param_2_src,int param_3_src_x,int param_4_src_y,
+             int param_5_dest_x,int param_6_dest_y,int param_7_width,int param_8_height)
+    {}
 }

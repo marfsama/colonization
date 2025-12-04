@@ -164,4 +164,29 @@ public class GameMap {
     }
 
 
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0112_get_terrain_type_at */
+    public byte getTerrain(int x, int y) {
+        return terrain[y * mapSize.width + x];
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0146_get_surface_type_at */
+    public byte getSurfaceAt(int x, int y) {
+        return surface[y * mapSize.width + x];
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0380_visitor_get_native_village_owner */
+    public int FUN_1373_0380_visitor_get_native_village_owner(int x, int y) {
+        var terrainType = FUN_1373_0146_get_surface_type_at(x,y);
+        if ((terrainType & 2) != 0) {
+            int lastVisitor = visitorGetLastVisitor(x, y);
+            if (lastVisitor < 4) {
+                return -1;
+            }
+            return lastVisitor;
+        }
+        return -1;
+    }
+
+
+
 }

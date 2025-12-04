@@ -6,7 +6,7 @@ import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Code1c.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 
-public class Module14_102 {
+public class Module14_102_Map {
 
     public static void FUN_8007_000c_module_14_102_calculate_viewport() {
         DAT_84ea_number_of_x_tiles_in_viewport = 15 << DAT_017a_zoom_level;
@@ -347,36 +347,36 @@ public class Module14_102 {
     public static void FUN_8007_0558_module_14_102_draw_surface_sprite(int spriteIndex) {
         if (DAT_017c_zoom_level_percent < 100) {
             // zoom level < 100%
-            FUN_1c3a_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_tiles, DAT_017c_zoom_level_percent, DAT_016a_phys0_sprite_sheet);
+            FUN_1c3a_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017c_zoom_level_percent, DAT_016a_phys0_sprite_sheet);
         } else {
             // zoom level == 100%
-            FUN_1c1b_0000_draw_compressed_sprite(DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_tiles - 0xf, spriteIndex, DAT_016a_phys0_sprite_sheet);
+            FUN_1c1b_0000_draw_compressed_sprite(DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf, spriteIndex, DAT_016a_phys0_sprite_sheet);
         }
     }
 
     public static void FUN_8007_05b8_module_14_102_draw_terrain_tile(int neighboursBitmap) {
         if (DAT_017a_zoom_level == 0) {
-            FUN_1101_0050_blit_terrain_tile(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_tiles - 0xf);
+            FUN_1101_0050_blit_terrain_tile(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf);
         } else {
-            FUN_1101_0126(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_tiles, DAT_017a_zoom_level);
+            FUN_1101_0126(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017a_zoom_level);
         }
     }
 
     public static void FUN_8007_061c_module_14_102_draw_surface_sprite() {
         if (DAT_017c_zoom_level_percent < 100) {
             // zoom level < 100%
-            FUN_1c8e_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_tiles, DAT_017c_zoom_level_percent, DAT_016a_phys0_sprite_sheet);
+            FUN_1c8e_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017c_zoom_level_percent, DAT_016a_phys0_sprite_sheet);
         } else {
             // zoom level == 100%
-            FUN_1c6d_000c(DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_tiles - 0xf, DAT_016a_phys0_sprite_sheet);
+            FUN_1c6d_000c(DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf, DAT_016a_phys0_sprite_sheet);
         }
     }
 
     public static void FUN_8007_067c_module_14_102_draw_terrain_tile(int neighboursBitmap) {
         if (DAT_017a_zoom_level == 0) {
-            FUN_1101_00b4_blit_terrain_sprite(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_tiles - 0xf);
+            FUN_1101_00b4_blit_terrain_sprite(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf);
         } else {
-            FUN_1101_01dc(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_tiles, DAT_017a_zoom_level);
+            FUN_1101_01dc(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017a_zoom_level);
         }
     }
 
@@ -452,9 +452,9 @@ public class Module14_102 {
 
         // Check visibility against fog of war mask
         int local_10 = 0; // 8007:07a2
-        if (DAT_a862_maybe_fog_of_war_mask != 0) { // Visibility mask check
+        if (DAT_a862_power_mask != 0) { // Visibility mask check
             byte visibility = DAT_015e_game_map_visibility[DAT_a54c_visibility_map_pointer+local_14_offset_in_map_arrays]; // 8007:0780-0784
-            if ((visibility & DAT_a862_maybe_fog_of_war_mask) != 0) { // 8007:078e
+            if ((visibility & DAT_a862_power_mask) != 0) { // 8007:078e
                 local_10 = 1; // Visible
             }
         }
@@ -609,7 +609,7 @@ public class Module14_102 {
 
     public static void FUN_8007_0938_module_14_102_draw_map_tile(boolean valid) {
         // note: one of the next 2 may be a surface pointer
-        DAT_a863_value_from_surface_map = DAT_0152_game_map_terrain[DAT_a544_surface_map_pointer];
+        DAT_a863_value_from_terrain_map = DAT_0152_game_map_terrain[DAT_a544_surface_map_pointer];
         byte currentTerrain = DAT_0152_game_map_terrain[DAT_a548_terrain_map_pointer_to_current_position];
         DAT_a865_current_terrain = currentTerrain;
 
@@ -620,8 +620,8 @@ public class Module14_102 {
 
         int local_a = 0;
 
-        if (DAT_a862_maybe_fog_of_war_mask != 0) {
-            if (DAT_a862_maybe_fog_of_war_mask != DAT_a864_value_from_visibility_map) {
+        if (DAT_a862_power_mask != 0) {
+            if (DAT_a862_power_mask != DAT_a864_value_from_visibility_map) {
                 if (valid) {
                     local_a = 1;
                 }
@@ -705,7 +705,7 @@ public class Module14_102 {
             }
         }
         // plowed field
-        if ((DAT_a863_value_from_surface_map & 0x40) > 0) {
+        if ((DAT_a863_value_from_terrain_map & 0x40) > 0) {
             FUN_8007_0558_module_14_102_draw_surface_sprite(0x96); // 0x95 is plowed field
         }
 
@@ -738,7 +738,7 @@ public class Module14_102 {
             }
         }
 
-        if ((DAT_a863_value_from_surface_map & 0xA0) > 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
+        if ((DAT_a863_value_from_terrain_map & 0xA0) > 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
             int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(0x1, 0xa);
             // single road, no adjected roads
             if (mask == 0) {
@@ -853,11 +853,11 @@ public class Module14_102 {
     // BX = DAT_84ea_number_of_x_tiles_in_viewport
     // param_1 = DAT_84ec_number_of_y_tiles_in_viewport
     // param_2 = inAX
-    public static void FUN_8007_0d60_module_14_102_draw_map(int x_min, int y_min, int width_in_tiles, int height_in_tiles, int inAX) {
-        if (inAX < 0) {
-            DAT_a862_maybe_fog_of_war_mask = 0;
+    public static void FUN_8007_0d60_module_14_102_draw_map(int x_min, int y_min, int width_in_tiles, int height_in_tiles, int power) {
+        if (power < 0) {
+            DAT_a862_power_mask = 0;
         } else {
-            DAT_a862_maybe_fog_of_war_mask = 1 << (inAX + 4);
+            DAT_a862_power_mask = 1 << (power + 4);
         }
 
         FUN_8007_000c_module_14_102_calculate_viewport();
@@ -906,9 +906,9 @@ public class Module14_102 {
 
         // loop over the map
 
-        DAT_a556_draw_map_y_in_tiles = (DAT_82e4_viewport_y_offset + height + 1) * DAT_82de_tile_pixel_size - 1;
+        DAT_a556_draw_map_y_in_pixels = (DAT_82e4_viewport_y_offset + height + 1) * DAT_82de_tile_pixel_size - 1;
 
-        for (int y = y_min; y < y_max; y += 1, DAT_a556_draw_map_y_in_tiles += DAT_82de_tile_pixel_size) {
+        for (int y = y_min; y < y_max; y += 1, DAT_a556_draw_map_y_in_pixels += DAT_82de_tile_pixel_size) {
             DAT_a552_draw_map_y_in_tiles = y;
 
             DAT_a548_terrain_map_pointer_to_current_position = terrainMapPointer;
@@ -963,30 +963,30 @@ public class Module14_102 {
     }
 
 
-    public static void FUN_8007_1016_module_14_102(int inAX) {
+    public static void FUN_8007_1016_module_14_102_draw_map_viewport(int power) {
         FUN_8007_000c_module_14_102_calculate_viewport();
 
         // if the map is smaller than the viewport (so it does not cover all space), draw wood tiles as background
         if (DAT_82e0_viewport_x_offset > 0 || DAT_82e4_viewport_y_offset > 0) {
-            if (DAT_081c_address_of_woodtile_sprite_maybe != 0) {
-                FUN_1bd9_0006_draw_sprite_sheet_entry(DAT_2640_2nd_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 0, 0,
+            if (DAT_081c_address_of_woodtile_sprite_maybe != null) {
+                FUN_1bd9_0006_draw_sprite_tiled(DAT_2640_2nd_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 0, 0,
                         DAT_2640_2nd_backscreen.width, DAT_2640_2nd_backscreen.height, 0, -8);
             } else {
                 FUN_1b83_0000_clear_image(DAT_2640_2nd_backscreen, 0);
             }
         }
 
-        FUN_8007_0d60_module_14_102_draw_map(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport, inAX);
+        FUN_8007_0d60_module_14_102_draw_map(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport, power);
     }
 
     /**
      * input:
-     * AX - unknown
+     * AX - power
      * DX - maybe: colony_vs_map_view flag
      */
-    public static void FUN_8007_109c_module_14_102_something_with_map_view(int mapViewType, int inAX) {
+    public static void FUN_8007_109c_module_14_102_draw_map_for_type(int mapViewType, int power) {
         DAT_0180_maybe_colony_vs_map_view = mapViewType;
-        FUN_8007_1016_module_14_102(inAX);
+        FUN_8007_1016_module_14_102_draw_map_viewport(power);
         DAT_0180_maybe_colony_vs_map_view = 0;
     }
 

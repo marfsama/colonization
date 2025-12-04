@@ -32,11 +32,7 @@ public class Ss {
 
     public List<Sprite> getSprites() throws IOException {
         Header header = readHeader(madspack.getSection(0));
-
         List<Sprite> sprites = getSpriteHeaders(header);
-
-        sprites.forEach(System.out::println);
-
         Color[] palette = getPalette(header.pflag);
 
         ImageInputStream stream = new ByteArrayImageInputStream(madspack.getSections().get(3).getData());
@@ -59,7 +55,9 @@ public class Ss {
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int colorIndex = (indexedImage[y * sprite.getWidth() + x]) & 0xff;
-                image.setRGB(x,y, palette[colorIndex].getRGB());
+                if (colorIndex != TRANSPARENT_PIXEL_INDEX) {
+                    image.setRGB(x, y, palette[colorIndex].getRGB());
+                }
             }
 
         }
@@ -158,9 +156,7 @@ public class Ss {
                         x += count;
                     } else {
                         // single pixel (skip transparant pixels)
-                        if (command != TRANSPARENT_PIXEL_INDEX) {
-                            indexedImage[y* sprite.width + x] = (byte) command;
-                        }
+                        indexedImage[y * sprite.width + x] = (byte) command;
                         x++;
                     }
                 } else {
@@ -180,10 +176,8 @@ public class Ss {
 
     private void fill(BufferedImage img, int x, int y, int count, int color, Color[] palette) {
         // skip transparent pixels
-        if (color != TRANSPARENT_PIXEL_INDEX) {
-            for (int i = 0; i < count; i++) {
-                img.setRGB(x + i, y, palette[color].getRGB());
-            }
+        for (int i = 0; i < count; i++) {
+            img.setRGB(x + i, y, palette[color].getRGB());
         }
     }
 
@@ -191,7 +185,7 @@ public class Ss {
         // skip transparent pixels
         if (color != TRANSPARENT_PIXEL_INDEX) {
             for (int i = 0; i < count; i++) {
-                img[y * sprite.width + x ] = (byte) color;
+                img[y * sprite.width + x + i] = (byte) color;
             }
         }
     }
@@ -270,17 +264,29 @@ public class Ss {
     @ToString
     @Getter
     public static class Sprite {
-        /** 0x00 - dword */
+        /**
+         * 0x00 - dword
+         */
         int start_offset;
-        /** 0x04 - dword */
+        /**
+         * 0x04 - dword
+         */
         int length;
-        /** 0x08 - word */
+        /**
+         * 0x08 - word
+         */
         int width_padded;
-        /** 0x0a - word */
+        /**
+         * 0x0a - word
+         */
         int height_padded;
-        /** 0x0c - word */
+        /**
+         * 0x0c - word
+         */
         int width;
-        /** 0x0e - word */
+        /**
+         * 0x0e - word
+         */
         int height;
         byte[] indexedImage;
         BufferedImage image;
@@ -325,7 +331,9 @@ public class Ss {
         }
     }
 
-    /** Places the images in a 16x? grid. */
+    /**
+     * Places the images in a 16x? grid.
+     */
     private static BufferedImage toGrid(List<BufferedImage> images) {
         // calculate size of final image
         int[] columnWidth = new int[16];
@@ -344,14 +352,14 @@ public class Ss {
         // fontsize is the size of the lowest row, but at least 10 pixel
         int fontSize = Math.max(10, IntStream.of(rowHeights).min().getAsInt());
 
-        Font font = new Font("Helvetica",Font.PLAIN,fontSize);
+        Font font = new Font("Helvetica", Font.PLAIN, fontSize);
         Canvas c = new Canvas();
         FontMetrics fm = c.getFontMetrics(font);
 
         // get max width of a single hex letter
-        int maxSingleLetterWidth = "01234567890ABCDEF".chars().map(i -> fm.charWidth((char)i)).max().getAsInt();
+        int maxSingleLetterWidth = "01234567890ABCDEF".chars().map(i -> fm.charWidth((char) i)).max().getAsInt();
         // get width the text with the max number of rows
-        int maxRowsTextWidth = Integer.toHexString(rows*16).length() * maxSingleLetterWidth;
+        int maxRowsTextWidth = Integer.toHexString(rows * 16).length() * maxSingleLetterWidth;
 
 
         int width = IntStream.of(columnWidth).sum() + 16 * spacing + maxRowsTextWidth;
@@ -364,7 +372,7 @@ public class Ss {
         int y = fontSize;
         for (int row = 0; row < rows; row++) {
             int x = maxRowsTextWidth;
-            g.drawString(Integer.toHexString(row*16), 0, y + fontSize);
+            g.drawString(Integer.toHexString(row * 16), 0, y + fontSize);
             for (int col = 0; col < 16; col++) {
                 if (row == 0) {
                     g.drawString(Integer.toHexString(col), x, fontSize);
@@ -373,7 +381,7 @@ public class Ss {
                 if (tileId < images.size()) {
                     BufferedImage tile = images.get(tileId);
                     g.drawImage(tile, x, y, null);
-                    g.drawRect(x-spacing, y-spacing, image.getWidth()+spacing*2, image.getHeight()*2);
+                    g.drawRect(x - spacing, y - spacing, image.getWidth() + spacing * 2, image.getHeight() * 2);
                 }
                 x += columnWidth[col] + spacing;
             }

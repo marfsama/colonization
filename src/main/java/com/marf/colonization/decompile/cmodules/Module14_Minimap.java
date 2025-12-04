@@ -11,7 +11,7 @@ import static com.marf.colonization.decompile.cmodules.Data.*;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
-public class Module14 {
+public class Module14_Minimap {
     public static int FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(int spriteIndex) {
         Sprite tempSprite = new Sprite();
         tempSprite.width = 0x10;
@@ -136,13 +136,13 @@ public class Module14 {
 
             if (unit != null) {
                 // Check if unit belongs to current player
-                if ((unit.nationIndex & playerMask) != 0 || DAT_5338_savegame_header.field_0x22 != 0) {
+                if ((unit.nationIndex & playerMask) != 0 || DAT_5338_savegame_header.field_0x22_maybe_current_turn != 0) {
                     int index = (visitorData >> 4) & 0x0F;
                     color = Data.DAT_0838_minimap_fractions_colors_table[index];
                 }
 
                 // Check for privateer
-                if (unit.type == 0x10 && DAT_5338_savegame_header.field_0x22 != 0 && unit.transportChain1 < 0) {
+                if (unit.type == 0x10 && DAT_5338_savegame_header.field_0x22_maybe_current_turn != 0 && unit.transportChain1 < 0) {
                     color = 0x08; // don't show color
                 }
 
@@ -212,8 +212,8 @@ public class Module14 {
      * */
     public static void FUN_7f05_048a_module_14_draw_minimap_panel(boolean param_1_flush_to_screen,int param_2_power) {
         FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds();
-        if (DAT_081c_address_of_woodtile_sprite_maybe != 0) {
-            FUN_1bd9_0006_draw_sprite_sheet_entry(DAT_2638_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 241, 8, 79, 41, 0, 0);
+        if (DAT_081c_address_of_woodtile_sprite_maybe != null) {
+            FUN_1bd9_0006_draw_sprite_tiled(DAT_2638_backscreen, DAT_081c_address_of_woodtile_sprite_maybe, 241, 8, 79, 41, 0, 0);
         } else {
             // param_1_color
             // param_2_height

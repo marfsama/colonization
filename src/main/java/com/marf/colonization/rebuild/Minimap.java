@@ -4,19 +4,35 @@ package com.marf.colonization.rebuild;
 import com.marf.colonization.mpskit.Ss;
 import com.marf.colonization.saves.section.Unit;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
-import static com.marf.colonization.decompile.cmodules.Data.DAT_5338_savegame_header;
 import static com.marf.colonization.rebuild.Util.clamp;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+/**
+ * @see com.marf.colonization.decompile.cmodules.Module14_Minimap
+ *  @see com.marf.colonization.decompile.cmodules.Module14_102_Map
+ *  */
 public class Minimap {
+    public static final int MINIMAP_PANEL_X = 241;
+    public static final int MINIMAP_PANEL_Y = 8;
+    public static final int MINIMAP_PANEL_WIDTH = 79;
+    public static final int MINIMAP_PANEL_HEIGHT = 41;
+
+    public static final int MINIMAP_MAP_X = MINIMAP_PANEL_X + 11;
+    public static final int MINIMAP_MAP_Y = MINIMAP_PANEL_Y;
+    public static final int MINIMAP_MAP_WIDTH = 57;
+    public static final int MINIMAP_MAP_HEIGHT = 41;
     private final Resources resources;
     private final Canvas canvas;
     private final GameData gameData;
 
     /**
+     * Top left corner of the map shown in the minimap. Note: the minimap is 57 pixels wide and the game map also,
+     * so the x coordinate is always zero.
+     *
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_9c7a_minimap_min_y
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_9c7c_minimap_min_x
      */
@@ -44,6 +60,8 @@ public class Minimap {
     public int someWidth;
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_84f0_some_height */
     public int someHeight;
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0188_maybe_prime_resource_per_terrain_type */
+    public int[] primeResourcePerTerrainType = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
     public Minimap(Resources resources, Canvas canvas, GameData gameData) {
         System.out.println("create minimap with " + resources + " " + canvas);
@@ -52,7 +70,7 @@ public class Minimap {
         this.gameData = gameData;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14#FUN_7f05_0068_module_14_precalculate_minimap_terrain_pixels */
+    /** @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f05_0068_module_14_precalculate_minimap_terrain_pixels */
     public void init() {
         List<Ss.Sprite> terrainTiles = resources.getTerrain();
         for (int i = 0; i < 8; i++) {
@@ -74,14 +92,14 @@ public class Minimap {
     }
 
     /**
-     * @see com.marf.colonization.decompile.cmodules.Module14#FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds
+     * @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds
      */
     public void calculateMinimapBounds() {
-        int initialX = gameData.viewportCenter.x - 28;  // 28 pixels left from center
-        int initialY = gameData.viewportCenter.y - 19;  // 19 pixels up from center
+        int topLeftX = gameData.viewportCenter.x - MINIMAP_MAP_WIDTH / 2;  // 28 pixels left from center
+        int topLeftY = gameData.viewportCenter.y - MINIMAP_MAP_HEIGHT / 2;  // 19 pixels up from center
 
-        minimapMin.y = clamp(1, initialX, gameData.gameMap.mapSize.width - 57);
-        minimapMin.x = clamp(1, initialY, gameData.gameMap.mapSize.height - 40);
+        minimapMin.x = clamp(1, topLeftX, gameData.gameMap.mapSize.width - MINIMAP_MAP_WIDTH - 1);
+        minimapMin.y = clamp(1, topLeftY, gameData.gameMap.mapSize.height - MINIMAP_MAP_HEIGHT - 1);
     }
 
 
@@ -91,36 +109,34 @@ public class Minimap {
     public void renderMinimapPanel(int power) {
         calculateMinimapBounds();
         if (resources.getWoodTile() == null) {
-            canvas.fillRect(241, 8, 79, 41, 0);
+            canvas.fillRect(canvas.getBackscreen(), MINIMAP_PANEL_X, MINIMAP_PANEL_Y, MINIMAP_PANEL_WIDTH, MINIMAP_PANEL_HEIGHT, 0);
         } else {
-            canvas.drawSpriteSheetEntry(resources.getWoodTile(), 241, 8, 79, 41, 0, 0);
+            canvas.drawSpriteTiled(canvas.getBackscreen(), resources.getWoodTile(), MINIMAP_PANEL_X, MINIMAP_PANEL_Y, MINIMAP_PANEL_WIDTH, MINIMAP_PANEL_HEIGHT, 0, 0);
         }
 
-        canvas.drawRect(251, 8, 308, 48, 6);
+        canvas.drawRect(canvas.getBackscreen(),MINIMAP_MAP_X, MINIMAP_MAP_Y, MINIMAP_MAP_X + MINIMAP_MAP_WIDTH - 1, MINIMAP_MAP_Y + MINIMAP_MAP_HEIGHT - 1, 6);
 
         // draw minimap
         renderMinimap(power);
 
 
-        // TODO: this does not work as expected
         // draw current visible rectangle
-        int y1 = max(gameData.viewportMin.y, minimapMin.y) + 9;
-        int x1 = max(gameData.viewportMin.x, minimapMin.x) + 252;
+        int x1 = max(gameData.viewportMin.x, minimapMin.x) + MINIMAP_MAP_X + 1;
+        int y1 = max(gameData.viewportMin.y, minimapMin.y) + MINIMAP_MAP_Y + 1;
 
-        int y2 = min(gameData.viewportMax.y, minimapMin.y + 38) - minimapMin.y + 9;
-        int x2 = min(gameData.viewportMax.x, minimapMin.x + 55) + 252;
-        canvas.drawRect(x1, y1, x2, y2, 15);
+        int x2 = min(gameData.viewportMax.x, minimapMin.x + MINIMAP_MAP_WIDTH - 2) + MINIMAP_MAP_X;
+        int y2 = min(gameData.viewportMax.y, minimapMin.y + MINIMAP_MAP_HEIGHT - 2) + MINIMAP_MAP_Y;
+        canvas.drawRect(canvas.getBackscreen(),x1, y1, x2, y2, 15);
 
         // flip to front screen
-
-
+        // skipped, always draw to front screen
     }
 
     /**
      * FUN_7f05_0346_module_14_draw_minimap
      */
     private void renderMinimap(int power) {
-        renderMinimap(minimapMin.x, minimapMin.y, 70, 39, power, false);
+        renderMinimap(minimapMin.x, minimapMin.y, MINIMAP_MAP_WIDTH - 2, MINIMAP_MAP_HEIGHT - 2, power, false);
     }
 
 
@@ -148,7 +164,7 @@ public class Minimap {
 
                 int color = determineMinimapColor(terrainType, visitor, surface, visibility, power, playerMask, flag, xPos + x, yPos + y);
 
-                canvas.setPixel(xPos + x + 252, yPos + y + 9, color);
+                canvas.setPixel(canvas.getBackscreen(),x + MINIMAP_MAP_X + 1, y + MINIMAP_MAP_Y + 1, color);
             }
         }
 
@@ -183,13 +199,13 @@ public class Minimap {
 
             if (unit != null) {
                 // Check if unit belongs to current player
-                if ((unit.getNationIndex().getId() & playerMask) != 0 || DAT_5338_savegame_header.field_0x22 != 0) {
+                if ((unit.getNationIndex().getId() & playerMask) != 0 || gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
                     int index = (visitorData >> 4) & 0x0F;
                     color = fractionsColorsTable[index];
                 }
 
                 // Check for privateer
-                if (unit.getType().getId() == 0x10 && DAT_5338_savegame_header.field_0x22 != 0 && unit.getPrevious() < 0) {
+                if (unit.getType().getId() == 0x10 && gameData.savegameHeader.field_0x22_maybe_current_turn != 0 && unit.getPrevious() < 0) {
                     color = 0x08; // don't show color
                 }
 
@@ -211,7 +227,7 @@ public class Minimap {
 
 
     /**
-     * @see com.marf.colonization.decompile.cmodules.Module14_102#FUN_8007_000c_module_14_102_calculate_viewport()
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_000c_module_14_102_calculate_viewport()
      */
 
     public void calculateViewport() {
@@ -296,4 +312,601 @@ public class Minimap {
         someHeight = maxY - minY + 1;
     }
 
+
+    // draw map stuff, Module14_102_Map
+
+    private int DAT_0180_maybe_colony_vs_map_view;
+    private int DAT_a862_power_mask;
+    private int DAT_a558;
+
+    private int DAT_a554_draw_map_x_in_pixels;
+    private int DAT_a556_draw_map_y_in_pixels;
+
+    //private int DAT_a550_draw_map_x_in_tiles;
+    //private int DAT_a552_draw_map_y_in_tiles;
+
+    private int DAT_1e72_sub_tile_x;
+    private int DAT_1e73_sub_tile_y;
+
+
+    private int DAT_a548_terrain_map_pointer_to_current_position;
+    private int DAT_a544_surface_map_pointer;
+    private int DAT_a54c_visibility_map_pointer;
+
+    private int DAT_a863_value_from_terrain_map;
+    private int DAT_a865_current_terrain;
+    private int DAT_a864_value_from_visibility_map;
+    private int DAT_a866_adjusted_current_terrain_type;
+    private int DAT_0184_show_hidden_terrain_state;
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_109c_module_14_102_draw_map_for_type
+     */
+    public void drawMapForType(int mapViewType, int power) {
+        DAT_0180_maybe_colony_vs_map_view = mapViewType;
+        FUN_8007_1016_module_14_102_draw_map_viewport(power);
+        DAT_0180_maybe_colony_vs_map_view = 0;
+    }
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_1016_module_14_102_draw_map_viewport
+     *
+     */
+    public void FUN_8007_1016_module_14_102_draw_map_viewport(int power) {
+        calculateViewport();
+
+        // if the map is smaller than the viewport (so it does not cover all space), draw wood tiles as background
+        if (gameData.viewportOffset.x > 0 || gameData.viewportOffset.y > 0) {
+            if (resources.getWoodTile() != null) {
+                canvas.drawSpriteTiled(canvas.getScratch(), resources.getWoodTile(), 0, 0,
+                        canvas.getScratch().getWidth(), canvas.getScratch().getHeight(), 0, -8);
+            } else {
+                canvas.clear(canvas.getScratch());
+            }
+        }
+
+        drawMap(gameData.viewportMin.x, gameData.viewportMin.y, this.viewportTiles.x, this.viewportTiles.y, power);
+    }
+
+    /**
+     * FUN_1373_0040_should_draw_depending_on_distance_maybe
+     */
+    public boolean FUN_1373_0040_should_draw_depending_on_distance_maybe(int x, int y, int flag_colony_or_map_view) {
+        boolean bVar1;
+
+        x = Math.abs(x);
+        y = Math.abs(y);
+
+        bVar1 = (y + x) < 2;
+        if (flag_colony_or_map_view != 1) {
+            if ((x < 2) && (y < 2)) {
+                bVar1 = true;
+            }
+// not clear what this does
+//            if (((param_3_flag_colony_or_map_view != 2) &&
+//                    (bVar1 = (bool)(bVar1 | (int)(param_2_y + param_1_x) < 3),
+//            param_3_flag_colony_or_map_view != 3)) && (((int)param_1_x < 2 || ((int)param_2_y < 2)))) {
+//                bVar1 = true;
+        }
+        return bVar1;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0d60_module_14_102_draw_map */
+    public void drawMap(int x_min, int y_min, int width_in_tiles, int height_in_tiles, int power) {
+        if (power < 0) {
+            DAT_a862_power_mask = 0;
+        } else {
+            DAT_a862_power_mask = 1 << (power + 4);
+        }
+
+        calculateViewport();
+
+        if (x_min >= gameData.viewportMax.x || y_min >= gameData.viewportMax.y) {
+            return;
+        }
+
+        int x_max = Math.min(x_min + width_in_tiles, gameData.viewportMax.x);
+        int y_max = Math.min(y_min + height_in_tiles, gameData.viewportMax.y);
+        x_min = Math.max(x_min, gameData.viewportMin.x);
+        y_min = Math.max(y_min, gameData.viewportMin.y);
+
+        int width = x_max - x_min;
+        int height = y_max - y_min;
+
+        int mapOffset;
+        int map_stride_in_tiles;
+        if (gameData.DAT_0150_some_flag) {
+            mapOffset = (y_min + 1) * someWidth + x_min + 1;
+            map_stride_in_tiles = width;
+        } else {
+            int x = Math.min(1, x_min);
+            int y = Math.min(1, y_min);
+            mapOffset = gameData.gameMap.getMapOffset(x, y);
+            map_stride_in_tiles = gameData.gameMap.mapSize.width;
+        }
+
+        // loop over the map
+
+        DAT_a556_draw_map_y_in_pixels = gameData.viewportOffset.y + gameData.tileSize-1;
+
+        for (int y = y_min; y <= y_max; y += 1, DAT_a556_draw_map_y_in_pixels += gameData.tileSize) {
+            DAT_a548_terrain_map_pointer_to_current_position = mapOffset;
+            DAT_a544_surface_map_pointer = mapOffset;
+            DAT_a54c_visibility_map_pointer = mapOffset;
+
+            //  don't draw first and last row
+            boolean validY = (y > 1) && (y < gameData.gameMap.mapSize.height - 1);
+
+            // Calculate perspective for colony view
+            int local_20_something_y = 0;
+            if (DAT_0180_maybe_colony_vs_map_view != 0) {
+                local_20_something_y = Math.abs(y - gameData.viewportCenter.y);
+            }
+
+            DAT_a558 = 0;
+
+            DAT_a554_draw_map_x_in_pixels = gameData.viewportOffset.x + gameData.tileSize / 2;
+
+            for (int x = x_min; x <= x_max; x += 1, DAT_a554_draw_map_x_in_pixels += gameData.tileSize) {
+                // don't draw first and last column
+                boolean validX = (x > 0) && (x < gameData.gameMap.mapSize.width - 1);
+
+                boolean valid = validX && validY;
+
+                if (DAT_0180_maybe_colony_vs_map_view != 0) {
+                    // note: result of the function is inverted
+                    valid |= !FUN_1373_0040_should_draw_depending_on_distance_maybe(Math.abs(x - gameData.viewportCenter.x), y, DAT_0180_maybe_colony_vs_map_view);
+                }
+
+                FUN_8007_0938_module_14_102_draw_map_tile(x,y, valid);
+
+
+                if (validX && validY) {
+                    mapOffset++;
+                }
+
+                // negate bit 1 of DAT_a558
+                DAT_a558 = DAT_a558 ^ 1;
+            }
+
+            mapOffset += map_stride_in_tiles;
+
+
+        }
+
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0558_module_14_102_draw_surface_sprite */
+    public void FUN_8007_0558_module_14_102_draw_surface_sprite(int spriteIndex) {
+        if (gameData.zoomLevelPercent < 100) {
+            // zoom level < 100%
+            //FUN_1c3a_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevelPercent, DAT_016a_phys0_sprite_sheet);
+        } else {
+            // zoom level == 100%
+            canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getSurface(),
+                    DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8,
+                    DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf,
+                    spriteIndex);
+        }
+    }
+
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_05b8_module_14_102_draw_terrain_tile */
+    public void FUN_8007_05b8_module_14_102_draw_terrain_tile(int spriteIndex) {
+        if (gameData.zoomLevel == 0) {
+            canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getTerrain(),
+                    DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8,
+                    DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf,
+                     spriteIndex);
+        } else {
+            FUN_1101_0126(resources.getTerrain(), spriteIndex, canvas.getScratch(), DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevel);
+        }
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_1101_0126 */
+    public void FUN_1101_0126(List<Ss.Sprite> terrain, int spriteIndex, BufferedImage scratch, int DAT_a554_draw_map_x_in_pixels, int DAT_a556_draw_map_y_in_pixels, int zoomLevel) {
+        // TODO
+    }
+
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0938_module_14_102_draw_map_tile */
+    public void FUN_8007_0938_module_14_102_draw_map_tile(int x, int y, boolean valid) {
+        // note: one of the next 2 may be a surface pointer
+        DAT_a863_value_from_terrain_map = gameData.gameMap.getTerrain(x,y);
+        byte currentTerrain = gameData.gameMap.getTerrain(x,y);
+        DAT_a865_current_terrain = currentTerrain;
+
+        DAT_a864_value_from_visibility_map = gameData.gameMap.visibility[y * gameData.gameMap.mapSize.width + x];
+
+        DAT_a866_adjusted_current_terrain_type = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(currentTerrain);
+
+        boolean fogOfWar = false;
+
+        if (DAT_a862_power_mask != 0) {
+            if ((DAT_a864_value_from_visibility_map & DAT_a862_power_mask) == 0) {
+                if (valid) {
+                    fogOfWar = true;
+                }
+            }
+        }
+
+        int local_14_river = DAT_a865_current_terrain & 0xc0;
+        int local_22_base_terrain = DAT_a865_current_terrain & 0x7;
+
+        if (fogOfWar) {
+            // draw tile 0x95
+            // 0x95 = plowed field
+            // Note: 0x94 = fog of war
+            FUN_8007_0558_module_14_102_draw_surface_sprite(0x95);
+            if (gameData.zoomLevel != 0) {
+                return;
+            }
+            int local_24_is_sea = 0;
+            if (DAT_a866_adjusted_current_terrain_type == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
+                local_24_is_sea = 1;
+            }
+            // AX is still 0x95, deep sea
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(1, local_24_is_sea, 0);
+            return;
+        }
+        int local_1e_surrounding_terrain_map = 0;
+        int local_6_is_sea_tile = 0;
+        int local_4_terrain_type = 0x19;
+        if (DAT_a866_adjusted_current_terrain_type == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
+            local_4_terrain_type = DAT_a866_adjusted_current_terrain_type;
+            local_1e_surrounding_terrain_map = FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(x,y);
+            local_6_is_sea_tile = 1;
+        }
+        if (local_6_is_sea_tile == 1 && local_1e_surrounding_terrain_map != 0) {
+
+            FUN_8007_05b8_module_14_102_draw_terrain_tile(gameData.gameMap.getTerrainTileIdByTerrainType(local_4_terrain_type)+1);
+            if (gameData.zoomLevel != 0) {
+                return;
+            }
+            if (DAT_0180_maybe_colony_vs_map_view == 0) {
+                // note: prime resources start at 0x59
+                int local_20 = FUN_1373_0458_get_prime_resource_at(x, y) + 1;
+                FUN_8007_0558_module_14_102_draw_surface_sprite(local_20 + 0x5a);
+            }
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, 1, 1);
+            return;
+        }
+/*
+
+        int terrainSpriteId;
+        if (DAT_a866_adjusted_current_terrain_type < 0x18) {
+            // Regular terrain: use lower 3 bits for base type
+            terrainSpriteId = DAT_a866_adjusted_current_terrain_type & 0x07;
+        } else {
+            // Special terrain: use as-is
+            terrainSpriteId = DAT_a866_adjusted_current_terrain_type & 0xFF;
+        }
+
+        // Special case: desert (0x01)
+        if (terrainSpriteId == 0x01) {  // base desert
+            // Check if desert with forest (looks like a really convoluted way of checking "terrain > 0x08".
+            if ((DAT_a866_adjusted_current_terrain_type >= 0x08 && DAT_a866_adjusted_current_terrain_type < 0x10) ||
+                    (DAT_a866_adjusted_current_terrain_type >= 0x10 && DAT_a866_adjusted_current_terrain_type < 0x18)) {
+                terrainSpriteId = 0x11;  // note: desert with trees are sprite id 0x8
+            }
+        }
+        // draw base terrain
+        FUN_8007_05b8_module_14_102_draw_terrain_tile(terrainSpriteId);
+
+        if (DAT_017a_zoom_level == 0){
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, local_6_is_sea_tile, 0);
+        }
+
+        // forest
+        if (terrainSpriteId != 0x01) {
+            if (DAT_a866_adjusted_current_terrain_type > 7 && DAT_a866_adjusted_current_terrain_type < 0x10 ||
+                    DAT_a866_adjusted_current_terrain_type > 0xf && DAT_a866_adjusted_current_terrain_type < 0x18) {
+                int mask = FUN_8007_041e_module_14_102_get_forest_neighbours_mask(0x03, local_22_base_terrain);
+                FUN_8007_0558_module_14_102_draw_surface_sprite(mask + 0x41); // 0x40 = forst
+            }
+        }
+        // plowed field
+        if ((DAT_a863_value_from_terrain_map & 0x40) > 0) {
+            FUN_8007_0558_module_14_102_draw_surface_sprite(0x96); // 0x95 is plowed field
+        }
+
+        // mountains (and not sea)
+        if ((DAT_a866_adjusted_current_terrain_type & 0x20) > 0 && local_6_is_sea_tile == 0) {
+            int isMajorMountain = DAT_a866_adjusted_current_terrain_type & 0x80;
+            int mask = FUN_8007_0374_module_14_102_get_neighbours_mountains(3, isMajorMountain);
+            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorMountain > 0 ? 0x31 : 0x21));
+        }
+
+        // rivers (and not sea)
+        if ((DAT_a866_adjusted_current_terrain_type & 0x40) > 0 && local_6_is_sea_tile == 0) {
+            int isMajorRiver = DAT_a866_adjusted_current_terrain_type & 0x80;
+            int mask = FUN_8007_0314_module_14_102_get_neighbours_by_bitfield(0x3, 0x40);
+            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorRiver > 0 ? 0x1 : 0x11));
+        }
+
+        if (DAT_017a_zoom_level > 0 && DAT_0184_show_hidden_terrain_state == 0) {
+            // prime resources
+            int primeResource = FUN_1373_0458_get_prime_resource_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+            // note: primeResource == -1 when no prime resource placed
+            if (primeResource > 0 && DAT_0180_maybe_colony_vs_map_view == 0) {
+                FUN_8007_0558_module_14_102_draw_surface_sprite(0x5a + primeResource);
+            }
+
+            // rumor icon
+            int hasRumor = FUN_1373_0540_get_rumor_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+            if (hasRumor > 0) {
+                FUN_8007_0558_module_14_102_draw_surface_sprite(0x68 + primeResource);
+            }
+        }
+
+        if ((DAT_a863_value_from_terrain_map & 0xA0) > 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
+            int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(0x1, 0xa);
+            // single road, no adjected roads
+            if (mask == 0) {
+                FUN_8007_0558_module_14_102_draw_surface_sprite(0x51);
+            } else {
+                // draw each road as a single tile
+                int local_1c = 1;
+                for (int local_18 = 0; local_18 < 8; local_18++) {
+                    if ((local_1c & mask) == 1) {
+                        FUN_8007_0558_module_14_102_draw_surface_sprite(0x52 + local_18);
+                    }
+                    local_1c <<= 1;
+                }
+            }
+
+        }
+
+        // stop if not a sea tile
+        if (local_6_is_sea_tile == 0) {
+            return;
+        }
+
+        // draw shores
+        int local_8 = -1;
+
+        int landMask = DAT_a86a_adjected_land_bitmask;
+        // 0xdd = 1101 1101      0xc1 = 1100 0001
+        if ((landMask & 0xdd) == 0xc1) {
+            local_8 = 0;
+        }
+        // 0x77 = 0111 0111      0x07 = 0000 0111
+        if ((landMask & 0x77) == 0x07) {
+            local_8 = 1;
+        }
+        // 0x77 = 0111 0111      0x07 = 0111 0000
+        if ((landMask & 0x77) == 0x70) {
+            local_8 = 2;
+        }
+        // 0xdd = 1101 1101      0x1c = 0001 1100
+        if ((landMask & 0xdd) == 0x1c) {
+            local_8 = 3;
+        }
+
+        if (local_8 < 0) {
+            // need half tiles
+            for (int direction = 0; direction < 4; direction++) {
+                // Calculate next direction with wrap-around (0→1, 1→2, 2→3, 3→0)
+                int nextDirection = (direction + 1) & 3;
+
+                // calculate position in a tile, depending on the current direction/quadrant
+                DAT_1e72_sub_tile_x = (nextDirection & 0x3E) << 2;
+                DAT_1e73_sub_tile_y = (direction & 0xFE) << 2;
+
+                // note: calculated in #FUN_8007_01b4_module_14_102_analyze_surrounding_terrain
+                // 0x6d contains 8 sets of tiles. were each tile of the set is for each of the 4 directions/quadrants
+                // the first 4 images are empty
+                int spriteData = DAT_2cec_adjection_land_stuff[direction];
+                int spriteId = (spriteData << 2) + direction + 0x6D; // quarter sprites for each of the corners
+                FUN_8007_0558_module_14_102_draw_surface_sprite(spriteId);
+            }
+            DAT_1e72_sub_tile_x = 0;
+            DAT_1e73_sub_tile_y = 0;
+        } else {
+            // just the corners
+            DAT_1e72_sub_tile_x = 0;
+            DAT_1e73_sub_tile_y = 0;
+            FUN_8007_0558_module_14_102_draw_surface_sprite(0x97 + local_8);
+        }
+
+        // this is a sea tile (checked above), so draw the tile
+        FUN_8007_067c_module_14_102_draw_terrain_tile(local_4_terrain_type);
+
+        // river to shore tiles
+        if (local_14_river != 0) {
+            int local_12_baseSprite = (local_14_river & 0x80) != 0 ? 0x8d : 0x8d + 4;
+            for (int local_e_direction = 0; local_e_direction < 4; local_e_direction++) {
+                int y;
+                if (DAT_00ae[local_e_direction] < 0) {
+                    y = -someWidth;
+                } else if (DAT_00ae[local_e_direction] > 0) {
+                    y = someWidth;
+                } else {
+                    y = 0;
+                }
+                int x = DAT_00a8[local_e_direction];
+                int terrain = DAT_0152_game_map_terrain[DAT_a548_terrain_map_pointer_to_current_position + y + x];
+
+                if ((terrain & 0x40) > 0) {
+                    int adjustedTerrain2 = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain((byte) terrain);
+
+                    if (adjustedTerrain2 != 0x19 && adjustedTerrain2 != 0x1A) {
+                        FUN_8007_0558_module_14_102_draw_surface_sprite(local_12_baseSprite + local_e_direction);
+                    }
+                }
+            }
+        }
+
+        // fish prime resource
+        if (DAT_017a_zoom_level == 0 && DAT_0180_maybe_colony_vs_map_view == 0) {
+            int prime = FUN_1373_0458_get_prime_resource_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+            if (prime >= 0) {
+                FUN_8007_0558_module_14_102_draw_surface_sprite(0x5a + prime);
+            }
+
+        }
+        */
+
+    }
+
+    public void FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(int a, int b, int c) {
+        // TODO
+    }
+
+    public int DAT_a867_adjected_land_tiles_count;
+    public int DAT_a86a_adjected_land_bitmask;
+    public int[] DAT_2cec_adjection_land_stuff = new int[4];
+
+    public int[] DAT_00b4_directions_x = new int[] {0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
+    public int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
+
+    public int FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(int x, int y) {
+        // Clear flags
+        DAT_a867_adjected_land_tiles_count = 0;  // Counter for valid surrounding tiles
+        DAT_a86a_adjected_land_bitmask = 0;  // Bitmask of visible directions
+
+        // Clear direction flags array (4 bytes at DAT_2cec)
+        for (int i = 0; i < 4; i++) {
+            DAT_2cec_adjection_land_stuff[i] = 0;
+        }
+
+        if (gameData.zoomLevel == 0) {
+
+            for (int directionIndex = 0; directionIndex < 8; directionIndex++) {
+                int x_add = DAT_00b4_directions_x[directionIndex];
+                int y_add = DAT_00be_directions_y[directionIndex];
+
+                byte terrainType = gameData.gameMap.getTerrain(x + x_add, y + y_add);
+
+                int adjustedTerrain = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(terrainType);
+
+                // skip sea and sea lanes
+                if (adjustedTerrain != 0x19 && adjustedTerrain != 0x1A) {
+                    int bitmask = 1 << directionIndex;
+                    // set bit in "adjected land tiles" variable
+                    DAT_a86a_adjected_land_bitmask |= bitmask;
+                    // increase number of land tiles
+                    DAT_a867_adjected_land_tiles_count++;
+                }
+
+                // check for even direction index, these are the non-diagonal directions: N, S, E, W
+                if ((directionIndex & 1) == 0) {
+                    // yes, diagonal
+
+                    // calculate index into direction array:
+                    // Direction | directionIndex | +1 | & 6 | >> 1
+                    // NW | 1 | 2 | 2 | 1
+                    // NE | 3 | 4 | 4 | 2
+                    // SE | 5 | 6 | 6 | 3
+                    // SW | 7 | 8 | 0 | 0
+                    int Bx = ((directionIndex + 1) & 6) >> 1;
+                    DAT_2cec_adjection_land_stuff[Bx] |= 2; // set bit 1 in array
+                } else {
+                    DAT_a865_current_terrain = adjustedTerrain;
+
+                    int cardinalIndex = directionIndex >> 1;
+                    int oppositeIndex = (cardinalIndex + 1) & 3;
+
+                    DAT_2cec_adjection_land_stuff[cardinalIndex] |= 0x04;
+                    DAT_2cec_adjection_land_stuff[oppositeIndex] |= 0x01;
+                }
+            }
+        }
+
+        int al = DAT_a865_current_terrain;
+        al = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain((byte) al);
+        DAT_a866_adjusted_current_terrain_type = al;
+        return DAT_a867_adjected_land_tiles_count;
+    }
+
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain */
+    public int FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(int terrainType) {
+        // don't change sea or arctic
+        int plainTerrain = terrainType & 0x1f;
+        if (plainTerrain >= 0x18) {
+            return terrainType;
+        }
+
+        if (DAT_0184_show_hidden_terrain_state == 2) {
+            // mask off forest, and mountains. for some reason add forest again
+            return (terrainType & 7) | 8;
+        }
+        if (DAT_0184_show_hidden_terrain_state == 3) {
+            return terrainType & 7;
+        }
+
+        return terrainType;
+    }
+
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0458_get_prime_resource_at */
+    public int FUN_1373_0458_get_prime_resource_at(int x, int y) {
+        // check some global flag
+        if (gameData.DAT_0186 == 0) {
+            return -1;
+        }
+
+        int nativeVillageOwner = gameData.gameMap.FUN_1373_0380_visitor_get_native_village_owner(x,y);
+        if (nativeVillageOwner > 0) {
+            return -1;
+        }
+
+        // get terrain type, masking off mountains
+        int terrainType = gameData.gameMap.getTerrain(x,y) & 0x3f;
+
+        int isForest;
+        // 0x00 - 0x07 - plain terrain
+        // 0x08 - 0x0f - terrain with forest
+        // 0x10 - 0x18 - unused
+        // 0x18 - 0x1a - artic and sea (lanes)
+        if (terrainType >= 0x8 && terrainType <= 0x0f ) {
+            isForest = 1;
+        }
+        else {
+            isForest = 0;
+        }
+        int local_8 = -1;
+
+        int uVar2 = (x & 3) * 4 + (y & 3);
+
+        int uVar3 = ((y >> 2) * 3 + (x >> 2) - isForest + gameData.DAT_0186) & 0xf;
+
+        if ((uVar3 == uVar2) || ((uVar3 ^ 10) == uVar2)) {
+            int iVar1 = FUN_13d3_0032_get_terrain_type_stuff(x,y);
+            local_8 = primeResourcePerTerrainType[iVar1];
+            if (local_8 == 0) {
+                local_8 = 6;
+            }
+            uVar2 =  gameData.gameMap.getSurfaceAt(x,y);
+            if ((uVar2 & 4) != 0) {
+                if (local_8 == 0xc) {
+                    return 0;
+                }
+                local_8 = -1;
+            }
+        }
+        return local_8;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0032_get_terrain_type_stuff */
+    public int FUN_13d3_0032_get_terrain_type_stuff(int x,int y) {
+        if (gameData.gameMap.isTileInDrawableRect(x,y)) {
+            int uVar1 = gameData.gameMap.getTerrain(x,y);
+            return FUN_13d3_0006_something_with_mountains(uVar1);
+        }
+        return 0x19;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0006_something_with_mountains */
+    public int FUN_13d3_0006_something_with_mountains(int terrain_type) {
+        // 0x20 => mountain or hill
+        if ((terrain_type & 0x20) != 0) {
+            //
+            // AL = terrain type
+            boolean major = (terrain_type & 0x80) != 0;
+            return 0x1b + (major ? 1 : 0);
+        }
+        return terrain_type & 0x1f;
+    }
 }

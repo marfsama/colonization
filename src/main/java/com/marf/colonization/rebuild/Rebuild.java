@@ -22,9 +22,7 @@ public class Rebuild extends JPanel {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         g2d.scale(4.0, 4.0);
-        g2d.drawImage(canvas.getBackscreen(), 1, 1, this);
-        g2d.setColor(Color.GREEN);
-        g2d.drawRect(0,0, 320+2, 200+2);
+        g2d.drawImage(canvas.getBackscreen(), 0, 0, this);
     }
 
     public static void main(String[] args) throws IOException {
@@ -37,14 +35,17 @@ public class Rebuild extends JPanel {
 
 
         Rebuild rebuild = new Rebuild(pico);
-        rebuild.canvas.clear();
+        Canvas canvas = pico.getComponent(Canvas.class);
+        canvas.clear(canvas.getBackscreen());
 
         Savegame savegame = pico.getComponent(Savegame.class);
-        savegame.loadSavegame("COLONY01.SAV");
+        savegame.loadSavegame("COLONY02.SAV");
         Minimap minimap = pico.getComponent(Minimap.class);
         minimap.init();
         minimap.calculateViewport();
         minimap.renderMinimapPanel(0);
+        minimap.drawMapForType(1, 0);
+        canvas.drawSprite(canvas.getBackscreen(), canvas.getScratch(), 15*16, 12*16, 0,8,0,0);
 
 
         JFrame frame = new JFrame();
