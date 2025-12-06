@@ -12,3 +12,4 @@ This project aims to understand the technical aspects of Sid Meiers Colonization
 * https://imgur.com/a/sid-meiers-colonization-1994-M0EJq
 
 * https://forums.civfanatics.com/threads/re-colonization-sid-meiers-colonization-but-with-qol-updates-and-bugfixes.700134/
+* https://forums.civfanatics.com/threads/prime-resource-positions-demystified.637187/

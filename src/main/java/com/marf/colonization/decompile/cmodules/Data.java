@@ -59,7 +59,7 @@ public class Data {
     /**
      * something which is saved to the savegame
      */
-    public static byte DAT_0186;
+    public static byte DAT_0186_map_seed;
     public static int[] DAT_0188_maybe_prime_resource_per_terrain_type = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
     public static int DAT_1e72_sub_tile_x;

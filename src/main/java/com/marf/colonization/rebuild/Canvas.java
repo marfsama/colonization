@@ -24,7 +24,7 @@ public class Canvas {
     }
 
     public void clear(BufferedImage screen) {
-        fillRect(screen, 0, 0, 320, 200, 1);
+        fillRect(screen, 0, 0, 320, 200, 0);
     }
 
     /**
@@ -97,5 +97,27 @@ public class Canvas {
             return;
         }
         backscreen.setRGB(x,y, resources.getPalette()[color].getRGB());
+    }
+
+    public void drawTextBig(BufferedImage destination, int x, int y, int color, String text) {
+        drawText(destination,x,y,color,14.0f,text);
+    }
+    public void drawTextSmall(BufferedImage destination, int x, int y, int color, String text) {
+        drawText(destination,x,y,color,7.0f,text);
+    }
+
+    public void drawText(BufferedImage destination, int x, int y, int color, float size, String text) {
+        Graphics2D graphic = destination.createGraphics();
+
+        Font font = graphic.getFont();
+        font = font.deriveFont(size);
+        graphic.setFont(font);
+
+        int height = font.getSize();
+
+        graphic.setColor(resources.getPalette()[color]);
+        graphic.drawString(text, x, y+height);
+
+        graphic.dispose();
     }
 }

@@ -34,6 +34,9 @@ public class GameMap {
      */
     public List<Unit> units = new ArrayList<>();
 
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0186_map_seed */
+    public int mapSeed = 0x4C4D; // todo: read from save file
+
     /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_00fa_get_terrain_type_offset_at */
     public int getMapOffset(int x, int y) {
         return y * mapSize.width + x;
@@ -147,7 +150,8 @@ public class GameMap {
         }
 
         // is it desert with forest (Scrub Forest) ?
-        if (baseTerrain == 0x9) {
+        // note: this way 0x9 previously, but in FUN_8007_0938_module_14_102_draw_map_tile desert with forest is set to 0x11
+        if (baseTerrain == 0x11) {
             // scrub forest is index 8
             return 8;
         }
@@ -187,6 +191,48 @@ public class GameMap {
         return -1;
     }
 
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0006_something_with_mountains */
+    public int FUN_13d3_0006_something_with_mountains(int terrain_type) {
+        // 0x20 => mountain or hill
+        if ((terrain_type & 0x20) != 0) {
+            //
+            // AL = terrain type
+            boolean major = (terrain_type & 0x80) != 0;
+            return 0x1b + (major ? 1 : 0);
+        }
+        return terrain_type & 0x1f;
+    }
 
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0032_get_terrain_type_stuff */
+    public int FUN_13d3_0032_get_terrain_type_stuff(int x,int y) {
+        if (isTileInDrawableRect(x,y)) {
+            int uVar1 = getTerrain(x,y);
+            return FUN_13d3_0006_something_with_mountains(uVar1);
+        }
+        return 0x19;
+    }
+
+
+
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0540_get_rumor_at */
+    public int FUN_1373_0540_get_rumor_at(int x, int y) {
+        if (mapSeed == 0) {
+            return 0;
+        }
+
+        int some_terrain_value = FUN_13d3_0032_get_terrain_type_stuff(x,y);
+        // 0x18 = arctic, 0x19 = sea, 0x1a = sea lane
+        if (((some_terrain_value != 0x19) && (some_terrain_value != 0x1a)) && (some_terrain_value != 0x18)) {
+            // don't do stuff on sea or arctic
+            int cVar1 = visitorGetLastVisitor(x,y);
+            if ((cVar1 < 0) &&
+                    ((((y >> 2) * 0x13 + (x >> 2) * 0x11 + mapSeed + 8) & 0x1f) + (x & 3) * -4 == (y & 3))) {
+                return  1;
+            }
+        }
+
+        return 0;
+
+    }
 
 }

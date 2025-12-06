@@ -13,8 +13,8 @@ import static java.lang.Math.min;
 
 /**
  * @see com.marf.colonization.decompile.cmodules.Module14_Minimap
- *  @see com.marf.colonization.decompile.cmodules.Module14_102_Map
- *  */
+ * @see com.marf.colonization.decompile.cmodules.Module14_102_Map
+ */
 public class Minimap {
     public static final int MINIMAP_PANEL_X = 241;
     public static final int MINIMAP_PANEL_Y = 8;
@@ -53,14 +53,22 @@ public class Minimap {
             0x7, 0xB, 0x9, 0xA
     };
 
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_a526_terrain_minimap_colors*/
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_a526_terrain_minimap_colors
+     */
     private int[] terrainMinimapColorsRgb = new int[32];
 
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_84ee_some_width */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_84ee_some_width
+     */
     public int someWidth;
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_84f0_some_height */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_84f0_some_height
+     */
     public int someHeight;
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0188_maybe_prime_resource_per_terrain_type */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_0188_maybe_prime_resource_per_terrain_type
+     */
     public int[] primeResourcePerTerrainType = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
     public Minimap(Resources resources, Canvas canvas, GameData gameData) {
@@ -70,25 +78,27 @@ public class Minimap {
         this.gameData = gameData;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f05_0068_module_14_precalculate_minimap_terrain_pixels */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f05_0068_module_14_precalculate_minimap_terrain_pixels
+     */
     public void init() {
         List<Ss.Sprite> terrainTiles = resources.getTerrain();
         for (int i = 0; i < 8; i++) {
-            terrainMinimapColorsRgb[i] = terrainTiles.get(i).getIndexedImage()[8*16+8];
-            terrainMinimapColorsRgb[i+8] = terrainTiles.get(i).getIndexedImage()[8*16+8];
-            terrainMinimapColorsRgb[i+16] = terrainTiles.get(i).getIndexedImage()[8*16+8];
+            terrainMinimapColorsRgb[i] = terrainTiles.get(i).getIndexedImage()[8 * 16 + 8];
+            terrainMinimapColorsRgb[i + 8] = terrainTiles.get(i).getIndexedImage()[8 * 16 + 8];
+            terrainMinimapColorsRgb[i + 16] = terrainTiles.get(i).getIndexedImage()[8 * 16 + 8];
         }
 
         // artic
-        terrainMinimapColorsRgb[17] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x18)).getIndexedImage()[8*16+8];
+        terrainMinimapColorsRgb[17] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x18)).getIndexedImage()[8 * 16 + 8];
         // sea
-        terrainMinimapColorsRgb[18] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x19)).getIndexedImage()[8*16+8];
+        terrainMinimapColorsRgb[18] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x19)).getIndexedImage()[8 * 16 + 8];
         // sea lane
-        terrainMinimapColorsRgb[19] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x1a)).getIndexedImage()[8*16+8];
+        terrainMinimapColorsRgb[19] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x1a)).getIndexedImage()[8 * 16 + 8];
         // unused special tile id 0x21 - maps to desert (0x1)
-        terrainMinimapColorsRgb[20] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x21)).getIndexedImage()[8*16+8];
+        terrainMinimapColorsRgb[20] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x21)).getIndexedImage()[8 * 16 + 8];
         // unused special tile id 0x31 - maps to desert (0x1)
-        terrainMinimapColorsRgb[21] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x31)).getIndexedImage()[8*16+8];
+        terrainMinimapColorsRgb[21] = terrainTiles.get(gameData.gameMap.getTerrainTileIdByTerrainType(0x31)).getIndexedImage()[8 * 16 + 8];
     }
 
     /**
@@ -114,7 +124,7 @@ public class Minimap {
             canvas.drawSpriteTiled(canvas.getBackscreen(), resources.getWoodTile(), MINIMAP_PANEL_X, MINIMAP_PANEL_Y, MINIMAP_PANEL_WIDTH, MINIMAP_PANEL_HEIGHT, 0, 0);
         }
 
-        canvas.drawRect(canvas.getBackscreen(),MINIMAP_MAP_X, MINIMAP_MAP_Y, MINIMAP_MAP_X + MINIMAP_MAP_WIDTH - 1, MINIMAP_MAP_Y + MINIMAP_MAP_HEIGHT - 1, 6);
+        canvas.drawRect(canvas.getBackscreen(), MINIMAP_MAP_X, MINIMAP_MAP_Y, MINIMAP_MAP_X + MINIMAP_MAP_WIDTH - 1, MINIMAP_MAP_Y + MINIMAP_MAP_HEIGHT - 1, 6);
 
         // draw minimap
         renderMinimap(power);
@@ -126,7 +136,7 @@ public class Minimap {
 
         int x2 = min(gameData.viewportMax.x, minimapMin.x + MINIMAP_MAP_WIDTH - 2) + MINIMAP_MAP_X;
         int y2 = min(gameData.viewportMax.y, minimapMin.y + MINIMAP_MAP_HEIGHT - 2) + MINIMAP_MAP_Y;
-        canvas.drawRect(canvas.getBackscreen(),x1, y1, x2, y2, 15);
+        canvas.drawRect(canvas.getBackscreen(), x1, y1, x2, y2, 15);
 
         // flip to front screen
         // skipped, always draw to front screen
@@ -164,7 +174,7 @@ public class Minimap {
 
                 int color = determineMinimapColor(terrainType, visitor, surface, visibility, power, playerMask, flag, xPos + x, yPos + y);
 
-                canvas.setPixel(canvas.getBackscreen(),x + MINIMAP_MAP_X + 1, y + MINIMAP_MAP_Y + 1, color);
+                canvas.setPixel(canvas.getBackscreen(), x + MINIMAP_MAP_X + 1, y + MINIMAP_MAP_Y + 1, color);
             }
         }
 
@@ -350,7 +360,6 @@ public class Minimap {
 
     /**
      * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_1016_module_14_102_draw_map_viewport
-     *
      */
     public void FUN_8007_1016_module_14_102_draw_map_viewport(int power) {
         calculateViewport();
@@ -391,7 +400,9 @@ public class Minimap {
         return bVar1;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0d60_module_14_102_draw_map */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0d60_module_14_102_draw_map
+     */
     public void drawMap(int x_min, int y_min, int width_in_tiles, int height_in_tiles, int power) {
         if (power < 0) {
             DAT_a862_power_mask = 0;
@@ -427,7 +438,7 @@ public class Minimap {
 
         // loop over the map
 
-        DAT_a556_draw_map_y_in_pixels = gameData.viewportOffset.y + gameData.tileSize-1;
+        DAT_a556_draw_map_y_in_pixels = gameData.viewportOffset.y + gameData.tileSize - 1;
 
         for (int y = y_min; y <= y_max; y += 1, DAT_a556_draw_map_y_in_pixels += gameData.tileSize) {
             DAT_a548_terrain_map_pointer_to_current_position = mapOffset;
@@ -458,7 +469,19 @@ public class Minimap {
                     valid |= !FUN_1373_0040_should_draw_depending_on_distance_maybe(Math.abs(x - gameData.viewportCenter.x), y, DAT_0180_maybe_colony_vs_map_view);
                 }
 
-                FUN_8007_0938_module_14_102_draw_map_tile(x,y, valid);
+                FUN_8007_0938_module_14_102_draw_map_tile(x, y, valid);
+
+// draw rectangle around each tiles
+//                canvas.drawRect(canvas.getScratch(),
+//                        DAT_a554_draw_map_x_in_pixels-8,
+//                        DAT_a556_draw_map_y_in_pixels-15,
+//                        DAT_a554_draw_map_x_in_pixels + gameData.tileSize - 1-8,
+//                        DAT_a556_draw_map_y_in_pixels + gameData.tileSize - 1-15, 15);
+// draw x/y of each tile
+//                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15,  15,""+x);
+//                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15+7,  15,""+y);
+// draw the terrain value in hex for each tile
+//                canvas.drawTextBig(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15,  15, String.format("%02x", gameData.gameMap.getTerrain(x,y)));
 
 
                 if (validX && validY) {
@@ -476,7 +499,9 @@ public class Minimap {
 
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0558_module_14_102_draw_surface_sprite */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0558_module_14_102_draw_surface_sprite
+     */
     public void FUN_8007_0558_module_14_102_draw_surface_sprite(int spriteIndex) {
         if (gameData.zoomLevelPercent < 100) {
             // zoom level < 100%
@@ -491,29 +516,35 @@ public class Minimap {
     }
 
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_05b8_module_14_102_draw_terrain_tile */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_05b8_module_14_102_draw_terrain_tile
+     */
     public void FUN_8007_05b8_module_14_102_draw_terrain_tile(int spriteIndex) {
         if (gameData.zoomLevel == 0) {
             canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getTerrain(),
                     DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8,
                     DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf,
-                     spriteIndex);
+                    gameData.gameMap.getTerrainTileIdByTerrainType(spriteIndex) + 1);
         } else {
             FUN_1101_0126(resources.getTerrain(), spriteIndex, canvas.getScratch(), DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevel);
         }
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_1101_0126 */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code11#FUN_1101_0126
+     */
     public void FUN_1101_0126(List<Ss.Sprite> terrain, int spriteIndex, BufferedImage scratch, int DAT_a554_draw_map_x_in_pixels, int DAT_a556_draw_map_y_in_pixels, int zoomLevel) {
         // TODO
     }
 
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0938_module_14_102_draw_map_tile */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0938_module_14_102_draw_map_tile
+     */
     public void FUN_8007_0938_module_14_102_draw_map_tile(int x, int y, boolean valid) {
         // note: one of the next 2 may be a surface pointer
-        DAT_a863_value_from_terrain_map = gameData.gameMap.getTerrain(x,y);
-        byte currentTerrain = gameData.gameMap.getTerrain(x,y);
+        DAT_a863_value_from_terrain_map = gameData.gameMap.getTerrain(x, y);
+        int currentTerrain = gameData.gameMap.getTerrain(x, y) & 0xff;
         DAT_a865_current_terrain = currentTerrain;
 
         DAT_a864_value_from_visibility_map = gameData.gameMap.visibility[y * gameData.gameMap.mapSize.width + x];
@@ -554,12 +585,12 @@ public class Minimap {
         int local_4_terrain_type = 0x19;
         if (DAT_a866_adjusted_current_terrain_type == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
             local_4_terrain_type = DAT_a866_adjusted_current_terrain_type;
-            local_1e_surrounding_terrain_map = FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(x,y);
+            local_1e_surrounding_terrain_map = FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(x, y);
             local_6_is_sea_tile = 1;
         }
         if (local_6_is_sea_tile == 1 && local_1e_surrounding_terrain_map != 0) {
 
-            FUN_8007_05b8_module_14_102_draw_terrain_tile(gameData.gameMap.getTerrainTileIdByTerrainType(local_4_terrain_type)+1);
+            FUN_8007_05b8_module_14_102_draw_terrain_tile(local_4_terrain_type);
             if (gameData.zoomLevel != 0) {
                 return;
             }
@@ -571,7 +602,6 @@ public class Minimap {
             FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, 1, 1);
             return;
         }
-/*
 
         int terrainSpriteId;
         if (DAT_a866_adjusted_current_terrain_type < 0x18) {
@@ -593,65 +623,65 @@ public class Minimap {
         // draw base terrain
         FUN_8007_05b8_module_14_102_draw_terrain_tile(terrainSpriteId);
 
-        if (DAT_017a_zoom_level == 0){
+        if (gameData.zoomLevel == 0) {
             FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, local_6_is_sea_tile, 0);
         }
 
-        // forest
-        if (terrainSpriteId != 0x01) {
-            if (DAT_a866_adjusted_current_terrain_type > 7 && DAT_a866_adjusted_current_terrain_type < 0x10 ||
-                    DAT_a866_adjusted_current_terrain_type > 0xf && DAT_a866_adjusted_current_terrain_type < 0x18) {
-                int mask = FUN_8007_041e_module_14_102_get_forest_neighbours_mask(0x03, local_22_base_terrain);
-                FUN_8007_0558_module_14_102_draw_surface_sprite(mask + 0x41); // 0x40 = forst
+        // forest (don't draw forest on desert)
+        if (terrainSpriteId != 0x11) {
+            if ((DAT_a866_adjusted_current_terrain_type & 0x08) != 0 && (DAT_a866_adjusted_current_terrain_type & 0x1f) < 0x19) {
+                int mask = FUN_8007_041e_module_14_102_get_forest_neighbours_mask(x, y, 0x03);
+                FUN_8007_0558_module_14_102_draw_surface_sprite(mask + 0x41); // 0x40 = forest
             }
         }
         // plowed field
-        if ((DAT_a863_value_from_terrain_map & 0x40) > 0) {
+        if ((gameData.gameMap.getSurfaceAt(x, y) & 0x40) > 0) {
             FUN_8007_0558_module_14_102_draw_surface_sprite(0x96); // 0x95 is plowed field
         }
 
         // mountains (and not sea)
         if ((DAT_a866_adjusted_current_terrain_type & 0x20) > 0 && local_6_is_sea_tile == 0) {
-            int isMajorMountain = DAT_a866_adjusted_current_terrain_type & 0x80;
-            int mask = FUN_8007_0374_module_14_102_get_neighbours_mountains(3, isMajorMountain);
-            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorMountain > 0 ? 0x31 : 0x21));
+            int isMajorMountain = DAT_a866_adjusted_current_terrain_type & 0xA0;
+            int mask = FUN_8007_0374_module_14_102_get_neighbours_mountains(x, y, 3, isMajorMountain);
+            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorMountain != 0xA0 ? 0x31 : 0x21));
         }
 
         // rivers (and not sea)
         if ((DAT_a866_adjusted_current_terrain_type & 0x40) > 0 && local_6_is_sea_tile == 0) {
             int isMajorRiver = DAT_a866_adjusted_current_terrain_type & 0x80;
-            int mask = FUN_8007_0314_module_14_102_get_neighbours_by_bitfield(0x3, 0x40);
-            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorRiver > 0 ? 0x1 : 0x11));
+            int mask = FUN_8007_0314_module_14_102_get_neighbours_by_bitfield(x, y, 0x3, 0x40);
+            FUN_8007_0558_module_14_102_draw_surface_sprite(mask + (isMajorRiver != 0x80 ? 0x11 : 0x1));
         }
 
-        if (DAT_017a_zoom_level > 0 && DAT_0184_show_hidden_terrain_state == 0) {
+        if (/*DAT_017a_zoom_level > 0 &&*/ DAT_0184_show_hidden_terrain_state == 0) {
             // prime resources
-            int primeResource = FUN_1373_0458_get_prime_resource_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+            int primeResource = FUN_1373_0458_get_prime_resource_at(x, y);
             // note: primeResource == -1 when no prime resource placed
-            if (primeResource > 0 && DAT_0180_maybe_colony_vs_map_view == 0) {
+            if (primeResource > 0 /*&& DAT_0180_maybe_colony_vs_map_view == 0*/) {
                 FUN_8007_0558_module_14_102_draw_surface_sprite(0x5a + primeResource);
             }
 
             // rumor icon
-            int hasRumor = FUN_1373_0540_get_rumor_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+            int hasRumor = gameData.gameMap.FUN_1373_0540_get_rumor_at(x, y);
             if (hasRumor > 0) {
                 FUN_8007_0558_module_14_102_draw_surface_sprite(0x68 + primeResource);
             }
         }
 
-        if ((DAT_a863_value_from_terrain_map & 0xA0) > 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
-            int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(0x1, 0xa);
+        // road or colony (and not sea and in max zoom level)?
+        if ((gameData.gameMap.getSurfaceAt(x,y) & 0x0A) != 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
+            int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(x, y, 0x1, 0x0a);
             // single road, no adjected roads
             if (mask == 0) {
                 FUN_8007_0558_module_14_102_draw_surface_sprite(0x51);
             } else {
                 // draw each road as a single tile
-                int local_1c = 1;
-                for (int local_18 = 0; local_18 < 8; local_18++) {
-                    if ((local_1c & mask) == 1) {
-                        FUN_8007_0558_module_14_102_draw_surface_sprite(0x52 + local_18);
+                int directionMask = 1;
+                for (int direction = 0; direction < 8; direction++) {
+                    if ((directionMask & mask) != 0) {
+                        FUN_8007_0558_module_14_102_draw_surface_sprite(0x52 + direction);
                     }
-                    local_1c <<= 1;
+                    directionMask <<= 1;
                 }
             }
 
@@ -708,6 +738,7 @@ public class Minimap {
             DAT_1e73_sub_tile_y = 0;
             FUN_8007_0558_module_14_102_draw_surface_sprite(0x97 + local_8);
         }
+/*
 
         // this is a sea tile (checked above), so draw the tile
         FUN_8007_067c_module_14_102_draw_terrain_tile(local_4_terrain_type);
@@ -757,8 +788,8 @@ public class Minimap {
     public int DAT_a86a_adjected_land_bitmask;
     public int[] DAT_2cec_adjection_land_stuff = new int[4];
 
-    public int[] DAT_00b4_directions_x = new int[] {0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
-    public int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
+    public int[] DAT_00b4_directions_x = new int[]{0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
+    public int[] DAT_00be_directions_y = new int[]{-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
 
     public int FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(int x, int y) {
         // Clear flags
@@ -820,7 +851,9 @@ public class Minimap {
     }
 
 
-    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain
+     */
     public int FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(int terrainType) {
         // don't change sea or arctic
         int plainTerrain = terrainType & 0x1f;
@@ -840,73 +873,216 @@ public class Minimap {
     }
 
 
-    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0458_get_prime_resource_at */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0458_get_prime_resource_at
+     */
     public int FUN_1373_0458_get_prime_resource_at(int x, int y) {
+        // bp 0560:0458
         // check some global flag
-        if (gameData.DAT_0186 == 0) {
+        if (gameData.gameMap.mapSeed == 0) {
             return -1;
         }
 
-        int nativeVillageOwner = gameData.gameMap.FUN_1373_0380_visitor_get_native_village_owner(x,y);
+        int nativeVillageOwner = gameData.gameMap.FUN_1373_0380_visitor_get_native_village_owner(x, y);
         if (nativeVillageOwner > 0) {
             return -1;
         }
 
         // get terrain type, masking off mountains
-        int terrainType = gameData.gameMap.getTerrain(x,y) & 0x3f;
+        int terrainType = gameData.gameMap.getTerrain(x, y) & 0x3f;
 
         int isForest;
         // 0x00 - 0x07 - plain terrain
         // 0x08 - 0x0f - terrain with forest
         // 0x10 - 0x18 - unused
         // 0x18 - 0x1a - artic and sea (lanes)
-        if (terrainType >= 0x8 && terrainType <= 0x0f ) {
+        if (terrainType >= 0x8 && terrainType <= 0x0f) {
             isForest = 1;
-        }
-        else {
+        } else {
             isForest = 0;
         }
-        int local_8 = -1;
+        int primeResource = -1;
 
+        // calculate stuff with lower 2 bits of coordinate
         int uVar2 = (x & 3) * 4 + (y & 3);
 
-        int uVar3 = ((y >> 2) * 3 + (x >> 2) - isForest + gameData.DAT_0186) & 0xf;
+        // calculate stuff with upper bits of coordinate
+        int uVar3 = ((y >> 2) * 3 + (x >> 2) - isForest + gameData.gameMap.mapSeed) & 0xf;
 
-        if ((uVar3 == uVar2) || ((uVar3 ^ 10) == uVar2)) {
-            int iVar1 = FUN_13d3_0032_get_terrain_type_stuff(x,y);
-            local_8 = primeResourcePerTerrainType[iVar1];
-            if (local_8 == 0) {
-                local_8 = 6;
+        if ((uVar3 == uVar2) || ((uVar3 ^ 0x0a) == uVar2)) {
+            int terrain = FUN_13d3_0032_get_terrain_type_stuff(x, y);
+            primeResource = primeResourcePerTerrainType[terrain];
+            if (primeResource == 0) {
+                primeResource = 6;
             }
-            uVar2 =  gameData.gameMap.getSurfaceAt(x,y);
-            if ((uVar2 & 4) != 0) {
-                if (local_8 == 0xc) {
+            int surface = gameData.gameMap.getSurfaceAt(x, y);
+            // check if prime resource is depleted
+            if ((surface & 4) != 0) {
+                // silver mine has a special depleted icon
+                if (primeResource == 0xc) {
                     return 0;
                 }
-                local_8 = -1;
+                // all others: just remove the prime resource
+                primeResource = -1;
             }
         }
-        return local_8;
+        return primeResource;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0032_get_terrain_type_stuff */
-    public int FUN_13d3_0032_get_terrain_type_stuff(int x,int y) {
-        if (gameData.gameMap.isTileInDrawableRect(x,y)) {
-            int uVar1 = gameData.gameMap.getTerrain(x,y);
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0032_get_terrain_type_stuff
+     */
+    public int FUN_13d3_0032_get_terrain_type_stuff(int x, int y) {
+        if (gameData.gameMap.isTileInDrawableRect(x, y)) {
+            int uVar1 = gameData.gameMap.getTerrain(x, y);
             return FUN_13d3_0006_something_with_mountains(uVar1);
         }
         return 0x19;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0006_something_with_mountains */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code13#FUN_13d3_0006_something_with_mountains
+     */
     public int FUN_13d3_0006_something_with_mountains(int terrain_type) {
         // 0x20 => mountain or hill
         if ((terrain_type & 0x20) != 0) {
-            //
             // AL = terrain type
             boolean major = (terrain_type & 0x80) != 0;
-            return 0x1b + (major ? 1 : 0);
+            return 0x1b + (major ? 0 : 1);
         }
         return terrain_type & 0x1f;
+    }
+
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_041e_module_14_102_get_forest_neighbours_mask
+     */
+    public int FUN_8007_041e_module_14_102_get_forest_neighbours_mask(int x, int y, int zoomLevel) {
+        int result = 0;
+        if (gameData.zoomLevel > zoomLevel) {
+            return 0;
+        }
+
+        // check north
+        if (FUN_8007_03e4_module_14_102_is_forest(x, y - 1)) {
+            result += 8;
+        }
+        // check south
+        if (FUN_8007_03e4_module_14_102_is_forest(x, y + 1)) {
+            result += 4;
+        }
+        // check west
+        if (FUN_8007_03e4_module_14_102_is_forest(x - 1, y)) {
+            result += 2;
+        }
+        // check east
+        if (FUN_8007_03e4_module_14_102_is_forest(x + 1, y)) {
+            result += 1;
+        }
+        return result;
+    }
+
+    /**
+     * method is used to determine if the surrounding pieces are forest, so that the forest can be joined.
+     */
+    public boolean FUN_8007_03e4_module_14_102_is_forest(int x, int y) {
+        int terrainType = gameData.gameMap.getTerrain(x, y) & 0x1f;
+        // check for arctic, sea and sea lane
+        if (terrainType >= 0x18) {
+            return false;
+        }
+
+        // is it desert (doesn't matter if forest or not)?
+        if ((terrainType & 0x7) == 1) {
+            // yes, is desert. so no forest
+            return false;
+        }
+        // everything with bit 3 set is forest
+        return terrainType > 0x7;
+    }
+
+    /**
+     * Returns a bitfield of the neighbouring mountains
+     * input:
+     * AX - mountain type (0xA0 - mountains, 0x20 - hills)
+     */
+    public int FUN_8007_0374_module_14_102_get_neighbours_mountains(int x, int y, int zoomlevel, int mountainType) {
+        int result = 0;
+        if (gameData.zoomLevel > zoomlevel) {
+            return result;
+        }
+
+        // check north
+        if ((gameData.gameMap.getTerrain(x, y - 1) & 0xA0) == mountainType) {
+            result += 8;
+        }
+        // check south
+        if ((gameData.gameMap.getTerrain(x, y + 1) & 0xA0) == mountainType) {
+            result += 4;
+        }
+        // check west
+        if ((gameData.gameMap.getTerrain(x - 1, y) & 0xA0) == mountainType) {
+            result += 2;
+        }
+        // check east
+        if ((gameData.gameMap.getTerrain(x + 1, y) & 0xA0) == mountainType) {
+            result += 1;
+        }
+        return result;
+    }
+
+
+    public int FUN_8007_0314_module_14_102_get_neighbours_by_bitfield(int x, int y, int zoomlevel, int bitfield) {
+        int result = 0;
+        if (gameData.zoomLevel > zoomlevel) {
+            return result;
+        }
+
+        // check north
+        if ((gameData.gameMap.getTerrain(x, y - 1) & bitfield) > 0) {
+            result += 8;
+        }
+        // check south
+        if ((gameData.gameMap.getTerrain(x, y + 1) & bitfield) > 0) {
+            result += 4;
+        }
+        // check west
+        if ((gameData.gameMap.getTerrain(x - 1, y) & bitfield) > 0) {
+            result += 2;
+        }
+        // check east
+        if ((gameData.gameMap.getTerrain(x + 1, y) & bitfield) > 0) {
+            result += 1;
+        }
+        return result;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_04e4_module_14_102_get_surface_neighbours_bitmask_8_directions_first_map_pointer */
+    public int FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(int x, int y, int zoomlevel, int terrainMask) {
+        if (gameData.zoomLevel > zoomlevel) {
+            return 0;
+        }
+
+        int result = 0;
+        int bitmask = 1;
+
+        for (int direction = 0; direction < 8; direction++) {
+            int x_offset = DAT_00b4_directions_x[direction];
+            int y_offset = DAT_00be_directions_y[direction];
+
+            // note: in the assembly there is a check on y_offset != 0 which doesn't make sense. So I removed the check
+
+            // Calculate map position
+            int tile_data = gameData.gameMap.getSurfaceAt(x + x_offset, y + y_offset) & 0xff;
+
+            // Test tile properties
+            if ((tile_data & terrainMask) > 0) {
+                result |= bitmask;
+            }
+
+            bitmask <<= 1;  // Move to next direction bit
+        }
+
+        return result;
     }
 }

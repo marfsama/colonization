@@ -117,6 +117,7 @@ public class Ss {
         }
 
         byte[] indexedImage = new byte[sprite.width * sprite.height];
+        Arrays.fill(indexedImage, (byte) TRANSPARENT_PIXEL_INDEX);
 
 
         int x = 0;

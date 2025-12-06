@@ -259,7 +259,7 @@ public class Code13 {
     /** returns the prime resource at this position or -1 if there should not be a prime resource. */
     public static int FUN_1373_0458_get_prime_resource_at(int x, int y) {
         // check some global flag
-        if (DAT_0186 == 0) {
+        if (DAT_0186_map_seed == 0) {
             return -1;
         }
 
@@ -286,7 +286,7 @@ public class Code13 {
 
         int uVar2 = (x & 3) * 4 + (y & 3);
 
-        int uVar3 = ((y >> 2) * 3 + (x >> 2) - isForest + DAT_0186) & 0xf;
+        int uVar3 = ((y >> 2) * 3 + (x >> 2) - isForest + DAT_0186_map_seed) & 0xf;
 
         if ((uVar3 == uVar2) || ((uVar3 ^ 10) == uVar2)) {
             int iVar1 = FUN_13d3_0032_get_terrain_type_stuff(x,y);
@@ -307,7 +307,7 @@ public class Code13 {
 
     /** returns 1 when a rumor is at this position, else 0 */
     public static int FUN_1373_0540_get_rumor_at(int x, int y) {
-        if (DAT_0186 == 0) {
+        if (DAT_0186_map_seed == 0) {
             return 0;
         }
 
@@ -317,7 +317,7 @@ public class Code13 {
             // don't do stuff on sea or arctic
             int cVar1 = FUN_1373_0204_visitor_get_last_visitor(x,y);
             if ((cVar1 < 0) &&
-                    ((((y >> 2) * 0x13 + (x >> 2) * 0x11 + DAT_0186 + 8) & 0x1f) + (x & 3) * -4 == (y & 3))) {
+                    ((((y >> 2) * 0x13 + (x >> 2) * 0x11 + DAT_0186_map_seed + 8) & 0x1f) + (x & 3) * -4 == (y & 3))) {
                 return  1;
             }
         }

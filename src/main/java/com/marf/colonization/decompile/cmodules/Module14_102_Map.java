@@ -316,7 +316,7 @@ public class Module14_102_Map {
         return result;
     }
 
-    public static int FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(int zoomlevel, int terrainMask) {
+    public static int FUN_8007_04e4_module_14_102_get_surface_neighbours_bitmask_8_directions_first_map_pointer(int zoomlevel, int terrainMask) {
         if (DAT_017a_zoom_level > zoomlevel) {
             return 0;
         }
@@ -331,7 +331,7 @@ public class Module14_102_Map {
             // note: in the assembly there is a check on y_offset != 0 which doesn't make sense. So I removed the check
 
             // Calculate map position
-            byte tile_data = DAT_0152_game_map_terrain[DAT_a544_surface_map_pointer + x_offset + y_offset];
+            byte tile_data = DAT_0156_game_map_surface[DAT_a544_surface_map_pointer + x_offset + y_offset];
 
             // Test tile properties
             if ((tile_data & terrainMask) > 0) {
@@ -739,7 +739,7 @@ public class Module14_102_Map {
         }
 
         if ((DAT_a863_value_from_terrain_map & 0xA0) > 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
-            int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(0x1, 0xa);
+            int mask = FUN_8007_04e4_module_14_102_get_surface_neighbours_bitmask_8_directions_first_map_pointer(0x1, 0xa);
             // single road, no adjected roads
             if (mask == 0) {
                 FUN_8007_0558_module_14_102_draw_surface_sprite(0x51);

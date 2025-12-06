@@ -72,8 +72,6 @@ public class GameData {
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0150_some_flag */
     public boolean DAT_0150_some_flag;
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0186 */
-    public int DAT_0186 = 1;
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_5338_savegame_header */
     public SavegameHeader savegameHeader;
