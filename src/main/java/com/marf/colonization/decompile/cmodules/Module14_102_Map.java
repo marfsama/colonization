@@ -376,7 +376,7 @@ public class Module14_102_Map {
         if (DAT_017a_zoom_level == 0) {
             FUN_1101_00b4_blit_terrain_sprite(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf);
         } else {
-            FUN_1101_01dc(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017a_zoom_level);
+            FUN_1101_01dc_blit_sprite_sheet_sprite_only_over_black_pixels(DAT_0162_terrain_sprites, neighboursBitmap, DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017a_zoom_level);
         }
     }
 
@@ -809,7 +809,7 @@ public class Module14_102_Map {
         }
 
         // this is a sea tile (checked above), so draw the tile
-        FUN_8007_067c_module_14_102_draw_terrain_tile(local_4_terrain_type);
+        //FUN_8007_067c_module_14_102_draw_terrain_tile(local_4_terrain_type);
 
         // river to shore tiles
         if (local_14_river != 0) {

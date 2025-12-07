@@ -15,7 +15,7 @@ public class Code11 {
     }
 
 
-    public static void FUN_1101_01dc(Module1a.SpriteSheetSomeStructure terrainSptites, int neighboursBitmap, Sprite destination, int x, int y, int zoomLevel) {
+    public static void FUN_1101_01dc_blit_sprite_sheet_sprite_only_over_black_pixels(Module1a.SpriteSheetSomeStructure terrainSptites, int neighboursBitmap, Sprite destination, int x, int y, int zoomLevel) {
 
     }
 }
