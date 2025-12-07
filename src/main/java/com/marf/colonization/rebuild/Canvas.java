@@ -1,7 +1,5 @@
 package com.marf.colonization.rebuild;
 
-import com.marf.colonization.decompile.cmodules.Module1a;
-import com.marf.colonization.decompile.cmodules.Sprite;
 import com.marf.colonization.mpskit.Ss;
 import lombok.Getter;
 
@@ -52,6 +50,24 @@ public class Canvas {
         Graphics2D graphics = destination.createGraphics();
         graphics.drawImage(spriteSheet.get(spriteIndex-1).getImage(), x,y,null);
         graphics.dispose();
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_1101_01dc_blit_sprite_sheet_sprite_only_over_black_pixels */
+    public void drawSpriteSheetSpriteOverBlackPixels(BufferedImage destination, List<Ss.Sprite> spriteSheet, int x, int y, int spriteIndex) {
+        // overwrites only the pixels which are black
+        BufferedImage source = spriteSheet.get(spriteIndex).getImage();
+        for (int y1 = 0; y1 < source.getHeight(); y1++) {
+            for (int x1 = 0; x1 < source.getWidth(); x1++) {
+                if (x1 + x < destination.getWidth() && y1 + y < destination.getHeight()) {
+                    int destinationColor = destination.getRGB(x1 + x, y1 + y);
+                    if (destinationColor != 0) {
+                        destination.setRGB(x1+x, y1+y, source.getRGB(x1, y1));
+                    }
+                }
+            }
+        }
+
+
     }
 
     /** @see com.marf.colonization.decompile.cmodules.Code1b#FUN_1b8e_000c_draw_sprite */

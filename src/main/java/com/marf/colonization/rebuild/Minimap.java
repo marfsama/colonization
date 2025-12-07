@@ -515,6 +515,22 @@ public class Minimap {
         }
     }
 
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_067c_module_14_102_draw_terrain_tile
+     */
+    public void FUN_8007_067c_module_14_102_draw_terrain_tile_only_over_black_pixels(int spriteIndex) {
+        if (gameData.zoomLevelPercent < 100) {
+            // zoom level < 100%
+            //FUN_1101_00b4_blit_terrain_sprite(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevelPercent, DAT_016a_phys0_sprite_sheet);
+        } else {
+            // zoom level == 100%
+            canvas.drawSpriteSheetSpriteOverBlackPixels(canvas.getScratch(), resources.getSurface(),
+                    DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8,
+                    DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf,
+                    spriteIndex);
+        }
+    }
+
 
     /**
      * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_05b8_module_14_102_draw_terrain_tile
@@ -588,7 +604,7 @@ public class Minimap {
             local_1e_surrounding_terrain_map = FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(x, y);
             local_6_is_sea_tile = 1;
         }
-        if (local_6_is_sea_tile == 1 && local_1e_surrounding_terrain_map != 0) {
+        if (local_6_is_sea_tile == 1 && local_1e_surrounding_terrain_map == 0) {
 
             FUN_8007_05b8_module_14_102_draw_terrain_tile(local_4_terrain_type);
             if (gameData.zoomLevel != 0) {
@@ -628,7 +644,7 @@ public class Minimap {
         }
 
         // forest (don't draw forest on desert)
-        if (terrainSpriteId != 0x11) {
+        if (terrainSpriteId != 0x11 && local_6_is_sea_tile == 0) {
             if ((DAT_a866_adjusted_current_terrain_type & 0x08) != 0 && (DAT_a866_adjusted_current_terrain_type & 0x1f) < 0x19) {
                 int mask = FUN_8007_041e_module_14_102_get_forest_neighbours_mask(x, y, 0x03);
                 FUN_8007_0558_module_14_102_draw_surface_sprite(mask + 0x41); // 0x40 = forest
@@ -786,6 +802,7 @@ public class Minimap {
 
     public int DAT_a867_adjected_land_tiles_count;
     public int DAT_a86a_adjected_land_bitmask;
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_2cec_adjection_land_stuff */
     public int[] DAT_2cec_adjection_land_stuff = new int[4];
 
     public int[] DAT_00b4_directions_x = new int[]{0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
