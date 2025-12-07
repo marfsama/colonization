@@ -349,6 +349,10 @@ public class Minimap {
     private int DAT_a866_adjusted_current_terrain_type;
     private int DAT_0184_show_hidden_terrain_state;
 
+    public int[] DAT_00a8_x_directions = new int[] {0, 1, 0, -1, 0, 0};
+    public int[] DAT_00ae_y_directions = new int[] {-1, 0, 1, 0, 0, 0};
+
+
     /**
      * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_109c_module_14_102_draw_map_for_type
      */
@@ -524,10 +528,8 @@ public class Minimap {
             //FUN_1101_00b4_blit_terrain_sprite(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevelPercent, DAT_016a_phys0_sprite_sheet);
         } else {
             // zoom level == 100%
-            canvas.drawSpriteSheetSpriteOverBlackPixels(canvas.getScratch(), resources.getSurface(),
-                    DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8,
-                    DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf,
-                    spriteIndex);
+            canvas.drawSpriteSheetSpriteOverBlackPixels(canvas.getScratch(), resources.getTerrain(),
+                    DAT_a554_draw_map_x_in_pixels - 8, DAT_a556_draw_map_y_in_pixels - 0xf, spriteIndex);
         }
     }
 
@@ -581,9 +583,7 @@ public class Minimap {
         int local_22_base_terrain = DAT_a865_current_terrain & 0x7;
 
         if (fogOfWar) {
-            // draw tile 0x95
-            // 0x95 = plowed field
-            // Note: 0x94 = fog of war
+            // draw fog of war tile
             FUN_8007_0558_module_14_102_draw_surface_sprite(0x95);
             if (gameData.zoomLevel != 0) {
                 return;
@@ -592,14 +592,14 @@ public class Minimap {
             if (DAT_a866_adjusted_current_terrain_type == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
                 local_24_is_sea = 1;
             }
-            // AX is still 0x95, deep sea
+            // AX is still 0x95, fog of war
             FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(1, local_24_is_sea, 0);
             return;
         }
         int local_1e_surrounding_terrain_map = 0;
         int local_6_is_sea_tile = 0;
         int local_4_terrain_type = 0x19;
-        if (DAT_a866_adjusted_current_terrain_type == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
+        if ((DAT_a866_adjusted_current_terrain_type & 0x1f) == 0x19 || DAT_a866_adjusted_current_terrain_type == 0x1a) {
             local_4_terrain_type = DAT_a866_adjusted_current_terrain_type;
             local_1e_surrounding_terrain_map = FUN_8007_01b4_module_14_102_analyze_surrounding_terrain(x, y);
             local_6_is_sea_tile = 1;
@@ -610,10 +610,12 @@ public class Minimap {
             if (gameData.zoomLevel != 0) {
                 return;
             }
-            if (DAT_0180_maybe_colony_vs_map_view == 0) {
+            if (DAT_0180_maybe_colony_vs_map_view != 0) {
                 // note: prime resources start at 0x59
-                int local_20 = FUN_1373_0458_get_prime_resource_at(x, y) + 1;
-                FUN_8007_0558_module_14_102_draw_surface_sprite(local_20 + 0x5a);
+                int local_20 = FUN_1373_0458_get_prime_resource_at(x, y);
+                if (local_20 >= 0) {
+                    FUN_8007_0558_module_14_102_draw_surface_sprite(local_20 + 0x5a);
+                }
             }
             FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, 1, 1);
             return;
@@ -680,12 +682,12 @@ public class Minimap {
             // rumor icon
             int hasRumor = gameData.gameMap.FUN_1373_0540_get_rumor_at(x, y);
             if (hasRumor > 0) {
-                FUN_8007_0558_module_14_102_draw_surface_sprite(0x68 + primeResource);
+                FUN_8007_0558_module_14_102_draw_surface_sprite(0x68);
             }
         }
 
         // road or colony (and not sea and in max zoom level)?
-        if ((gameData.gameMap.getSurfaceAt(x,y) & 0x0A) != 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
+        if ((gameData.gameMap.getSurfaceAt(x, y) & 0x0A) != 0 && local_6_is_sea_tile == 0 && DAT_0184_show_hidden_terrain_state == 0) {
             int mask = FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(x, y, 0x1, 0x0a);
             // single road, no adjected roads
             if (mask == 0) {
@@ -754,25 +756,17 @@ public class Minimap {
             DAT_1e73_sub_tile_y = 0;
             FUN_8007_0558_module_14_102_draw_surface_sprite(0x97 + local_8);
         }
-/*
 
-        // this is a sea tile (checked above), so draw the tile
-        FUN_8007_067c_module_14_102_draw_terrain_tile(local_4_terrain_type);
+        // draw sea tile or land tile over the black part of the shore tile
+        FUN_8007_067c_module_14_102_draw_terrain_tile_only_over_black_pixels(gameData.gameMap.getTerrainTileIdByTerrainType(local_4_terrain_type));
 
         // river to shore tiles
         if (local_14_river != 0) {
             int local_12_baseSprite = (local_14_river & 0x80) != 0 ? 0x8d : 0x8d + 4;
             for (int local_e_direction = 0; local_e_direction < 4; local_e_direction++) {
-                int y;
-                if (DAT_00ae[local_e_direction] < 0) {
-                    y = -someWidth;
-                } else if (DAT_00ae[local_e_direction] > 0) {
-                    y = someWidth;
-                } else {
-                    y = 0;
-                }
-                int x = DAT_00a8[local_e_direction];
-                int terrain = DAT_0152_game_map_terrain[DAT_a548_terrain_map_pointer_to_current_position + y + x];
+                int dy = DAT_00ae_y_directions[local_e_direction];
+                int dx = DAT_00a8_x_directions[local_e_direction];
+                int terrain = gameData.gameMap.getTerrain(x+dx, y+dy);
 
                 if ((terrain & 0x40) > 0) {
                     int adjustedTerrain2 = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain((byte) terrain);
@@ -785,14 +779,13 @@ public class Minimap {
         }
 
         // fish prime resource
-        if (DAT_017a_zoom_level == 0 && DAT_0180_maybe_colony_vs_map_view == 0) {
-            int prime = FUN_1373_0458_get_prime_resource_at(DAT_a550_draw_map_x_in_tiles, DAT_a552_draw_map_y_in_tiles);
+        if (gameData.zoomLevel == 0 && DAT_0180_maybe_colony_vs_map_view == 1) {
+            int prime = FUN_1373_0458_get_prime_resource_at(x, y);
             if (prime >= 0) {
                 FUN_8007_0558_module_14_102_draw_surface_sprite(0x5a + prime);
             }
 
         }
-        */
 
     }
 
@@ -802,7 +795,9 @@ public class Minimap {
 
     public int DAT_a867_adjected_land_tiles_count;
     public int DAT_a86a_adjected_land_bitmask;
-    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_2cec_adjection_land_stuff */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_2cec_adjection_land_stuff
+     */
     public int[] DAT_2cec_adjection_land_stuff = new int[4];
 
     public int[] DAT_00b4_directions_x = new int[]{0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
@@ -826,7 +821,7 @@ public class Minimap {
 
                 byte terrainType = gameData.gameMap.getTerrain(x + x_add, y + y_add);
 
-                int adjustedTerrain = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(terrainType);
+                int adjustedTerrain = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(terrainType) & 0x1f;
 
                 // skip sea and sea lanes
                 if (adjustedTerrain != 0x19 && adjustedTerrain != 0x1A) {
@@ -835,28 +830,28 @@ public class Minimap {
                     DAT_a86a_adjected_land_bitmask |= bitmask;
                     // increase number of land tiles
                     DAT_a867_adjected_land_tiles_count++;
-                }
 
-                // check for even direction index, these are the non-diagonal directions: N, S, E, W
-                if ((directionIndex & 1) == 0) {
-                    // yes, diagonal
+                    // check for even direction index, these are the non-diagonal directions: N, S, E, W
+                    if ((directionIndex & 1) != 0) {
+                        // yes, diagonal
 
-                    // calculate index into direction array:
-                    // Direction | directionIndex | +1 | & 6 | >> 1
-                    // NW | 1 | 2 | 2 | 1
-                    // NE | 3 | 4 | 4 | 2
-                    // SE | 5 | 6 | 6 | 3
-                    // SW | 7 | 8 | 0 | 0
-                    int Bx = ((directionIndex + 1) & 6) >> 1;
-                    DAT_2cec_adjection_land_stuff[Bx] |= 2; // set bit 1 in array
-                } else {
-                    DAT_a865_current_terrain = adjustedTerrain;
+                        // calculate index into direction array:
+                        //  directionIndex | Direction | +1 | & 6 | >> 1
+                        // ----------------|-----------|----|-----|-----
+                        //         1       |    NE     | 2  |  2  | 1
+                        //         3       |    SE     | 4  |  4  | 2
+                        //         5       |    SW     | 6  |  6  | 3
+                        //         7       |    NW     | 8  |  0  | 0
+                        int Bx = ((directionIndex + 1) & 6) >> 1;
+                        DAT_2cec_adjection_land_stuff[Bx] |= 2; // set corner bit for quadrant
+                    } else {
+                        DAT_a865_current_terrain = adjustedTerrain;
+                        int clockwiseToCorner = directionIndex >> 1;
+                        int counterClockwiseToCorner = (clockwiseToCorner + 1) & 3;
 
-                    int cardinalIndex = directionIndex >> 1;
-                    int oppositeIndex = (cardinalIndex + 1) & 3;
-
-                    DAT_2cec_adjection_land_stuff[cardinalIndex] |= 0x04;
-                    DAT_2cec_adjection_land_stuff[oppositeIndex] |= 0x01;
+                        DAT_2cec_adjection_land_stuff[clockwiseToCorner] |= 0x04; // set "there is land clockwise to the corner" bit
+                        DAT_2cec_adjection_land_stuff[counterClockwiseToCorner] |= 0x01; // set "there is land counter clockwise to the corner" bit
+                    }
                 }
             }
         }
@@ -1074,7 +1069,9 @@ public class Minimap {
         return result;
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_04e4_module_14_102_get_surface_neighbours_bitmask_8_directions_first_map_pointer */
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_04e4_module_14_102_get_surface_neighbours_bitmask_8_directions_first_map_pointer
+     */
     public int FUN_8007_04e4_module_14_102_get_terrain_neighbours_bitmask_8_directions_first_map_pointer(int x, int y, int zoomlevel, int terrainMask) {
         if (gameData.zoomLevel > zoomlevel) {
             return 0;

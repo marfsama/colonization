@@ -59,8 +59,9 @@ public class Canvas {
         for (int y1 = 0; y1 < source.getHeight(); y1++) {
             for (int x1 = 0; x1 < source.getWidth(); x1++) {
                 if (x1 + x < destination.getWidth() && y1 + y < destination.getHeight()) {
-                    int destinationColor = destination.getRGB(x1 + x, y1 + y);
-                    if (destinationColor != 0) {
+                    // get color of destination (mask out alpha)
+                    int destinationColor = destination.getRGB(x1 + x, y1 + y) & 0xffffff;
+                    if (destinationColor == 0) {
                         destination.setRGB(x1+x, y1+y, source.getRGB(x1, y1));
                     }
                 }

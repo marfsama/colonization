@@ -11,8 +11,8 @@ public class Data {
 
     public static String DAT_0042 = "$STRING";
 
-    public static int[] DAT_00a8;
-    public static int[] DAT_00ae;
+    public static int[] DAT_00a8_x_directions = new int[] {0, 1, 0, -1, 0, 0};
+    public static int[] DAT_00ae_y_directions = new int[] {-1, 0, 1, 0, 0, 0};
 
     public static int[] DAT_00b4_directions_x = new int[] {0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
     public static int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};

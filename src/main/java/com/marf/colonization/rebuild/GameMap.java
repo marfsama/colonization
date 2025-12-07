@@ -121,19 +121,18 @@ public class GameMap {
 
     /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0204_visitor_get_last_visitor */
     public int visitorGetLastVisitor(int x, int y) {
-        int oldValue = getVisitorAt(x,y);
+        int visitor = getVisitorAt(x,y);
 
         // get upper nibble (clear AH in AX)
-        int upperNibble = (oldValue >> 4) & 0xf;
+        int upperNibble = (visitor >> 4) & 0xf;
 
         // AX = 0x000f ?
         if (upperNibble == 0xf) {
-            // yes, seems to return AH (so return 0)
-            return 0;
+            return -1;
         }
 
         // else return -1
-        return -1;
+        return upperNibble;
     }
 
 

@@ -407,8 +407,8 @@ public class Module14_102_Map {
     // This recreates the core logic from assembly labels 0732 to 0776
     private static boolean processOverlayQuadrant(int quadrant, boolean param1, boolean param2, boolean param3) {
         // Calculate target coordinates based on quadrant and offsets
-        int yOffset = DAT_00ae[quadrant]; // From [BX + 0xae]
-        int xOffset = DAT_00a8[quadrant]; // From [BX + 0xa8]
+        int yOffset = DAT_00ae_y_directions[quadrant]; // From [BX + 0xae]
+        int xOffset = DAT_00a8_x_directions[quadrant]; // From [BX + 0xa8]
 
         int x = DAT_a550_draw_map_x_in_tiles + xOffset; // 8007:07d4
         int y = DAT_a552_draw_map_y_in_tiles + yOffset; // 8007:07db
@@ -816,14 +816,14 @@ public class Module14_102_Map {
             int local_12_baseSprite = (local_14_river & 0x80) != 0 ? 0x8d : 0x8d + 4;
             for (int local_e_direction = 0; local_e_direction < 4; local_e_direction++) {
                 int y;
-                if (DAT_00ae[local_e_direction] < 0) {
+                if (DAT_00ae_y_directions[local_e_direction] < 0) {
                     y = -DAT_84ee_some_width;
-                } else if (DAT_00ae[local_e_direction] > 0) {
+                } else if (DAT_00ae_y_directions[local_e_direction] > 0) {
                     y = DAT_84ee_some_width;
                 } else {
                     y = 0;
                 }
-                int x = DAT_00a8[local_e_direction];
+                int x = DAT_00a8_x_directions[local_e_direction];
                 int terrain = DAT_0152_game_map_terrain[DAT_a548_terrain_map_pointer_to_current_position + y + x];
 
                 if ((terrain & 0x40) > 0) {
