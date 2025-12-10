@@ -404,7 +404,6 @@ public class Module14_102_Map {
         }
     }
 
-    // This recreates the core logic from assembly labels 0732 to 0776
     private static boolean processOverlayQuadrant(int quadrant, boolean param1, boolean param2, boolean param3) {
         // Calculate target coordinates based on quadrant and offsets
         int yOffset = DAT_00ae_y_directions[quadrant]; // From [BX + 0xae]
@@ -485,8 +484,6 @@ public class Module14_102_Map {
     }
 
     private static boolean shouldRenderStandardOverlay(boolean param1, boolean param3, int local_10, int terrainType) {
-        // This directly maps to the assembly jump logic at 8007:08e3-0916
-
         // Get and prepare current terrain for comparison
         int currentTerrain = prepareCurrentTerrainForComparison();
 
@@ -496,10 +493,10 @@ public class Module14_102_Map {
             if (!param1) { // 8007:090a
                 return false;
             }
-            if (local_10 == 0) { // 8007:0910
+            if (local_10 == 0) {
                 return false;
             }
-            return true; // 8007:0916 jumps back to continue processing
+            return true;
         }
 
         // Terrains match - check special sea/sea lane cases first

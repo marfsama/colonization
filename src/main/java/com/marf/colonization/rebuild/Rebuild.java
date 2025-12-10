@@ -42,13 +42,13 @@ public class Rebuild extends JPanel {
         savegame.loadSavegame("COLONY02.SAV");
 
         GameData gameData = pico.getComponent(GameData.class);
-        gameData.viewportCenter = new Point(31,11);
+//        gameData.viewportCenter = new Point(31,11);
 
         Minimap minimap = pico.getComponent(Minimap.class);
         minimap.init();
         minimap.calculateViewport();
         minimap.renderMinimapPanel(0);
-        minimap.drawMapForType(1, -1);
+        minimap.drawMapForType(1, 0);
         canvas.drawSprite(canvas.getBackscreen(), canvas.getScratch(), 15*16, 12*16, 0,8,0,0);
 
 

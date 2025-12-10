@@ -54,7 +54,7 @@ public class Data {
 
     /** 0 - map view, 1 = colony view */
     public static int DAT_0180_maybe_colony_vs_map_view;
-    public static byte DAT_0184_show_hidden_terrain_state = 0;
+    public static int DAT_0184_show_hidden_terrain_state = 0;
 
     /**
      * something which is saved to the savegame
@@ -70,6 +70,8 @@ public class Data {
 
     public static int DAT_07dc;
 
+    public static int DAT_0816;
+    public static int DAT_0818;
     public static Sprite DAT_081c_address_of_woodtile_sprite_maybe;
     public static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
     public static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
@@ -91,9 +93,16 @@ public class Data {
     public static int DAT_238a;
     public static Module1a.SpriteSheetSomeStructure DAT_238c;
 
+
     public static Sprite DAT_2638_backscreen = new Sprite();
     public static Sprite DAT_2640_2nd_backscreen = new Sprite();
 
+    public static int DAT_26b6_current_random_slot;
+
+    // 32 bits unsigned
+    public static long DAT_273a_random_seed;
+
+    public static int[] DAT_27b9_maybe_key_modifier_state = new int[0];
 
     public static int DAT_2c8e_width;
     public static int DAT_2c90_height;
@@ -117,6 +126,7 @@ public class Data {
     public static int DAT_2e20; // 414 (0x19e): Tories
 
     public static Unit[] DAT_30fc_units_list = new Unit[0];
+    public static UnitTypeConfig[] DAT_51e8_unit_config_array = new UnitTypeConfig[24];
     public static SavegameHeader DAT_5338_savegame_header;
 
 
@@ -171,23 +181,18 @@ public class Data {
     /** Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots. */
     public static String[] DAT_9c82_string_placeholder_array = new String[5];
 
-    public static int[] DAT_a526_terrain_minimap_pixel = new int[8];
-    public static int[] DAT_a52e_terrain_minimap_pixel = new int[8];
-    public static int[] DAT_a536_terrain_minimap_pixel = new int[8];
-    public static int DAT_a53e_terrain_minimap_pixel_arctic;
-    public static int DAT_a53f_terrain_minimap_pixel_sea;
-    public static int DAT_a540_terrain_minimap_pixel_sealane;
-    public static int DAT_a541_terrain_minimap_pixel_0x21;
-    public static int DAT_a542_terrain_minimap_pixel_0x31;
+    public static int[] DAT_a526_terrain_minimap_colors = new int[] {
+
+    };
 
     public static int DAT_a544_surface_map_pointer;
     public static int DAT_a548_terrain_map_pointer_to_current_position;
     public static int DAT_a54c_visibility_map_pointer;
 
 
-    public static int[] DAT_a526_terrain_minimap_colors = new int[] {
 
-    };
+    public static int DAT_84f6_viewport_width = 0xf0;
+    public static int DAT_84f8_viewport_height = 0xc0;
 
     public static int DAT_a550_draw_map_x_in_tiles;
     public static int DAT_a552_draw_map_y_in_tiles;
@@ -196,10 +201,13 @@ public class Data {
 
     public static int DAT_a558;
 
+    public static long[] DAT_a5c6_random_slot_seeds = new long[4];
+
     public static int DAT_a5d6_sprite_sheet_next_free;
     public static int DAT_a5da_sprite_sheet_size;
     public static int DAT_a5de;
 
+    public static int[] DAT_a62a_random_slot_availability = new int[4];
 
     // stuff for calculating adjected land tiles
     public static int DAT_a863_value_from_terrain_map;

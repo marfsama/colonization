@@ -15,6 +15,9 @@ public class Code1a {
      * ES:DI: Destination pointer (already placed at the correct destination x,y)
      */
     public static void FUN_1a3c_051e_copy_rectangle(Object source, Object destination, int sourceWidth, int destinationWidth, int width, int height) {
+    }
+
+    public static void FUN_1aaf_0036_maybe_update_mouse_status() {
 
     }
 

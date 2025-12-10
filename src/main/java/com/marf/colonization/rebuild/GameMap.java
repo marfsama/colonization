@@ -177,6 +177,11 @@ public class GameMap {
         return surface[y * mapSize.width + x];
     }
 
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_02fc_get_visibility_at */
+    public byte getVisibilityAt(int x, int y) {
+        return visibility[y * mapSize.width + x];
+    }
+
     /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0380_visitor_get_native_village_owner */
     public int FUN_1373_0380_visitor_get_native_village_owner(int x, int y) {
         var terrainType = FUN_1373_0146_get_surface_type_at(x,y);

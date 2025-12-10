@@ -126,4 +126,9 @@ public class Code14 {
         }
     }
 
+    public static boolean FUN_1415_1338_unit_is_selectable(int unitId) {
+        // TODO
+        return false;
+    }
+
 }

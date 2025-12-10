@@ -3,7 +3,12 @@ package com.marf.colonization.decompile.cmodules;
 public class SavegameHeader {
     /** 0x02	0x1	byte	*/
     public int field1_0x2;
-    // [..]
+    /** 0x10	0x2	byte	*/
+    public int field9_0x10;
+    /** 0x12	0x2	byte	*/
+    public int active_unit;
+    /** 0x14	0x2	short	*/
+    public int viewport_power;
     /** 0x16	0x2	short	*/
     public int maybe_player_controlled_power;
     /** 0x18	0x2	short	*/

@@ -1,0 +1,38 @@
+package com.marf.colonization.decompile.cmodules;
+
+import static com.marf.colonization.decompile.cmodules.Code1b.*;
+import static com.marf.colonization.decompile.cmodules.Data.*;
+import static com.marf.colonization.decompile.cmodules.Module14_102_Map.*;
+import static com.marf.colonization.decompile.cmodules.Module14_5c.*;
+import static com.marf.colonization.decompile.cmodules.Module14_83.*;
+import static com.marf.colonization.decompile.cmodules.Module14_Minimap.*;
+
+public class Module14_df {
+
+    public static void FUN_7fe4_00c0_draw_map_and_minimap(boolean flushToScreen) {
+        FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 0, -1, 7, DAT_84f6_viewport_width, 0x8);
+
+        int power = DAT_5338_savegame_header.field_0x22_maybe_current_turn == 0
+                ? DAT_5338_savegame_header.maybe_player_controlled_power
+                : -1;
+
+        FUN_8007_1016_module_14_102_draw_map_viewport(power);
+        FUN_7f88_00ea_module_14();
+        FUN_7f88_0248_module_14();
+        FUN_7f61_012a_module_14_5c_flip_viewport_backscreen();
+        FUN_7f88_058e_module_14();
+        if (DAT_017a_zoom_level == 3) {
+            // draw continent name
+            //local_52[0] = 0;
+            //FUN_1d01_07ea_strcpy_near(local_52,*(int *)0x534e * 0x34 + 0x53de);
+            //FUN_104b_0318_draw_tiny_string_centered(local_52);
+        }
+
+        FUN_7f05_048a_module_14_draw_minimap_panel(flushToScreen,power);
+        if (flushToScreen) {
+            FUN_7f61_0214_module_14_flip_viewport_rectangle();
+        }
+    }
+
+
+}

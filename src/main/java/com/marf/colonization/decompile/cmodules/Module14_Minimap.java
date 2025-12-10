@@ -32,17 +32,17 @@ public class Module14_Minimap {
 
     public static void FUN_7f05_0068_module_14_precalculate_minimap_terrain_pixels() {
         for (int terrainType = 0; terrainType < 8; terrainType++) {
-            DAT_a526_terrain_minimap_pixel[terrainType] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
+            DAT_a526_terrain_minimap_colors[terrainType] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
             // note: both below are unused
-            DAT_a52e_terrain_minimap_pixel[terrainType] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
-            DAT_a536_terrain_minimap_pixel[terrainType] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
+            DAT_a526_terrain_minimap_colors[terrainType+8] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
+            DAT_a526_terrain_minimap_colors[terrainType+16] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(terrainType);
         }
         // note: all these are unused
-        DAT_a53e_terrain_minimap_pixel_arctic = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x18);
-        DAT_a53f_terrain_minimap_pixel_sea = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x19);
-        DAT_a540_terrain_minimap_pixel_sealane = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x1a);
-        DAT_a541_terrain_minimap_pixel_0x21 = FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(0x21);
-        DAT_a542_terrain_minimap_pixel_0x31 = FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(0x31);
+        DAT_a526_terrain_minimap_colors[0x17] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x18);
+        DAT_a526_terrain_minimap_colors[0x18] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x19);
+        DAT_a526_terrain_minimap_colors[0x19] = FUN_7f05_0034_module_14_get_center_pixel_of_terrain_sprite(0x1a);
+        DAT_a526_terrain_minimap_colors[0x1a] = FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(0x21);
+        DAT_a526_terrain_minimap_colors[0x1b] = FUN_7f05_0000_module_14_get_center_pixel_of_compressed_sprite(0x31);
     }
 
     public static void FUN_7f05_00d8_module_14_maybe_calculate_minimap_bounds() {

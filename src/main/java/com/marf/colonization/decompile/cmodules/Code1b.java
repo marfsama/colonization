@@ -35,12 +35,12 @@ public class Code1b {
     }
 
     /**
-     * BX = x
-     * DX = y
-     * AX = x
+     * BX = dest_x
+     * DX = src_y
+     * AX = src_x
      * height
      * width
-     * y
+     * dest_y
      */
     public static void FUN_1b54_0040_flip_backscreen_rectangle(int src_x, int src_y, int dest_x, int dest_y, int width, int height) {
         /*
@@ -51,7 +51,6 @@ public class Code1b {
             FUN_1a3c_0703(var1);
         }
         FUN_1a3c_02e6();
-
          */
     }
 
@@ -117,5 +116,8 @@ public class Code1b {
         return 0;
     }
 
+    public static int FUN_1bf0_0028_get_mocked_timer_ticks() {
+        return 0;
+    }
 
 }

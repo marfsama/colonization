@@ -559,7 +559,7 @@ public class Minimap {
     /**
      * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_0938_module_14_102_draw_map_tile
      */
-    public void FUN_8007_0938_module_14_102_draw_map_tile(int x, int y, boolean valid) {
+    public void FUN_8007_0938_module_14_102_draw_map_tile(int x, int y, boolean showFogOfWar) {
         // note: one of the next 2 may be a surface pointer
         DAT_a863_value_from_terrain_map = gameData.gameMap.getTerrain(x, y);
         int currentTerrain = gameData.gameMap.getTerrain(x, y) & 0xff;
@@ -573,7 +573,7 @@ public class Minimap {
 
         if (DAT_a862_power_mask != 0) {
             if ((DAT_a864_value_from_visibility_map & DAT_a862_power_mask) == 0) {
-                if (valid) {
+                if (showFogOfWar) {
                     fogOfWar = true;
                 }
             }
@@ -593,7 +593,7 @@ public class Minimap {
                 local_24_is_sea = 1;
             }
             // AX is still 0x95, fog of war
-            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(1, local_24_is_sea, 0);
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(x, y, true, local_24_is_sea == 1, false);
             return;
         }
         int local_1e_surrounding_terrain_map = 0;
@@ -617,7 +617,7 @@ public class Minimap {
                     FUN_8007_0558_module_14_102_draw_surface_sprite(local_20 + 0x5a);
                 }
             }
-            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, 1, 1);
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(x, y, false, true, true);
             return;
         }
 
@@ -642,7 +642,7 @@ public class Minimap {
         FUN_8007_05b8_module_14_102_draw_terrain_tile(terrainSpriteId);
 
         if (gameData.zoomLevel == 0) {
-            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(0, local_6_is_sea_tile, 0);
+            FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(x, y, false, local_6_is_sea_tile == 1, false);
         }
 
         // forest (don't draw forest on desert)
@@ -789,9 +789,214 @@ public class Minimap {
 
     }
 
-    public void FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(int a, int b, int c) {
-        // TODO
+    public void FUN_8007_06e0_module_14_102_draw_map_draw_terrain_transitions(int x, int y, boolean centerTileIsFogOfWar, boolean isSea, boolean i2) {
+        int savedState = DAT_a558;
+        DAT_a558 = 0;
+
+        try {
+            // Loop through 4 directions/quadrants
+            for (int quadrant = 0; quadrant < 4; quadrant++) {
+                processOverlayQuadrant(x, y, quadrant, centerTileIsFogOfWar, isSea, i2);
+            }
+        } finally {
+            DAT_a558 = savedState;
+        }
     }
+
+    private void processOverlayQuadrant(int x1, int y1, int quadrant, boolean centerTileIsFogOfWar, boolean isSea, boolean param3) {
+        // Calculate target coordinates based on quadrant and offsets
+        int yOffset = DAT_00ae_y_directions[quadrant];
+        int xOffset = DAT_00a8_x_directions[quadrant];
+
+        int x = x1 + xOffset;
+        int y = y1 + yOffset;
+
+        // Check if target tile is within drawable viewport
+        boolean inViewport = gameData.gameMap.isTileInDrawableRect(x, y);
+        boolean local_a = inViewport; // 8007:07f3
+
+        // For colony view, calculate perspective
+        if (DAT_0180_maybe_colony_vs_map_view != 0) {
+            int deltaX = Math.abs(x - gameData.viewportCenter.x);
+            int deltaY = Math.abs(y - gameData.viewportCenter.y);
+
+            // Check if should draw based on distance
+            boolean shouldDraw = FUN_1373_0040_should_draw_depending_on_distance_maybe(deltaX, deltaY, DAT_0180_maybe_colony_vs_map_view);
+
+            local_a |= shouldDraw; // 8007:0728-072f
+        }
+
+        // Read terrain type from map
+        int terrainType = gameData.gameMap.getTerrain(x, y) & 0xff;
+        terrainType = (byte)(terrainType & 0x1F);
+        int local_e = terrainType; // 8007:075d
+
+        // remove forest
+        if (terrainType < 0x18) {
+            terrainType = (byte)(terrainType & 0x07);
+        }
+
+        // Adjust for hidden terrain
+        int adjustedTerrain = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(terrainType);
+        int local_1e = adjustedTerrain; // 8007:0776
+
+        // Check visibility against fog of war mask
+        boolean quadrantIsFogOfWar = false; // 8007:07a2
+        if (DAT_a862_power_mask != 0) { // Visibility mask check
+            byte visibility = gameData.gameMap.getVisibilityAt(x, y);
+            if ((visibility & DAT_a862_power_mask) == 0) {
+                quadrantIsFogOfWar = true; // Visible
+            }
+        }
+
+        // Final rendering decision
+        if (centerTileIsFogOfWar && quadrantIsFogOfWar) {
+            // Conditions met, this quadrant will render something
+            return; // Continue to next quadrant
+        }
+
+        // Handle special cases for sea/sea lane (0x19, 0x1A)
+        if (adjustedTerrain == 0x19 || adjustedTerrain == 0x1A) { // 8007:0812-081c
+            if (isSea) { // 8007:0821
+                // Process coastal rendering logic
+                // TODO: costal transitions doesn't work right now
+                //renderCoastalTransitionSprites(quadrant, x, y, adjustedTerrain);
+            }
+            return; // Continue to next quadrant
+        }
+
+        // Default case - render standard overlay
+        if (shouldRenderStandardOverlay(centerTileIsFogOfWar, param3, quadrantIsFogOfWar, adjustedTerrain)) { // 8007:08e3-0916
+            int spriteId = quadrant + 0x69; // mask for terrain transitions
+            FUN_8007_0558_module_14_102_draw_surface_sprite(spriteId); // clear pixels for terrain transitions
+            FUN_8007_067c_module_14_102_draw_terrain_tile_only_over_black_pixels(adjustedTerrain); // write terrain in the cleared pixels
+        }
+    }
+
+    private void renderCoastalTransitionSprites(int quadrant, int targetX, int targetY, int terrainType) {
+        // Determine coastal sprite pattern based on neighbor analysis
+        int coastalPattern = determineCoastalPattern(targetX, targetY); // Logic from 8007:0bf8-0c35
+
+        if (coastalPattern >= 0) {
+            // Simple coastal pattern - use predefined sprite
+            int coastalSprite = 0x97 + coastalPattern; // Base coastal sprite - 8007:0c91
+            FUN_8007_0558_module_14_102_draw_surface_sprite(coastalSprite); // 8007:0c94
+        } else {
+            // Complex coastal pattern - render directional sprites
+            renderComplexCoastalEdges();
+        }
+
+        // Draw the base terrain tile
+        FUN_8007_067c_module_14_102_draw_terrain_tile_only_over_black_pixels(gameData.gameMap.getTerrainTileIdByTerrainType(terrainType));
+    }
+
+    private int determineCoastalPattern(int x, int y) {
+        // Analyze the 8 surrounding tiles to determine coastal pattern
+        // This uses the data collected in DAT_2b4d_a86a_adjected_land_bitmask
+
+        int neighborMask = DAT_a86a_adjected_land_bitmask;
+        int pattern = -1; // Default to complex pattern
+
+        // Check for specific coastal patterns using bitmask logic
+        if ((neighborMask & 0xDD) == 0xC1) { // 8007:0c00-0c04
+            pattern = 0; // Specific coastal configuration
+        } else if ((neighborMask & 0x77) == 0x07) { // 8007:0c0e-0c12
+            pattern = 1; // Another coastal configuration
+        } else if ((neighborMask & 0x77) == 0x70) { // 8007:0c1c-0c20
+            pattern = 2; // Different coastal edge
+        } else if ((neighborMask & 0xDD) == 0x1C) { // 8007:0c2a-0c2e
+            pattern = 3; // Final coastal pattern
+        }
+
+        return pattern; // 8007:0c35
+    }
+
+    private void renderComplexCoastalEdges() {
+        // Reset camera offsets for precise sprite placement
+        DAT_1e72_sub_tile_x = 0; // 8007:0c7d
+        DAT_1e73_sub_tile_y = 0; // 8007:0c80
+
+        // Loop through 4 primary directions
+        for (int direction = 0; direction < 4; direction++) { // 8007:0c3b-0c75
+            // Calculate next direction with wrap-around
+            int nextDirection = (direction + 1) & 0x3; // 8007:0c43-0c45
+
+            // Calculate precise positioning offsets
+            int xOffset = (nextDirection & 0x3E) << 2; // 8007:0c4b-0c4d
+            DAT_1e72_sub_tile_x = xOffset; // 8007:0c50
+
+            int yOffset = (direction & 0xFE) << 2; // 8007:0c56-0c58
+            DAT_1e73_sub_tile_y = yOffset; // 8007:0c5b
+
+            // Get precomputed coastal sprite data
+            int coastalData = DAT_2cec_adjection_land_stuff[direction]; // From terrain analysis - 8007:0c61
+            int spriteOffset = (coastalData << 2) + direction; // 8007:0c67-0c6a
+
+            // Calculate final sprite ID and render
+            int coastalSprite = 0x6D + spriteOffset; // Base coastal edge sprite - 8007:0c6c
+            FUN_8007_0558_module_14_102_draw_surface_sprite(coastalSprite); // 8007:0c6f
+        }
+
+        // Reset camera offsets after rendering
+        DAT_1e72_sub_tile_x = 0; // 8007:0c7d
+        DAT_1e73_sub_tile_y = 0; // 8007:0c80
+    }
+
+
+
+
+    private boolean shouldRenderStandardOverlay(boolean centerTileIsFogOfWar, boolean param3, boolean quadrantIsFogOfWar, int terrainType) {
+        // this is called when the neighbouring quadrant is not hhh
+
+        // Get and prepare current terrain for comparison
+        int currentTerrain = prepareCurrentTerrainForComparison();
+
+        // don't draw transistions between fog of war tiles
+        if (centerTileIsFogOfWar && quadrantIsFogOfWar) {
+            return false;
+        }
+
+        // if the terrain types are different, draw transitions
+        if (currentTerrain != terrainType) {
+            return true;
+        }
+
+        // Terrains match - check special sea/sea lane cases first
+        if (terrainType == 0x19 || terrainType == 0x1a) { // 8007:08c2-08cc
+            if (param3) { // 8007:08ce
+                return false; // Skip rendering for sea with param3 set
+            }
+            if (centerTileIsFogOfWar) { // 8007:08d4
+                return false; // Skip rendering for sea with param1 set
+            }
+            if (quadrantIsFogOfWar) { // 8007:08da
+                return false; // Skip rendering for visible sea
+            }
+            // If all above false, continue to render
+        }
+
+        // Default case for matching non-sea terrain
+        return true;
+    }
+
+    private int prepareCurrentTerrainForComparison() {
+        // Get current adjusted terrain
+        int terrain = DAT_a866_adjusted_current_terrain_type; // 8007:08e3
+        terrain = (byte)(terrain & 0x1F); // Mask to terrain type - 8007:08e6
+
+        // Normalize if needed
+        if (terrain >= 0x18) { // 8007:08ec
+            // Keep as-is for special terrain
+        } else {
+            terrain = (byte)(terrain & 0x07); // Normalize - 8007:08f1
+        }
+
+        // Apply hidden terrain adjustment
+        terrain = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain(terrain); // 8007:08f5
+
+        return terrain;
+    }
+
 
     public int DAT_a867_adjected_land_tiles_count;
     public int DAT_a86a_adjected_land_bitmask;
