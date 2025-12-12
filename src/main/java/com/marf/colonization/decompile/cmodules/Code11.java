@@ -1,6 +1,8 @@
 package com.marf.colonization.decompile.cmodules;
 
 import static com.marf.colonization.decompile.cmodules.Code14.*;
+import static com.marf.colonization.decompile.cmodules.Code1b.FUN_1b83_0000_fill_rectangle;
+import static com.marf.colonization.decompile.cmodules.Code1c.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 
 public class Code11 {
@@ -149,5 +151,70 @@ public class Code11 {
     public static void FUN_112b_01ba_draw_unit(int unit_index, int flags, int screenX, int screenY, int zoom_level_percent, int tile_pixel_size) {
 
 
+    }
+
+    /**
+     * Params:
+     * - param_1 - zoom_level
+     * - param_2 - backscreen
+     * - DX - x in pixel
+     * - BX - y in pixels
+     * - AX - current village index
+     */
+    public static void FUN_112b_0790_draw_indian_village(Sprite destination, int zoom_level_percent, int x_in_pixels, int y_in_pixels, int village_index) {
+        IndianVillage village = DAT_54a4_indian_village_list[village_index];
+        int tribeIndex = village.nation - 4;
+        Tribe tribe = DAT_2b4d_5a8e_tribes_list[tribeIndex];
+        int tribeLevel = tribe.level;
+
+        int tileSize = 16;
+        if (zoom_level_percent < 100) {
+            x_in_pixels -= (2 >> DAT_017a_zoom_level) & 0x3;
+            tileSize = DAT_82de_tile_pixel_size;
+        }
+
+        // draw base icon
+        int screen_y = y_in_pixels + tileSize - 1;
+        int screen_x = x_in_pixels + tileSize >> 1;
+        FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(destination, screen_x, screen_y, zoom_level_percent, Math.min(tribeLevel, 3)+0xb, DAT_082e_icons_sprite_sheet);
+
+        int color = DAT_0838_minimap_fractions_colors_table[tribeIndex+4];
+        if (zoom_level_percent == 100) {
+            if (tribeLevel == 0) {
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+3, y_in_pixels+4, 1, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+12, y_in_pixels+4, 1, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+9, y_in_pixels+6, 1, 1, destination, color);
+            } else if (tribeLevel == 1) {
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+4, y_in_pixels+9, 2, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+9, y_in_pixels+11, 3, 1, destination, color);
+            }
+            // no tribe colors for level 2 and 3
+        }
+        if (zoom_level_percent == 50) {
+            if (tribeLevel == 0) {
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+2, y_in_pixels+2, 1, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+6, y_in_pixels+2, 1, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+5, y_in_pixels+3, 1, 1, destination, color);
+            } else if (tribeLevel == 1) {
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+2, y_in_pixels+4, 1, 1, destination, color);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+5, y_in_pixels+5, 3, 1, destination, color);
+            }
+            // no tribe colors for level 2 and 3
+        }
+
+        // is the village a capital?
+        if ((village.state & 4) != 0) {
+            //  draw the capital icon
+            FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(destination, screen_x, screen_y, zoom_level_percent, 0x12, DAT_082e_icons_sprite_sheet);
+        }
+
+        if (zoom_level_percent == 100) {
+            // continue at 112b:09cd
+        }
+
+        if (zoom_level_percent <= 25) {
+            // draw colored rectangles for the two smallest zoom levels
+            FUN_1b83_0000_fill_rectangle(x_in_pixels, y_in_pixels, tileSize, tileSize, destination, color);
+        }
     }
 }

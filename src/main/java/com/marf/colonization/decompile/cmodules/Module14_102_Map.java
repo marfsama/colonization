@@ -347,7 +347,7 @@ public class Module14_102_Map {
     public static void FUN_8007_0558_module_14_102_draw_surface_sprite(int spriteIndex) {
         if (DAT_017c_zoom_level_percent < 100) {
             // zoom level < 100%
-            FUN_1c3a_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017c_zoom_level_percent, DAT_016a_phys0_sprite_sheet);
+            FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, DAT_017c_zoom_level_percent, spriteIndex, DAT_016a_phys0_sprite_sheet);
         } else {
             // zoom level == 100%
             FUN_1c1b_0000_draw_compressed_sprite(DAT_2640_2nd_backscreen, DAT_1e72_sub_tile_x + DAT_a554_draw_map_x_in_pixels - 8, DAT_1e73_sub_tile_y + DAT_a556_draw_map_y_in_pixels - 0xf, spriteIndex, DAT_016a_phys0_sprite_sheet);

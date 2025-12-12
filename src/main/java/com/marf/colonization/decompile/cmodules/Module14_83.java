@@ -1,16 +1,46 @@
 package com.marf.colonization.decompile.cmodules;
 
-import static com.marf.colonization.decompile.cmodules.Code11.FUN_112b_01ba_draw_unit;
+import static com.marf.colonization.decompile.cmodules.Code11.*;
 import static com.marf.colonization.decompile.cmodules.Code13.*;
 import static com.marf.colonization.decompile.cmodules.Code14.*;
-import static com.marf.colonization.decompile.cmodules.Code15.FUN_15d9_0a80_find_colony_at;
+import static com.marf.colonization.decompile.cmodules.Code15.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 import static com.marf.colonization.decompile.cmodules.Module14_Minimap.*;
 
 public class Module14_83 {
 
-    public static void FUN_7f88_00ea_module_14() {
+    /**
+     *
+     * @param x map viewport x in tiles
+     * @param y map viewport y in tiles
+     * @param width map viewport width in tiles
+     * @param height map viewport height in tiles
+     */
+    public static void FUN_7f88_0002_module_14_maybe_render_tribes(int x, int y, int width, int height) {
+        int playerMask = 0x10 << DAT_5338_savegame_header.maybe_player_controlled_power;
+        int x2 = x + width - 1;
+        int y2 = y + height - 1;
 
+        FUN_7f61_0004_module_14_5c_clamp_to_viewport(x, y, x2, y2);
+
+        for (int villageIndex = 0; villageIndex < DAT_5338_savegame_header.num_indians; villageIndex++) {
+            IndianVillage village = DAT_54a4_indian_village_list[villageIndex];
+            // check if the cillage is in the visible area
+            if (village.x >= x && village.y >= y && village.x <= x2 && village.y <= y2) {
+                // check if the tile is visible to the current player or the debug flag "reveal whole map" is active
+                if ((FUN_1373_02fc_get_visibility_at(village.x, village.y) & playerMask) > 0 || DAT_5338_savegame_header.field_0x22_maybe_current_turn > 0) {
+
+                    int screenX = (village.x - DAT_82e2_viewport_x_min + DAT_82e0_viewport_x_offset) * DAT_82de_tile_pixel_size;
+                    int screenY = (village.y - DAT_82e6_viewport_y_min + DAT_82e4_viewport_y_offset) * DAT_82de_tile_pixel_size;
+                    FUN_112b_0790_draw_indian_village(DAT_2640_2nd_backscreen, DAT_017c_zoom_level_percent, screenX, screenY, villageIndex);
+                }
+            }
+        }
+    }
+
+
+    public static void FUN_7f88_00ea_module_14_draw_tribes_viewport() {
+        FUN_7f88_0002_module_14_maybe_render_tribes(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport);
     }
     public static void FUN_7f88_0248_module_14() {
 
@@ -169,7 +199,7 @@ public class Module14_83 {
         }
     }
 
-    public static void FUN_7f88_058e_module_14() {
+    public static void FUN_7f88_058e_module_14_render_units_in_viewport() {
         FUN_7f88_04bc_module_14_render_units(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport);
     }
 }

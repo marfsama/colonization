@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Tribe  extends GameDataSection {
+public class IndianVillage extends GameDataSection {
     private int x;
     private int y;
     private TableValue nation; // Will use Lookup enum later

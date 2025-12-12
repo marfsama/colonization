@@ -2,6 +2,8 @@ package com.marf.colonization.rebuild;
 
 
 import com.marf.colonization.mpskit.Ss;
+import com.marf.colonization.saves.section.IndianTribe;
+import com.marf.colonization.saves.section.IndianVillage;
 import com.marf.colonization.saves.section.Unit;
 
 import java.awt.image.BufferedImage;
@@ -114,9 +116,9 @@ public class Minimap {
 
 
     /**
-     * FUN_7f05_048a
+     * @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f05_048a_module_14_draw_minimap_panel
      */
-    public void renderMinimapPanel(int power) {
+    public void renderMinimapPanel(boolean flushToScreen, int power) {
         calculateMinimapBounds();
         if (resources.getWoodTile() == null) {
             canvas.fillRect(canvas.getBackscreen(), MINIMAP_PANEL_X, MINIMAP_PANEL_Y, MINIMAP_PANEL_WIDTH, MINIMAP_PANEL_HEIGHT, 0);
@@ -349,8 +351,8 @@ public class Minimap {
     private int DAT_a866_adjusted_current_terrain_type;
     private int DAT_0184_show_hidden_terrain_state;
 
-    public int[] DAT_00a8_x_directions = new int[] {0, 1, 0, -1, 0, 0};
-    public int[] DAT_00ae_y_directions = new int[] {-1, 0, 1, 0, 0, 0};
+    public int[] DAT_00a8_x_directions = new int[]{0, 1, 0, -1, 0, 0};
+    public int[] DAT_00ae_y_directions = new int[]{-1, 0, 1, 0, 0, 0};
 
 
     /**
@@ -358,14 +360,14 @@ public class Minimap {
      */
     public void drawMapForType(int mapViewType, int power) {
         DAT_0180_maybe_colony_vs_map_view = mapViewType;
-        FUN_8007_1016_module_14_102_draw_map_viewport(power);
+        drawMapViewport(power);
         DAT_0180_maybe_colony_vs_map_view = 0;
     }
 
     /**
      * @see com.marf.colonization.decompile.cmodules.Module14_102_Map#FUN_8007_1016_module_14_102_draw_map_viewport
      */
-    public void FUN_8007_1016_module_14_102_draw_map_viewport(int power) {
+    public void drawMapViewport(int power) {
         calculateViewport();
 
         // if the map is smaller than the viewport (so it does not cover all space), draw wood tiles as background
@@ -509,7 +511,9 @@ public class Minimap {
     public void FUN_8007_0558_module_14_102_draw_surface_sprite(int spriteIndex) {
         if (gameData.zoomLevelPercent < 100) {
             // zoom level < 100%
-            //FUN_1c3a_000a(DAT_2640_2nd_backscreen, DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevelPercent, DAT_016a_phys0_sprite_sheet);
+            canvas.drawSpriteFlippableCenteredZoomed(canvas.getScratch(),
+                    DAT_a554_draw_map_x_in_pixels, DAT_a556_draw_map_y_in_pixels, gameData.zoomLevelPercent,
+                    spriteIndex, resources.getSurface());
         } else {
             // zoom level == 100%
             canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getSurface(),
@@ -766,7 +770,7 @@ public class Minimap {
             for (int local_e_direction = 0; local_e_direction < 4; local_e_direction++) {
                 int dy = DAT_00ae_y_directions[local_e_direction];
                 int dx = DAT_00a8_x_directions[local_e_direction];
-                int terrain = gameData.gameMap.getTerrain(x+dx, y+dy);
+                int terrain = gameData.gameMap.getTerrain(x + dx, y + dy);
 
                 if ((terrain & 0x40) > 0) {
                     int adjustedTerrain2 = FUN_1373_05bc_adjust_terrain_type_with_show_hidden_terrain((byte) terrain);
@@ -828,12 +832,12 @@ public class Minimap {
 
         // Read terrain type from map
         int terrainType = gameData.gameMap.getTerrain(x, y) & 0xff;
-        terrainType = (byte)(terrainType & 0x1F);
+        terrainType = (byte) (terrainType & 0x1F);
         int local_e = terrainType; // 8007:075d
 
         // remove forest
         if (terrainType < 0x18) {
-            terrainType = (byte)(terrainType & 0x07);
+            terrainType = (byte) (terrainType & 0x07);
         }
 
         // Adjust for hidden terrain
@@ -943,8 +947,6 @@ public class Minimap {
     }
 
 
-
-
     private boolean shouldRenderStandardOverlay(boolean centerTileIsFogOfWar, boolean param3, boolean quadrantIsFogOfWar, int terrainType) {
         // this is called when the neighbouring quadrant is not hhh
 
@@ -982,13 +984,13 @@ public class Minimap {
     private int prepareCurrentTerrainForComparison() {
         // Get current adjusted terrain
         int terrain = DAT_a866_adjusted_current_terrain_type; // 8007:08e3
-        terrain = (byte)(terrain & 0x1F); // Mask to terrain type - 8007:08e6
+        terrain = (byte) (terrain & 0x1F); // Mask to terrain type - 8007:08e6
 
         // Normalize if needed
         if (terrain >= 0x18) { // 8007:08ec
             // Keep as-is for special terrain
         } else {
-            terrain = (byte)(terrain & 0x07); // Normalize - 8007:08f1
+            terrain = (byte) (terrain & 0x07); // Normalize - 8007:08f1
         }
 
         // Apply hidden terrain adjustment
@@ -1303,5 +1305,97 @@ public class Minimap {
         }
 
         return result;
+    }
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_df#FUN_7fe4_00c0_draw_map_and_minimap
+     */
+    public void drawMapAndMinimap(boolean flushToScreen) {
+        canvas.drawRect(canvas.getBackscreen(), -1, 7,
+                gameData.viewportCanvasSize.width,
+                gameData.viewportCanvasSize.height + 8, 0x0);
+
+        int power = gameData.savegameHeader.field_0x22_maybe_current_turn == 0
+                ? gameData.savegameHeader.maybe_player_controlled_power
+                : -1;
+
+        drawMapViewport(power);
+        FUN_7f88_00ea_module_14_draw_tribes_viewport();
+//        FUN_7f88_0248_module_14();
+//        FUN_7f61_012a_module_14_5c_flip_viewport_backscreen();
+//        FUN_7f88_058e_module_14_render_units_in_viewport();
+//        if (DAT_017a_zoom_level == 3) {
+//            // draw continent name
+//            //local_52[0] = 0;
+//            //FUN_1d01_07ea_strcpy_near(local_52,*(int *)0x534e * 0x34 + 0x53de);
+//            //FUN_104b_0318_draw_tiny_string_centered(local_52);
+//        }
+
+        renderMinimapPanel(flushToScreen, power);
+        if (flushToScreen) {
+            canvas.drawSprite(canvas.getBackscreen(), canvas.getScratch(), 15 * 16, 12 * 16, 0, 8, 0, 0);
+//            FUN_7f61_0214_module_14_flip_viewport_rectangle();
+        }
+    }
+
+    public void FUN_7f88_00ea_module_14_draw_tribes_viewport() {
+        FUN_7f88_0002_module_14_maybe_render_tribes(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
+    }
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Module14_Minimap#FUN_7f61_0004_module_14_5c_clamp_to_viewport
+     */
+    public int[] clampToViewport(int x1, int y1, int x2, int y2) {
+        x1 = max(x1, gameData.viewportMin.x);
+        y1 = max(y1, gameData.viewportMin.y);
+        x2 = min(x2, gameData.viewportMax.x);
+        y2 = min(y2, gameData.viewportMax.y);
+        return new int[]{x1, y1, x2, y2};
+    }
+
+    public void FUN_7f88_0002_module_14_maybe_render_tribes(int x, int y, int width, int height) {
+        int playerMask = 0x10 << gameData.savegameHeader.maybe_player_controlled_power;
+        int x2 = x + width - 1;
+        int y2 = y + height - 1;
+
+        int[] result = clampToViewport(x, y, x2, y2);
+        x = result[0];
+        y = result[1];
+        x2 = result[2];
+        y2 = result[3];
+
+        for (int villageIndex = 0; villageIndex < gameData.gameMap.indianVillages.size(); villageIndex++) {
+            IndianVillage village = gameData.gameMap.indianVillages.get(villageIndex);
+            // check if the cillage is in the visible area
+            if (village.getX() >= x && village.getY() >= y && village.getX() <= x2 && village.getY() <= y2) {
+                // check if the tile is visible to the current player or the debug flag "reveal whole map" is active
+                if ((gameData.gameMap.getVisibilityAt(village.getX(), village.getY()) & playerMask) > 0 || gameData.savegameHeader.field_0x22_maybe_current_turn > 0) {
+                    int screenX = gameData.viewportOffset.x + (village.getX() - x) * gameData.tileSize;
+                    int screenY = gameData.viewportOffset.y + (village.getY() - y) * gameData.tileSize;
+                    FUN_112b_0790_draw_indian_village(canvas.getScratch(), gameData.zoomLevelPercent, screenX, screenY, villageIndex);
+
+                }
+            }
+        }
+    }
+
+    public void FUN_112b_0790_draw_indian_village(BufferedImage destination, int zoomLevelPercent, int screenX, int screenY, int villageIndex) {
+        IndianVillage village = gameData.gameMap.indianVillages.get(villageIndex);
+        int tribeIndex = village.getNation().getId() - 4;
+        IndianTribe tribe = gameData.gameMap.indianTribes.get(tribeIndex);
+        int tribeLevel = tribe.getLevel();
+
+        int tileSize = 16;
+        if (zoomLevelPercent < 100) {
+            screenX -= (2 >> gameData.tileSize) & 0x3;
+            tileSize = gameData.tileSize;
+        }
+
+        // draw base icon
+        int screen_x = screenX + (tileSize >> 1);
+        int screen_y = screenY + tileSize - 1;
+        canvas.drawSpriteFlippableCenteredZoomed(destination, screen_x, screen_y, zoomLevelPercent, Math.min(tribeLevel, 3) + 0xb, resources.getIcons());
+
+
     }
 }

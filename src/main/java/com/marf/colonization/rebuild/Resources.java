@@ -19,7 +19,10 @@ public class Resources {
     private Color[] palette;
     private BufferedImage woodTile;
     private List<Ss.Sprite> terrain;
+    /** PHYS0.SS */
     private List<Ss.Sprite> surface;
+    /** ICONS.SS */
+    private List<Ss.Sprite> icons;
 
 
     /**
@@ -31,6 +34,7 @@ public class Resources {
         resources.woodTile = resources.loadSpriteSheet("WOODTILE.SS").get(0).getImage();
         resources.terrain = resources.loadSpriteSheet("TERRAIN.SS");
         resources.surface = resources.loadSpriteSheet("PHYS0.SS");
+        resources.icons = resources.loadSpriteSheet("ICONS.SS");
         return resources;
     }
 

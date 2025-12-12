@@ -1,10 +1,10 @@
 package com.marf.colonization.decompile.cmodules;
 
-import static com.marf.colonization.decompile.cmodules.Code12.FUN_1261_0064_maybe_wait_for_keystroke_or_click;
+import static com.marf.colonization.decompile.cmodules.Code12.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
 import static com.marf.colonization.decompile.cmodules.Module14_102_Map.*;
 import static com.marf.colonization.decompile.cmodules.Module14_5c.*;
-import static com.marf.colonization.decompile.cmodules.Module14_df.FUN_7fe4_00c0_draw_map_and_minimap;
+import static com.marf.colonization.decompile.cmodules.Module14_df.*;
 
 /**
  * Base Description: ??

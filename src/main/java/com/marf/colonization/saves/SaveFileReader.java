@@ -52,10 +52,10 @@ public class SaveFileReader extends BaseReader {
             saveFile.setEurope(readObjectList(4, Europe::new, this::readEurope));
 
             // Read tribes (dynamic count)
-            saveFile.setTribes(readObjectList(saveFile.getHeader().getNumTribes(), Tribe::new, this::readTribe));
+            saveFile.setIndianVillages(readObjectList(saveFile.getHeader().getNumTribes(), IndianVillage::new, this::readindianVillage));
 
             // Read indians (8 entries)
-            saveFile.setIndians(readObjectList(8, Indian::new, this::readIndian));
+            saveFile.setIndianTribes(readObjectList(8, IndianTribe::new, this::readTribe));
 
             // Read padding (717 bytes)
             saveFile.setPadding9(readBytes(stream, 717));
@@ -364,85 +364,85 @@ public class SaveFileReader extends BaseReader {
         return europe;
     }
 
-    private Tribe readTribe(Tribe tribe, ImageInputStream stream) throws IOException {
+    private IndianVillage readindianVillage(IndianVillage indianVillage, ImageInputStream stream) throws IOException {
         // Read position
-        tribe.setX(stream.readUnsignedByte());
-        tribe.setY(stream.readUnsignedByte());
+        indianVillage.setX(stream.readUnsignedByte());
+        indianVillage.setY(stream.readUnsignedByte());
 
         // Read nation (1 byte)
-        tribe.setNation(readTableValue(tables.getNations(), stream::readUnsignedByte));
+        indianVillage.setNation(readTableValue(tables.getNations(), stream::readUnsignedByte));
 
         // Read state (1 byte)
-        tribe.setState(stream.readUnsignedByte());
+        indianVillage.setState(stream.readUnsignedByte());
 
         // Read population (1 byte)
-        tribe.setPopulation(stream.readUnsignedByte());
+        indianVillage.setPopulation(stream.readUnsignedByte());
 
         // Read mission (1 byte) - defaults to "none"
-        tribe.setMission(stream.readUnsignedByte());
+        indianVillage.setMission(stream.readUnsignedByte());
 
         // Read padding1 (4 bytes)
-        tribe.setPadding1(readBytes(stream, 4));
+        indianVillage.setPadding1(readBytes(stream, 4));
 
         // Read panic (1 byte)
-        tribe.setPanic(stream.readUnsignedByte());
+        indianVillage.setPanic(stream.readUnsignedByte());
 
         // Read padding2 (5 bytes)
-        tribe.setPadding2(readBytes(stream, 5));
+        indianVillage.setPadding2(readBytes(stream, 5));
 
         // Read debug number (1 byte)
-        tribe.setDebugNumber(stream.readUnsignedByte());
+        indianVillage.setDebugNumber(stream.readUnsignedByte());
 
         // Read population loss in current turn (1 byte)
-        tribe.setPopulationLossInCurrentTurn(stream.readUnsignedByte());
+        indianVillage.setPopulationLossInCurrentTurn(stream.readUnsignedByte());
 
-        return tribe;
+        return indianVillage;
     }
 
-    private Indian readIndian(Indian indian, ImageInputStream stream) throws IOException {
+    private IndianTribe readTribe(IndianTribe indianTribe, ImageInputStream stream) throws IOException {
         // Read unk0 (1 byte)
-        indian.setUnk0(stream.readUnsignedByte());
+        indianTribe.setUnk0(stream.readUnsignedByte());
 
         // Read unk1 (1 byte)
-        indian.setUnk1(stream.readUnsignedByte());
+        indianTribe.setUnk1(stream.readUnsignedByte());
 
         // Read level (1 byte)
-        indian.setLevel(stream.readUnsignedByte());
+        indianTribe.setLevel(stream.readUnsignedByte());
 
         // Read unk2 (4 bytes)
-        indian.setUnk2(readBytes(stream, 4));
+        indianTribe.setUnk2(readBytes(stream, 4));
 
         // Read armed braves (1 byte)
-        indian.setArmedBraves(stream.readUnsignedByte());
+        indianTribe.setArmedBraves(stream.readUnsignedByte());
 
         // Read horse herds (1 byte)
-        indian.setHorseHerds(stream.readUnsignedByte());
+        indianTribe.setHorseHerds(stream.readUnsignedByte());
 
         // Read unk3 (5 bytes)
-        indian.setUnk3(readBytes(stream, 5));
+        indianTribe.setUnk3(readBytes(stream, 5));
 
         // Read stock (16 items, each 2 bytes = 32 bytes total)
-        indian.setStock(readShortList(16, stream));
+        indianTribe.setStock(readShortList(16, stream));
 
         // Read unk4 (12 bytes)
-        indian.setUnk4(readBytes(stream, 12));
+        indianTribe.setUnk4(readBytes(stream, 12));
 
         // Read meetings (4 meetings, each 1 byte = 4 bytes total)
-        indian.setMeetings(readByteList(4, stream));
+        indianTribe.setMeetings(readByteList(4, stream));
 
         // Read unk5 (8 bytes)
-        indian.setUnk5(readBytes(stream, 8));
+        indianTribe.setUnk5(readBytes(stream, 8));
 
         // Read aggressions (4 aggressions, each 2 bytes = 8 bytes total)
-        indian.setAggressions(new ArrayList<>());
+        indianTribe.setAggressions(new ArrayList<>());
         for (int i = 0; i < 4; i++) {
-            Indian.Aggression aggression = new Indian.Aggression();
+            IndianTribe.Aggression aggression = new IndianTribe.Aggression();
             aggression.setAggr(stream.readUnsignedByte());
             aggression.setAggrHigh(stream.readUnsignedByte());
-            indian.getAggressions().add(aggression);
+            indianTribe.getAggressions().add(aggression);
         }
 
-        return indian;
+        return indianTribe;
     }
 
     private GameMap readGameMap(GameMap gameMap, ImageInputStream stream, Position mapSize) throws IOException {

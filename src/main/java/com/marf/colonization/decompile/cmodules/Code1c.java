@@ -6,7 +6,20 @@ public class Code1c {
 
     }
 
-    public static void FUN_1c3a_000a(Sprite destination, int x, int y, int zoomLevelPercent, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+    /**
+     * Draws the Sprite at x,y, where the x coordinate is centered. spriteIndex < 0 means the sprite is mirrored along the vertical axis.
+     * <p>
+     * params
+     * - param_1 - destination
+     * - param_2 - zoom level percent
+     * - param_3 - y
+     * - param_4 - sprite sheet
+     * - AX - sprite index
+     * - DX - x
+     * - BX - destination
+     *
+     */
+    public static void FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(Sprite destination, int x, int y, int zoomLevelPercent, int spriteIndex, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
 
     }
 

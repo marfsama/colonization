@@ -34,6 +34,14 @@ public class GameData {
     public Point viewportOffset = new Point();
 
     /**
+     * Tile coordinate of the center of the viewport
+     *
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_84f6_viewport_width
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_84f8_viewport_height
+     */
+    public Dimension viewportCanvasSize = new Dimension();
+
+    /**
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_017a_zoom_level
      * */
     public int zoomLevel;

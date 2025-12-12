@@ -79,6 +79,21 @@ public class Canvas {
     }
 
     /**
+     * Draws the Sprite at x,y, where the x coordinate is centered. spriteIndex < 0 means the sprite is mirrored along the vertical axis.
+     * @see com.marf.colonization.decompile.cmodules.Code1c#FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed
+     */
+    public void drawSpriteFlippableCenteredZoomed(BufferedImage destination, int x, int y, int zoomLevelPercent, int spriteIndex, List<Ss.Sprite> spriteSheet) {
+        if (zoomLevelPercent != 100) {
+            throw new IllegalStateException("scaling not implemented yet");
+        }
+        Graphics2D graphics = destination.createGraphics();
+        BufferedImage sprite = spriteSheet.get(spriteIndex - 1).getImage();
+        graphics.drawImage(sprite, x - sprite.getWidth() / 2, y-16, null);
+        graphics.dispose();
+    }
+
+
+    /**
      * Tiles a sprite over a bigger area.
      * The first row and column is offset by offsetX and offsetY
      * @see com.marf.colonization.decompile.cmodules.Code1b#FUN_1bd9_0006_draw_sprite_tiled

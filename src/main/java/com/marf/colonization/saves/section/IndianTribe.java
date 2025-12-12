@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Indian extends GameDataSection {
+public class IndianTribe extends GameDataSection {
     private int unk0;
     private int unk1;
     private int level;

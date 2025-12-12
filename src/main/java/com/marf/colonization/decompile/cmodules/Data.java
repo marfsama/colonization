@@ -132,10 +132,12 @@ public class Data {
 
     public static Player[] DAT_53c6_player_list = new Player[4];
 
+    public static IndianVillage[] DAT_54a4_indian_village_list = new IndianVillage[0];
+
     public static int DAT_5a8c_tile_pixel_size;
 
     // Tribe[]
-    public static int tribe_ARRAY_2b4d_5a8e;
+    public static Tribe[] DAT_2b4d_5a8e_tribes_list;
 
     public static List<Colony> DAT_5cfe_colonies_list = new ArrayList<>();
 

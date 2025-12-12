@@ -22,8 +22,8 @@ public class SaveFile {
     private List<Colony> colonies;
     private List<Unit> units;
     private List<Europe> europe;
-    private List<Tribe> tribes;
-    private List<Indian> indians;
+    private List<IndianVillage> indianVillages;
+    private List<IndianTribe> indianTribes;
     @JsonIgnore
     private byte[] padding9;
     private Position cursorPos;
