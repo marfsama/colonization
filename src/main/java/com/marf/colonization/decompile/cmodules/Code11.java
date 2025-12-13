@@ -1,9 +1,11 @@
 package com.marf.colonization.decompile.cmodules;
 
 import static com.marf.colonization.decompile.cmodules.Code14.*;
-import static com.marf.colonization.decompile.cmodules.Code1b.FUN_1b83_0000_fill_rectangle;
+import static com.marf.colonization.decompile.cmodules.Code15.*;
+import static com.marf.colonization.decompile.cmodules.Code1b.*;
 import static com.marf.colonization.decompile.cmodules.Code1c.*;
 import static com.marf.colonization.decompile.cmodules.Data.*;
+import static com.marf.colonization.decompile.cmodules.Modulea.*;
 
 public class Code11 {
 
@@ -209,7 +211,88 @@ public class Code11 {
         }
 
         if (zoom_level_percent == 100) {
-            // continue at 112b:09cd
+            screen_x = x_in_pixels + 6;
+
+            // draw threat level
+            int out_thread_level = 0;
+            int aggressor = FUN_6158_03fa_module_a_maybe_get_max_european_threat(village_index, out_thread_level);
+
+            int threatLevel = out_thread_level;
+            if (aggressor >= 0) {
+                int panicBackgroundColor;
+                int panicColor;
+                if (DAT_5338_savegame_header.maybe_current_player == aggressor) {
+                    int panic = village.panic[aggressor];
+                    if (panic < 0) {
+                        village.panic[aggressor] = 0;
+                    }
+                    int panicLevel = panic >> 5;
+                    if (panicLevel > 3) {
+                        panicLevel = 3;
+                    }
+                    int tribeAggression = FUN_15cb_00da_get_tribe_aggression_for_power(tribeIndex, aggressor);
+                    if (tribeAggression >= 0x4b) {
+                        panicLevel = 3;
+                    }
+
+                    panicColor = switch (panicLevel) {
+                        case 0 -> 0xa;
+                        case 1 -> 0xb;
+                        case 2 -> 0xe;
+                        default -> 0xc;
+                    };
+                    panicBackgroundColor = 0;
+                } else {
+                    threatLevel = 1;
+                    panicColor = DAT_0838_minimap_fractions_colors_table[aggressor];
+                    // TODO: check this. the panic color cannot be the same as the background color
+                    panicBackgroundColor = panicColor;
+                }
+
+                if (threatLevel > 0) {
+                    screen_y += 4;
+                    do {
+                        // for half an aggression level show darker color
+                        if (threatLevel < 3) {
+                            panicColor -= 8;
+                        }
+                        // draw background: for the player black, for other powers the color of the power
+                        FUN_1b83_0000_fill_rectangle(screen_x, screen_y, 3, 7, destination, panicBackgroundColor);
+                        // long part of the exclamation mark
+                        FUN_1b83_0000_fill_rectangle(screen_x+1, screen_y+1, 1, 5, destination, panicColor);
+                        // dot of the exclamation mark
+                        FUN_1b83_0000_fill_rectangle(screen_x+1, screen_y+4, 1, 1, destination, panicColor);
+
+                        screen_x += 2;
+                        threatLevel -= 4;
+                    } while (threatLevel > 0);
+                }
+                screen_x += 2;
+            }
+            // draw mission
+            if (village.mission > -1) {
+                int missionPower = village.mission & 0x7;
+                int upperNibble = village.mission & 0xf8;
+
+                int missionColor = DAT_0838_minimap_fractions_colors_table[missionPower] + (upperNibble != 0 ? 0xf8 : 0);
+                // draw background
+                FUN_1b83_0000_fill_rectangle(screen_x+1, screen_y+5, 1, 1, destination, 0);
+                // draw cross
+                FUN_1b83_0000_fill_rectangle(screen_x+2, screen_y+6, 1, 4, destination, 0);
+
+                FUN_1b83_0000_fill_rectangle(screen_x+1, screen_y+7, 3, 1, destination, 0);
+            }
+
+            if ((DAT_0884_debug_info_flags & 1) > 0) {
+                int panic = village.panic[aggressor];
+                // draw panic value to screen
+                String panicString = String.valueOf(panic);
+                int stringWidth = FUN_1c0e_000c_get_string_width_in_pixels(panicString, DAT_088e_fonttiny_address);
+                FUN_1b83_0000_fill_rectangle(x_in_pixels+2, y_in_pixels+9, stringWidth+2, 0 /*DAT_088e_fonttiny_address.height*/, destination, 0);
+                FUN_1c0d_0000_set_text_blit_parameters(0xf, -1, 0xf, 0xf);
+                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, panicString, 0, x_in_pixels+3, y_in_pixels+3);
+            }
+
         }
 
         if (zoom_level_percent <= 25) {

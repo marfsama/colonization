@@ -120,4 +120,7 @@ public class Code1b {
         return 0;
     }
 
+    public static void FUN_1bf6_0002_blit_text_to_bitmap(Sprite destination, int fontAddress, String string, int color, int x, int y) {
+
+    }
 }

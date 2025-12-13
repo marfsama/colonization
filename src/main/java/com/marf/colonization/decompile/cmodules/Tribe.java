@@ -32,14 +32,6 @@ public class Tribe {
     /** 0x3e db[8] */
     public byte[] unk5 = new byte[8];
     /** 0x46 dw[4] */
-    public IndianTribe.Aggression[] aggressions = new IndianTribe.Aggression[4];
+    public int[] aggressions = new int[4];
     // size: 0x4e
-
-    @Data
-    public static class Aggression {
-        /** byte */
-        public int aggr;
-        /** byte */
-        public int aggrHigh;
-    }
 }

@@ -69,7 +69,6 @@ public class Data {
     public static int DAT_0342_some_flag;
 
     public static int DAT_07dc;
-
     public static int DAT_0816;
     public static int DAT_0818;
     public static Sprite DAT_081c_address_of_woodtile_sprite_maybe;
@@ -82,6 +81,10 @@ public class Data {
                0x43, 0x6F, 0x75, 0x47,
                0x7, 0xB, 0x9, 0xA
     };
+
+    public static int DAT_0884_debug_info_flags = 0;
+    public static int DAT_088e_fonttiny_address;
+
 
     public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
 

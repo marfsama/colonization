@@ -1,6 +1,15 @@
 package com.marf.colonization.decompile.cmodules;
 
 public class Code1c {
+    /** return the width of the string in the selected font. */
+    public static int FUN_1c0e_000c_get_string_width_in_pixels(String s, int font) {
+        return 0;
+    }
+
+    public static void FUN_1c0d_0000_set_text_blit_parameters(int param_1, int ax, int bx, int dx) {
+
+    }
+
     public static void FUN_1c1b_0000_draw_compressed_sprite(Sprite destination, int x, int y, int spriteIndex, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
 
 
@@ -36,5 +45,6 @@ public class Code1c {
      * */
     public static void FUN_1cf5_0022_draw_sprite_to_vga_memory_0xA000 (Sprite pointer_to_sprite,int src_x,int src_y,int dest_x,int dest_y,int width, int height) {
     }
+
 
 }

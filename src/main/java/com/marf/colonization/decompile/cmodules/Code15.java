@@ -161,4 +161,8 @@ public class Code15 {
         DAT_8d6c_current_colony_ptr.buildings[param_1_building >> 3] = buildingByte;
     }
 
+    public static int FUN_15cb_00da_get_tribe_aggression_for_power(int tribeIndex, int aggressor) {
+        return DAT_2b4d_5a8e_tribes_list[tribeIndex].aggressions[aggressor];
+    }
+
 }

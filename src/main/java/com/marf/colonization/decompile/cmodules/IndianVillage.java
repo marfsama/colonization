@@ -17,12 +17,7 @@ public class IndianVillage {
     public int field_0x6;
     /*0x8 0x2	*/
     public int field_0x7;
-    /*0xa 0x1	*/
-    public int panic;
-    /*0xb 0x5	*/
-    public byte[] dummy = new byte[5];
-    /*0x10 0x1  */
-    public int debug_number;
-    /*0x11 0x1  */
-    public int population_loss_in_current_turn;
+    /*0xa 0x8 dw[4]	*/
+    public int[] panic = new int[4];
+    // total size: 0x12
 }
