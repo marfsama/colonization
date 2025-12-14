@@ -289,8 +289,8 @@ public class Code11 {
                 String panicString = String.valueOf(panic);
                 int stringWidth = FUN_1c0e_000c_get_string_width_in_pixels(panicString, DAT_088e_fonttiny_address);
                 FUN_1b83_0000_fill_rectangle(x_in_pixels+2, y_in_pixels+9, stringWidth+2, 0 /*DAT_088e_fonttiny_address.height*/, destination, 0);
-                FUN_1c0d_0000_set_text_blit_parameters(0xf, -1, 0xf, 0xf);
-                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, panicString, 0, x_in_pixels+3, y_in_pixels+3);
+                FUN_1c0d_0000_set_text_blit_colors(0xf, -1, 0xf, 0xf);
+                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, panicString, 0, x_in_pixels+3, y_in_pixels+3, 0);
             }
 
         }

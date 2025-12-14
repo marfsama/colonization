@@ -2,11 +2,11 @@ package com.marf.colonization.decompile.cmodules;
 
 public class Code1c {
     /** return the width of the string in the selected font. */
-    public static int FUN_1c0e_000c_get_string_width_in_pixels(String s, int font) {
+    public static int FUN_1c0e_000c_get_string_width_in_pixels(String s, Font font) {
         return 0;
     }
 
-    public static void FUN_1c0d_0000_set_text_blit_parameters(int param_1, int ax, int bx, int dx) {
+    public static void FUN_1c0d_0000_set_text_blit_colors(int param_1, int ax, int bx, int dx) {
 
     }
 

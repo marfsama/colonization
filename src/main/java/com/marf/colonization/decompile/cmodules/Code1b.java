@@ -1,5 +1,7 @@
 package com.marf.colonization.decompile.cmodules;
 
+import static com.marf.colonization.decompile.cmodules.Data.*;
+
 /**
  * Base Description: Timer stuff
  * Segment: 0x1bf0
@@ -120,7 +122,131 @@ public class Code1b {
         return 0;
     }
 
-    public static void FUN_1bf6_0002_blit_text_to_bitmap(Sprite destination, int fontAddress, String string, int color, int x, int y) {
+    /**
+     * This function renders text using a custom bitmap font format that appears to use some form of compression
+     * or packing for the glyph data.
+     * <p>
+     * Additional parameter:
+     * <p>
+     * BX - ptr to backscreen sprite
+     * AX - x pos
+     * DX - y pos
+     */
+    public static int FUN_1bf6_0002_blit_text_to_bitmap(Sprite destination, Font font, String string, int color, int x, int y, int additionalSpacing) {
+        int local_5e_y = 0;
+        int local_66 = 0;
 
+        // copy string to local buffer (size: 0x50 (80) bytes)
+        String text = string;
+
+        if (y < 0) {
+            local_5e_y = -y;
+            y = 0;
+        }
+
+        // clip upper edge
+        int fontHeight = font.height & 0xFF;
+        int visibleHeight = fontHeight - local_5e_y;  // Clip top
+        if (visibleHeight < 0) {
+            visibleHeight = 0;
+        }
+
+        int local_60_visibleFontHeight = fontHeight;
+        // clip lower edge
+        int destinationHeight = destination.height;
+        if ((y + visibleHeight - 1) > destinationHeight) {
+            local_60_visibleFontHeight = (y + visibleHeight - 1) - destinationHeight;
+            if (local_60_visibleFontHeight > fontHeight) {
+                local_60_visibleFontHeight = fontHeight;
+            }
+            visibleHeight = fontHeight - local_60_visibleFontHeight;
+        }
+
+
+        if (local_60_visibleFontHeight < 0) {
+            return x;
+        }
+
+        // Create color lookup (2-bit pixels to actual colors)
+        int[] colorLookup = DAT_262c_text_blit_colors;
+
+        // 5. Calculate starting position in buffer
+        int currentX = x;
+        int currentY = y;
+
+        // 6. Render each character
+        for (int i = 0; i < text.length(); i++) {
+            char ch = text.charAt(i);
+            int charIndex = ch & 0xFF;  // ASCII/8-bit chars
+
+            // Get glyph width
+            int glyphWidth = font.glyphWidths[charIndex] & 0xFF;
+            if (glyphWidth == 0) {
+                continue;
+            }
+
+            // Check if glyph fits
+            if (currentX + glyphWidth > destination.width) {
+                break;  // Horizontal clipping
+            }
+
+            // Get glyph data offset (offset 0x82 has word offsets)
+            int glyphDataOffset = font.glyphOffsets[charIndex];
+
+            // Adjust for vertical clipping
+            if (local_5e_y > 0) {
+                int bytesPerRow = (glyphWidth + 3) / 4;  // 4 pixels per byte, +3 to round up
+                glyphDataOffset += local_5e_y * bytesPerRow;
+            }
+
+            // Render the glyph
+            renderGlyph(destination, glyphDataOffset,
+                    currentX, currentY,
+                    font, glyphDataOffset,
+                    glyphWidth, visibleHeight,
+                    colorLookup);
+
+            // Advance position
+            currentX += glyphWidth + additionalSpacing;
+        }
+
+        // Return final x position (for chaining/measurement)
+        return currentX;
+    }
+
+    private static void renderGlyph(Sprite destination, int dataOffset, int x, int y, Font font, int glyphDataOffset, int glyphWidth, int height, int[] colorLookup) {
+
+        int destIndex = y * destination.width + x;
+        int srcOffset = dataOffset;
+
+        for (int row = 0; row < height; row++) {
+            int col = 0;
+            int srcByte = 0;
+            int bitShift = 6;  // Start with bits 7-6
+
+            while (col < glyphWidth) {
+                if (bitShift == 6) {
+                    // Need new source byte
+                    srcByte = font.glyphData[srcOffset++] & 0xFF;
+                }
+
+                // Extract 2-bit pixel value
+                int pixelIndex = (srcByte >> bitShift) & 0x03;
+                int color = colorLookup[pixelIndex];
+
+                // Draw pixel (skip if transparent/0xFF)
+                if (color != 0xFF) {
+                    destination.data[destIndex + col] = (byte) color;
+                }
+
+                col++;
+                bitShift -= 2;
+                if (bitShift < 0) {
+                    bitShift = 6;
+                }
+            }
+
+            destIndex += destination.width;  // Next line
+        }
     }
 }

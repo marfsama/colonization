@@ -83,7 +83,7 @@ public class Data {
     };
 
     public static int DAT_0884_debug_info_flags = 0;
-    public static int DAT_088e_fonttiny_address;
+    public static Font DAT_088e_fonttiny_address;
 
 
     public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
@@ -96,11 +96,13 @@ public class Data {
     public static int DAT_238a;
     public static Module1a.SpriteSheetSomeStructure DAT_238c;
 
+    public static int[] DAT_262c_text_blit_colors = new int[4];
 
     public static Sprite DAT_2638_backscreen = new Sprite();
     public static Sprite DAT_2640_2nd_backscreen = new Sprite();
 
     public static int DAT_26b6_current_random_slot;
+
 
     // 32 bits unsigned
     public static long DAT_273a_random_seed;

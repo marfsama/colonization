@@ -5,4 +5,6 @@ public class Sprite {
     public short height;
     public short address_offset;
     public short address_segment;
+
+    public byte[] data;
 }
