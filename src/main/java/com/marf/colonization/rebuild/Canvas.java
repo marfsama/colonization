@@ -1,5 +1,6 @@
 package com.marf.colonization.rebuild;
 
+import com.marf.colonization.mpskit.Ff;
 import com.marf.colonization.mpskit.Ss;
 import lombok.Getter;
 
@@ -13,6 +14,8 @@ public class Canvas {
     private BufferedImage backscreen;
     // scratch screen
     private BufferedImage scratch;
+
+    private int[] textColors = new int[] {0xf,0xf,0xf,0xf};
 
     public Canvas(Resources resources) {
         System.out.println("create canvas with "+resources);
@@ -120,15 +123,15 @@ public class Canvas {
     }
 
     public void setPixel(BufferedImage screen, int x, int y, int color) {
-        if (x >= backscreen.getWidth()) {
-            System.out.println("x > width-1: "+x+" > "+backscreen.getWidth());
+        if (x >= screen.getWidth()) {
+            System.out.println("x > width-1: "+x+" > "+screen.getWidth());
             return;
         }
-        if (y >= backscreen.getHeight()) {
-            System.out.println("y > height-1: "+y+" > "+backscreen.getHeight());
+        if (y >= screen.getHeight()) {
+            System.out.println("y > height-1: "+y+" > "+screen.getHeight());
             return;
         }
-        backscreen.setRGB(x,y, resources.getPalette()[color].getRGB());
+        screen.setRGB(x,y, resources.getPalette()[color].getRGB());
     }
 
     public void drawTextBig(BufferedImage destination, int x, int y, int color, String text) {
@@ -151,5 +154,38 @@ public class Canvas {
         graphic.drawString(text, x, y+height);
 
         graphic.dispose();
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code1c#FUN_1c0d_0000_set_text_blit_colors */
+    public void setTextColors(int a, int b, int c, int d) {
+        textColors[0] = a;
+        textColors[1] = b;
+        textColors[2] = c;
+        textColors[3] = d;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code1b#FUN_1bf6_0002_blit_text_to_bitmap */
+    public void drawString(BufferedImage destination, Ff.Font font, String text, int x, int y, int letterSpacing, int unknown) {
+        int currentX = x;
+        for (int charIndex : text.toCharArray()) {
+            if (charIndex < 128) {
+                Ff.FontCharacter character = font.getChars().get(charIndex-1);
+                for (int y1 = 0; y1 < font.getHeight(); y1++) {
+                    for (int x1 = 0; x1 < character.getWidth(); x1++) {
+                        int pixel = character.getPixel(x1, y1);
+                        int color = textColors[pixel];
+                        if (color != 0xff) {
+                            int px = x1 + currentX;
+                            int py = y1 + y + font.getHeight();
+                            if (px >= 0 && py >= 0 && px < destination.getWidth() && py < destination.getHeight()) {
+                                setPixel(destination, px, py, color);
+                            }
+                        }
+                    }
+                }
+                currentX += character.getWidth() + letterSpacing;
+            }
+        }
+
     }
 }

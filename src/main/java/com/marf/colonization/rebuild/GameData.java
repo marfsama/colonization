@@ -83,4 +83,7 @@ public class GameData {
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_5338_savegame_header */
     public SavegameHeader savegameHeader;
+
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0884_debug_info_flags */
+    public int debugInfoFlags;
 }

@@ -1,5 +1,6 @@
 package com.marf.colonization.rebuild;
 
+import com.marf.colonization.mpskit.Ff;
 import com.marf.colonization.mpskit.Madspack;
 import com.marf.colonization.mpskit.Ss;
 import lombok.Getter;
@@ -23,6 +24,10 @@ public class Resources {
     private List<Ss.Sprite> surface;
     /** ICONS.SS */
     private List<Ss.Sprite> icons;
+    /**
+     * FONTTINY.FF
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_088e_fonttiny_address */
+    private Ff.Font fontTiny;
 
 
     /**
@@ -31,11 +36,24 @@ public class Resources {
     public static Resources load() throws IOException {
         Resources resources = new Resources();
         resources.palette = resources.loadPalette("VICEROY.PAL");
+        // Sprite Sheets
         resources.woodTile = resources.loadSpriteSheet("WOODTILE.SS").get(0).getImage();
         resources.terrain = resources.loadSpriteSheet("TERRAIN.SS");
         resources.surface = resources.loadSpriteSheet("PHYS0.SS");
         resources.icons = resources.loadSpriteSheet("ICONS.SS");
+        // Fonts
+        resources.fontTiny = resources.loadFont("FONTTINY.FF");
         return resources;
+    }
+
+    private Ff.Font loadFont(String filename) throws IOException {
+        try (FileImageInputStream stream = new FileImageInputStream(Path.of("src/main/resources", filename).toFile())) {
+            stream.setByteOrder(ByteOrder.LITTLE_ENDIAN);
+            Madspack madspack = new Madspack(stream);
+            madspack.read();
+            Ff ff = new Ff(madspack);
+            return ff.read();
+        }
     }
 
     private List<Ss.Sprite> loadSpriteSheet(String filename) throws IOException {

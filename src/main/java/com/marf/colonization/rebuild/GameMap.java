@@ -245,4 +245,8 @@ public class GameMap {
 
     }
 
+    public int getTribeAggressionForPower(int tribeIndex, int aggressor) {
+        return indianTribes.get(tribeIndex).getAggressions().get(aggressor);
+    }
+
 }

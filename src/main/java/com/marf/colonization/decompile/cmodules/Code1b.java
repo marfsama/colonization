@@ -81,8 +81,8 @@ public class Code1b {
         int maxX = x + width;
         int maxY = y + height;
 
-        for (int currentY = y; currentY < maxY; y += (currentY - tileOffsetY) + source.width) {
-            for (int currentX = x; currentX < maxX; x += (currentX - tileOffsetX) + source.height) {
+        for (int currentY = y; currentY < maxY; currentY += (currentY - tileOffsetY) + source.width) {
+            for (int currentX = x; currentX < maxX; currentX += (currentX - tileOffsetX) + source.height) {
                 // Calculate source position for this tile
                 int sourceX = currentX - tileOffsetX;
                 int sourceWidth = source.width - tileOffsetX;

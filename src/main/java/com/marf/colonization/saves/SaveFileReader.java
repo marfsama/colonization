@@ -301,7 +301,7 @@ public class SaveFileReader extends BaseReader {
         europe.setTaxRate(stream.readUnsignedByte());
 
         // Read next recruits (3 bytes)
-        europe.setNextRecruits(readTableValueList(tables.getOccupations(), 3, () -> stream.readUnsignedByte()));
+        europe.setNextRecruits(readTableValueList(tables.getOccupations(), 3, stream::readUnsignedByte));
 
         // Read padding2 (2 bytes)
         europe.setPadding2(readBytes(stream, 2));
@@ -385,16 +385,11 @@ public class SaveFileReader extends BaseReader {
         indianVillage.setPadding1(readBytes(stream, 4));
 
         // Read panic (1 byte)
-        indianVillage.setPanic(stream.readUnsignedByte());
-
-        // Read padding2 (5 bytes)
-        indianVillage.setPadding2(readBytes(stream, 5));
-
-        // Read debug number (1 byte)
-        indianVillage.setDebugNumber(stream.readUnsignedByte());
-
-        // Read population loss in current turn (1 byte)
-        indianVillage.setPopulationLossInCurrentTurn(stream.readUnsignedByte());
+        indianVillage.setPanic(new int[4]);
+        indianVillage.getPanic()[0] = stream.readUnsignedShort();
+        indianVillage.getPanic()[1] = stream.readUnsignedShort();
+        indianVillage.getPanic()[2] = stream.readUnsignedShort();
+        indianVillage.getPanic()[3] = stream.readUnsignedShort();
 
         return indianVillage;
     }
@@ -436,10 +431,7 @@ public class SaveFileReader extends BaseReader {
         // Read aggressions (4 aggressions, each 2 bytes = 8 bytes total)
         indianTribe.setAggressions(new ArrayList<>());
         for (int i = 0; i < 4; i++) {
-            IndianTribe.Aggression aggression = new IndianTribe.Aggression();
-            aggression.setAggr(stream.readUnsignedByte());
-            aggression.setAggrHigh(stream.readUnsignedByte());
-            indianTribe.getAggressions().add(aggression);
+            indianTribe.getAggressions().add(stream.readUnsignedShort());
         }
 
         return indianTribe;

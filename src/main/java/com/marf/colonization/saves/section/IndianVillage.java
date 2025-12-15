@@ -18,8 +18,5 @@ public class IndianVillage extends GameDataSection {
     private int population;
     private int mission; // Will use Lookup enum later
     private byte[] padding1;
-    private int panic;
-    private byte[] padding2;
-    private int debugNumber;
-    private int populationLossInCurrentTurn;
+    private int[] panic;
 }
