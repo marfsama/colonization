@@ -57,6 +57,15 @@ public class BaseReader {
         return new String(bytes).trim();
     }
 
+    public String readNullTerminatedString(ImageInputStream stream, int length) throws IOException {
+        String s = readString(stream, length);
+        int terminator = s.indexOf('\0');
+        if (terminator > -1) {
+            return s.substring(0, terminator);
+        }
+        return s;
+    }
+
     public String readNullTerminatedString(ImageInputStream stream) throws IOException {
         StringBuilder s = new StringBuilder();
         int b;

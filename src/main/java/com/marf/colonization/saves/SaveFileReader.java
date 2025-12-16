@@ -164,40 +164,41 @@ public class SaveFileReader extends BaseReader {
         colony.setY(stream.readUnsignedByte());
 
         // Read name (24 bytes)
-        colony.setName(readString(stream, 24));
+        colony.setName(readNullTerminatedString(stream, 24));
 
         // Read nation (1 byte)
         colony.setNation(stream.readUnsignedByte());
 
-        // Read dummy1 (4 bytes)
-        colony.setDummy1(readBytes(stream, 4));
+        colony.setField_0x1b(stream.readByte());
+        colony.setSonsOfLibertyLevel(stream.readByte());
+        colony.setField_0x1d(stream.readShort());
 
         // Read colonists number (1 byte)
-        colony.setColonistsNum(stream.readUnsignedByte());
+        colony.setNumColonists(stream.readUnsignedByte());
 
         // Read colonists occupation (32 bytes)
-        colony.setColonistsOccupation(readTableValueList(tables.getOccupations(), 32, stream::readUnsignedByte));
+        colony.setColonistOccupation(readByteList(32, stream));
 
         // Read colonists specialization (32 bytes)
-        colony.setColonistsSpecialization(readTableValueList(tables.getOccupations(), 32, stream::readUnsignedByte));
+        colony.setColonistSpecialization(readByteList(32, stream));
 
         // Read colonists time (16 bytes)
-        colony.setColonistsTime(readByteList(16, stream));
+        colony.setColonistTime(readByteList(16, stream));
 
         // Read tile usage (8 bytes)
         colony.setTileUsage(readByteList(8, stream));
 
         // Read dummy2 (12 bytes)
-        colony.setDummy2(readBytes(stream, 12));
+        colony.setField0x78(readByteList(12, stream));
 
         // Read buildings bitset (6 bytes)
-        colony.setBuildingsBitset(readBytes(stream, 6));
+        colony.setBuildings(readByteList(6, stream));
 
         // Read customs house (2 bytes)
         colony.setCustomsHouse(stream.readUnsignedShort());
 
         // Read dummy3 (6 bytes)
-        colony.setDummy3(readBytes(stream, 6));
+        colony.setField0x8c(readByteList(6, stream));
 
         // Read hammers (2 bytes)
         colony.setHammers(stream.readUnsignedShort());
@@ -206,19 +207,19 @@ public class SaveFileReader extends BaseReader {
         colony.setCurrentProduction(stream.readUnsignedByte());
 
         // Read dummy4 (5 bytes)
-        colony.setDummy4(readBytes(stream, 5));
+        colony.setField0x95(readByteList(5, stream));
 
         // Read storage (dynamic based on GOODS enum length)
         colony.setStorage(readShortList(0x10, stream));
 
-        // Read dummy5 (8 bytes)
-        colony.setDummy5(readBytes(stream, 8));
+        // Read population seen by each player/power
+        colony.setColonistsSeenInColony(readByteList(4, stream));
 
-        // Read bells (4 bytes)
-        colony.setBells(stream.readInt());
+        // Read fortification seen by each player/power
+        colony.setSeenFortificationLevel(readByteList(4, stream));
 
-        // Read data (4 bytes)
-        colony.setData(stream.readInt());
+        // Read bells (8 bytes)
+        colony.setBells(stream.readLong());
 
         return colony;
     }

@@ -132,7 +132,7 @@ public class Code1b {
      * AX - x pos
      * DX - y pos
      */
-    public static int FUN_1bf6_0002_blit_text_to_bitmap(Sprite destination, Font font, String string, int color, int x, int y, int additionalSpacing) {
+    public static int FUN_1bf6_0002_blit_text_to_bitmap(Sprite destination, Font font, String string, int x, int y, int additionalSpacing) {
         int local_5e_y = 0;
         int local_66 = 0;
 

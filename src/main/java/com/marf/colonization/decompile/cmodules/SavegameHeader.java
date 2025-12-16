@@ -1,8 +1,13 @@
 package com.marf.colonization.decompile.cmodules;
 
 public class SavegameHeader {
-    /** 0x02	0x1	byte	*/
-    public int field1_0x2;
+    public int field0_0x0;
+    /**
+     * Bit 0 - set when the independence is declared
+     * <p>
+     * 0x02	0x1	byte
+     */
+    public int field1_0x2_independence_flag;
     /** 0x10	0x2	byte	*/
     public int field9_0x10;
     /** 0x12	0x2	byte	*/
@@ -23,6 +28,10 @@ public class SavegameHeader {
     public int field_0x22_maybe_current_turn;
     // [..]
     /** 0x50	0x2	short */
-    public int field27_0x50;
+    public int tories_nation_maybe;
+    /** 0x52	0x2	short */
+    public int rebels_nation_maybe;
+    /** 0x54	0x2	short */
+    public int[] field_0x54 = new int[20];
     // [..]
 }

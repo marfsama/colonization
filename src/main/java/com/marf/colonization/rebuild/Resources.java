@@ -28,6 +28,10 @@ public class Resources {
      * FONTTINY.FF
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_088e_fonttiny_address */
     private Ff.Font fontTiny;
+    /**
+     * FONTINTR.FF
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_2618_fontintr_address */
+    private Ff.Font fontIntr;
 
 
     /**
@@ -43,6 +47,7 @@ public class Resources {
         resources.icons = resources.loadSpriteSheet("ICONS.SS");
         // Fonts
         resources.fontTiny = resources.loadFont("FONTTINY.FF");
+        resources.fontIntr = resources.loadFont("FONTINTR.FF");
         return resources;
     }
 

@@ -12,6 +12,23 @@ import static com.marf.colonization.decompile.cmodules.Data.*;
  */
 public class Module02 {
 
+    public static boolean FUN_4af1_1b76_module_2_is_colony_visible(int playerIndex, int colonyIndex) {
+        Colony colony = DAT_5cfe_colonies_list[colonyIndex];
+        if (colony.nation == 0) {
+            return true;
+        }
+
+        if (DAT_5338_savegame_header.field_0x22_maybe_current_turn != 0) {
+            return true;
+        }
+
+        if (colony.colonists_seen_in_colony[playerIndex] > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static void FUN_4af1_0688_module_02_maybe_update_colony_per_round(int param_1) {
         // end: 4af1:1aeb
     }
@@ -45,9 +62,9 @@ public class Module02 {
 
     /** updates the number of colonists who defends the colony and the fortification level */
     public static void FUN_4af1_1b4c_update_defender(int colonyIndex, int power) {
-        Colony colony = DAT_5cfe_colonies_list.get(colonyIndex);
+        Colony colony = DAT_5cfe_colonies_list[colonyIndex];
 
-        colony.field_x_0xba[power] = colony.num_colonists;
-        colony.field_x_0xba[4] = (byte) FUN_15d9_03e0_get_building_level(colonyIndex, 0);
+        colony.colonists_seen_in_colony[power] = colony.num_colonists;
+        colony.seen_fortification_level[4] = (byte) FUN_15d9_03e0_get_building_level(colonyIndex, 0);
     }
 }

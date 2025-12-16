@@ -18,11 +18,11 @@ public class Code15 {
         if (param_1_unit_owner > 3) {
             return DAT_8cb8_tribes_names[param_1_unit_owner-4].tribe_name_multiple;
         }
-        if (DAT_5338_savegame_header.field1_0x2 != 0) {
+        if (DAT_5338_savegame_header.field1_0x2_independence_flag != 0) {
             if (DAT_5338_savegame_header.maybe_current_player == param_1_unit_owner) {
                 return DAT_2e1e; // rebels
             }
-            if (DAT_5338_savegame_header.field27_0x50 == param_1_unit_owner){
+            if (DAT_5338_savegame_header.tories_nation_maybe == param_1_unit_owner){
                 return DAT_2e20; // tories
             }
         }
@@ -34,11 +34,11 @@ public class Code15 {
         if (param_1_unit_owner > 3) {
             return DAT_8cb8_tribes_names[param_1_unit_owner-4].tribe_name_singular;
         }
-        if (DAT_5338_savegame_header.field1_0x2 != 0) {
+        if (DAT_5338_savegame_header.field1_0x2_independence_flag != 0) {
             if (DAT_5338_savegame_header.maybe_current_player == param_1_unit_owner) {
                 return DAT_2dfc; // rebel
             }
-            if (DAT_5338_savegame_header.field27_0x50 == param_1_unit_owner){
+            if (DAT_5338_savegame_header.tories_nation_maybe == param_1_unit_owner){
                 return DAT_2dfe; // tory
             }
         }
@@ -60,7 +60,7 @@ public class Code15 {
             was_invalid = true;
         }
 
-        Colony current_colony = DAT_5cfe_colonies_list.get(colony_index);
+        Colony current_colony = DAT_5cfe_colonies_list[colony_index];
         DAT_8d6c_current_colony_ptr = current_colony;
 
         // Check if colony belongs to current player and is valid for interaction
@@ -95,22 +95,22 @@ public class Code15 {
     }
 
 
-    public static int FUN_15d9_0368_is_building_in_colony(int colonyIndex, int buildingIndex) {
+    public static boolean FUN_15d9_0368_is_building_in_colony(int colonyIndex, int buildingIndex) {
         if (buildingIndex < 0) {
-            return 0;
+            return false;
         }
 
         // building / 8
         int building = buildingIndex >> 3;
         int mask = 0x1 << (buildingIndex & 7);
 
-        return DAT_5cfe_colonies_list.get(colonyIndex).buildings[building] & mask;
+        return (DAT_5cfe_colonies_list[colonyIndex].buildings[building] & mask) > 0;
     }
 
     public static int FUN_15d9_03e0_get_building_level(int colony_index, int building) {
         int local_4_result = 0;
         do {
-            if (FUN_15d9_0368_is_building_in_colony(colony_index, building) != 0) {
+            if (FUN_15d9_0368_is_building_in_colony(colony_index, building)) {
                 local_4_result = local_4_result + 1;
             }
             building = DAT_8f2c_buildings_table[building].next;
@@ -128,7 +128,7 @@ public class Code15 {
             int owner = FUN_1373_0346_surface_get_european_unit_owner(x, y);
             if (owner > -1) {
                 for (int colonyIndex = 0; colonyIndex < DAT_5338_savegame_header.num_colonies; colonyIndex++) {
-                    Colony colony = DAT_5cfe_colonies_list.get(colonyIndex);
+                    Colony colony = DAT_5cfe_colonies_list[colonyIndex];
                     if (colony.x == x && colony.y == y) {
                         result = colonyIndex;
                         break;

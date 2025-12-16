@@ -62,13 +62,13 @@ public class Data {
     public static byte DAT_0186_map_seed;
     public static int[] DAT_0188_maybe_prime_resource_per_terrain_type = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
-    public static int DAT_1e72_sub_tile_x;
-    public static int DAT_1e73_sub_tile_y;
-
     public static int DAT_033e_some_flag;
     public static int DAT_0342_some_flag;
 
+    public static int DAT_07d6_mouse_x;
+    public static int DAT_07d8_mouse_y;
     public static int DAT_07dc;
+
     public static int DAT_0816;
     public static int DAT_0818;
     public static Sprite DAT_081c_address_of_woodtile_sprite_maybe;
@@ -82,11 +82,16 @@ public class Data {
                0x7, 0xB, 0x9, 0xA
     };
 
+    public static int DAT_0880;
     public static int DAT_0884_debug_info_flags = 0;
     public static Font DAT_088e_fonttiny_address;
 
 
     public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
+
+    public static int DAT_1e72_sub_tile_x;
+    public static int DAT_1e73_sub_tile_y;
+
 
     public static int DAT_235c;
     public static int DAT_2360_available_sprite_sheet_memory;
@@ -96,6 +101,7 @@ public class Data {
     public static int DAT_238a;
     public static Module1a.SpriteSheetSomeStructure DAT_238c;
 
+    public static Font DAT_2618_fontintr_address;
     public static int[] DAT_262c_text_blit_colors = new int[4];
 
     public static Sprite DAT_2638_backscreen = new Sprite();
@@ -144,7 +150,7 @@ public class Data {
     // Tribe[]
     public static Tribe[] DAT_2b4d_5a8e_tribes_list;
 
-    public static List<Colony> DAT_5cfe_colonies_list = new ArrayList<>();
+    public static Colony[] DAT_5cfe_colonies_list = new Colony[0];
 
 
     public static int DAT_82de_tile_pixel_size;

@@ -1,5 +1,8 @@
 package com.marf.colonization.decompile.cmodules;
 
+
+import static com.marf.colonization.decompile.cmodules.Data.*;
+
 public class Code12 {
     public static int FUN_124c_0000_clamp(int min_value,int value,int max_value) {
         if (value < min_value) {
@@ -26,4 +29,12 @@ public class Code12 {
     {
 
     }
+
+    public static boolean FUN_1261_00fa_is_mouse_in_rect(int x1,int y1,int x2,int y2) {
+        if (x1 < DAT_07d6_mouse_x && x2  > DAT_07d8_mouse_y  && y1 < DAT_07d8_mouse_y && y2 > DAT_07d8_mouse_y) {
+            return true;
+        }
+        return false;
+    }
+
 }

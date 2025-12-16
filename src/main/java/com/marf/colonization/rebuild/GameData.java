@@ -86,4 +86,7 @@ public class GameData {
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0884_debug_info_flags */
     public int debugInfoFlags;
+
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0880 */
+    public boolean DAT_0880;
 }

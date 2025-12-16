@@ -6,7 +6,14 @@ public class Code1c {
         return 0;
     }
 
-    public static void FUN_1c0d_0000_set_text_blit_colors(int param_1, int ax, int bx, int dx) {
+    /**
+     * Params:
+     * AL - col1
+     * DL - col2
+     * BL - col3
+     * param1 - col4
+     */
+    public static void FUN_1c0d_0000_set_text_blit_colors(int col1, int col2, int col3, int col4) {
 
     }
 

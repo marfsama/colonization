@@ -54,6 +54,7 @@ public class Savegame {
             gameData.gameMap.units = saveFile.getUnits();
             gameData.gameMap.indianVillages = saveFile.getIndianVillages();
             gameData.gameMap.indianTribes = saveFile.getIndianTribes();
+            gameData.gameMap.colonies = saveFile.getColonies();
 
 
         }

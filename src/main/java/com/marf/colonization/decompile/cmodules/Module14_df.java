@@ -18,7 +18,7 @@ public class Module14_df {
 
         FUN_8007_1016_module_14_102_draw_map_viewport(power);
         FUN_7f88_00ea_module_14_draw_tribes_viewport();
-        FUN_7f88_0248_module_14();
+        FUN_7f88_0248_module_14_83_render_colonies_viewport();
         FUN_7f61_012a_module_14_5c_flip_viewport_backscreen();
         FUN_7f88_058e_module_14_render_units_in_viewport();
         if (DAT_017a_zoom_level == 3) {

@@ -9,8 +9,12 @@ public class Colony {
     public String name;
     /** 0x1a 0x1 */
     public byte	nation;
-    /** 0x1b 0x4 */
-    public byte[] field_4_0x1b = new byte[4];
+    /** 0x1b 0x1 */
+    public byte field_0x1b;
+    /** 0x1c 0x4 */
+    public byte sons_of_liberty_level;
+    /** 0x1d 0x2 */
+    public short field_0x1d;
     /** 0x1f 0x1 */
     public byte	num_colonists;
     /** 0x20 0x20 */
@@ -35,14 +39,15 @@ public class Colony {
     public byte	current_production;
     /** 0x95 0x5 */
     public byte[] field_x_0x95 = new byte[5];
-    /** 0x9a 0x10 */
-    public byte[] storage = new byte[16];
-    /** 0xaa 0x8 */
-    public byte[] field_x_0xaa = new byte[8];
-    /** 0xb2 0x4 */
-    public int bells;
-    /** 0xb6 0x4 */
-    public int field_x_0xb6;
-    /** 0xba 0x10 */
-    public byte[] field_x_0xba = new byte[16];
+    /** 0x9a 0x20 */
+    public short[] storage = new short[16];
+    /** 0xba 0x4
+     * number of colonists the player has seen in the colony (so this is a snapshot)
+     * */
+    public byte[] colonists_seen_in_colony = new byte[4];
+    /** 0xbe 0x4 */
+    public byte[] seen_fortification_level = new byte[4];
+    /** 0xc2 0x8 */
+    public long bells;
+    // total size: 0xca
 }

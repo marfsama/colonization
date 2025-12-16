@@ -1,5 +1,6 @@
 package com.marf.colonization.rebuild;
 
+import com.marf.colonization.saves.section.Colony;
 import com.marf.colonization.saves.section.IndianTribe;
 import com.marf.colonization.saves.section.IndianVillage;
 import com.marf.colonization.saves.section.Unit;
@@ -39,6 +40,8 @@ public class GameMap {
     public List<IndianVillage> indianVillages = new ArrayList<>();
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_2b4d_5a8e_tribes_list */
     public List<IndianTribe> indianTribes = new ArrayList<>();
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_5cfe_colonies_list */
+    public List<Colony> colonies = new ArrayList<>();
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0186_map_seed */
     public int mapSeed = 0x4C4D; // todo: read from save file

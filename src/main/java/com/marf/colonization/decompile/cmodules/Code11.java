@@ -290,7 +290,7 @@ public class Code11 {
                 int stringWidth = FUN_1c0e_000c_get_string_width_in_pixels(panicString, DAT_088e_fonttiny_address);
                 FUN_1b83_0000_fill_rectangle(x_in_pixels+2, y_in_pixels+9, stringWidth+2, 0 /*DAT_088e_fonttiny_address.height*/, destination, 0);
                 FUN_1c0d_0000_set_text_blit_colors(0xf, -1, 0xf, 0xf);
-                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, panicString, 0, x_in_pixels+3, y_in_pixels+3, 0);
+                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, panicString, x_in_pixels+3, y_in_pixels+3, 0);
             }
 
         }
@@ -300,4 +300,111 @@ public class Code11 {
             FUN_1b83_0000_fill_rectangle(x_in_pixels, y_in_pixels, tileSize, tileSize, destination, color);
         }
     }
+
+    /**
+     * BX - y_in_pixels
+     * DX - x_in_pixels
+     * AX - colony index
+     * param_1 - display colony name
+     * param_2 - display population
+     * param_3 - zoom level percent
+     * param_4 - destination
+     */
+    public static void FUN_112b_0c64_draw_colony(Sprite destination, int zoom_level_percent, int screenX, int screenY, boolean displayColonyName, boolean displayPopulation, int colony_index) {
+        Colony colony = DAT_5cfe_colonies_list[colony_index];
+
+        int nation = colony.nation;
+        int numColonists = colony.num_colonists;
+
+        int fortificationLevel = 0;
+        // check for stockade
+        if (FUN_15d9_0368_is_building_in_colony(colony_index, 0)) {
+            fortificationLevel++;
+        }
+        // check for fort
+        if (FUN_15d9_0368_is_building_in_colony(colony_index, 1)) {
+            fortificationLevel++;
+        }
+        // check for fortress
+        if (FUN_15d9_0368_is_building_in_colony(colony_index, 2)) {
+            fortificationLevel++;
+        }
+
+        if (nation != DAT_5338_savegame_header.maybe_player_controlled_power) {
+            int seenColonists = colony.colonists_seen_in_colony[DAT_5338_savegame_header.maybe_player_controlled_power];
+            if (seenColonists == 0) {
+                seenColonists = 1;
+                colony.colonists_seen_in_colony[DAT_5338_savegame_header.maybe_player_controlled_power] = 1;
+            }
+            numColonists = seenColonists;
+            fortificationLevel = colony.seen_fortification_level[DAT_5338_savegame_header.maybe_player_controlled_power];
+        }
+
+        // note: 0 wraps around to 0xffff and therefor to 0x3
+        int colonySprite = (fortificationLevel - 1) & 0x3;
+
+        if (zoom_level_percent < 100 ) {
+            screenX -= 2 >> Data.DAT_017a_zoom_level;
+        }
+
+
+        int local_10_x = screenX + (DAT_82de_tile_pixel_size / 2);
+        int local_12_y = screenY + DAT_82de_tile_pixel_size - 1;
+
+        int local_a_another_x = screenX + 6;
+        int local_c_another_y = screenY + 1;
+
+        // this looks like some rotation
+        int local_e_maybe_some_x = 0;
+        if (zoom_level_percent == 100) {
+            local_c_another_y = screenX + 6;
+            local_e_maybe_some_x = screenY + 4;
+        } else {
+            local_c_another_y = screenX + 3;
+            local_e_maybe_some_x = screenY + 2;
+        }
+
+        // draw base icon
+        FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(destination, local_10_x, local_12_y, zoom_level_percent, colonySprite+1, DAT_082e_icons_sprite_sheet);
+        // draw flag
+        int flagOwner = nation;
+        int flagSprite = 0x77 + flagOwner;
+        if ((DAT_5338_savegame_header.field1_0x2_independence_flag & 1) != 0 &&
+                DAT_5338_savegame_header.rebels_nation_maybe == DAT_5338_savegame_header.maybe_current_player) {
+            flagOwner = DAT_5338_savegame_header.maybe_current_player;
+            flagSprite = 0x83;
+        }
+        FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(destination, local_e_maybe_some_x, local_c_another_y, zoom_level_percent, flagSprite, DAT_082e_icons_sprite_sheet);
+
+        // draw population and colony name only in max zoom
+        if (zoom_level_percent == 100) {
+            int populationColor = 0xf;
+            if ((colony.sons_of_liberty_level & 0x2) != 0) {
+                populationColor = 0xb;
+                if ((colony.sons_of_liberty_level & 0x4) != 0) {
+                    populationColor = 0xa;
+                }
+            }
+
+            FUN_1c0d_0000_set_text_blit_colors(0xff, populationColor, populationColor, populationColor);
+            if (displayPopulation) {
+                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_088e_fonttiny_address, "" + numColonists, screenX + 7, screenY + 7, 0);
+            }
+            if (displayColonyName) {
+                FUN_1c0d_0000_set_text_blit_colors(0xff, 0xf, 0xf, 0xf);
+                FUN_1bf6_0002_blit_text_to_bitmap(destination, DAT_2618_fontintr_address, colony.name, screenX + 2, screenY + 0x10, 0);
+            }
+
+
+        }
+
+        if (zoom_level_percent <= 25) {
+            // draw colored rectangle in smaller zoom modes
+            int color = DAT_0838_minimap_fractions_colors_table[colony.nation];
+            FUN_1b83_0000_fill_rectangle(screenX, screenY, DAT_82de_tile_pixel_size, DAT_82de_tile_pixel_size, destination, color);
+        }
+
+
+    }
+
 }

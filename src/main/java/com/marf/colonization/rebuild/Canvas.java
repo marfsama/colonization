@@ -165,7 +165,7 @@ public class Canvas {
     }
 
     /** @see com.marf.colonization.decompile.cmodules.Code1b#FUN_1bf6_0002_blit_text_to_bitmap */
-    public void drawString(BufferedImage destination, Ff.Font font, String text, int x, int y, int letterSpacing, int unknown) {
+    public void drawString(BufferedImage destination, Ff.Font font, String text, int x, int y, int letterSpacing) {
         int currentX = x;
         for (int charIndex : text.toCharArray()) {
             if (charIndex < 128) {
