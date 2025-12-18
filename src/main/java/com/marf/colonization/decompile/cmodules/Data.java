@@ -143,6 +143,7 @@ public class Data {
 
     public static Player[] DAT_53c6_player_list = new Player[4];
 
+    public static String DAT_2b4d_5496_order_letters = "-STGLFFBPR---";
     public static IndianVillage[] DAT_54a4_indian_village_list = new IndianVillage[0];
 
     public static int DAT_5a8c_tile_pixel_size;

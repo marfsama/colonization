@@ -1,5 +1,6 @@
 package com.marf.colonization.decompile.cmodules;
 
+import static com.marf.colonization.decompile.cmodules.Code13.*;
 import static com.marf.colonization.decompile.cmodules.Code14.*;
 import static com.marf.colonization.decompile.cmodules.Code15.*;
 import static com.marf.colonization.decompile.cmodules.Code1b.*;
@@ -132,12 +133,19 @@ public class Code11 {
 
     }
 
-    public static void FUN_112b_015c_draw_icon_maybe(int drawFlags) {
-        if ((drawFlags & 1) != 0) {
-            // FUN_1cbc_000a(-((param_1_flag_skip_first_stuff & 4) != 0) & 0x5f,in_BX,DAT_082e_icons_sprite_sheet);
+
+    /**
+     * param_1 - flags
+     * AX - icon index
+     * DX - x
+     * BX - y
+     */
+    public static void FUN_112b_015c_draw_icon_maybe(int x, int y, int spriteIndex, int flags) {
+        if ((flags & 1) != 0) {
+            FUN_1cbc_000a_draw_sprite_silhouette(DAT_2638_backscreen, DAT_082e_icons_sprite_sheet, x,y, spriteIndex, (flags & 0x4) != 0 ? 0x5F : 0x00);
         }
-        if ((drawFlags & 2) != 0) {
-            // FUN_1c1b_0000_draw_compressed_sprite(DAT_2638_backscreen, x,y, iconIndex ,DAT_082e_icons_sprite_sheet);
+        if ((flags & 2) != 0) {
+            FUN_1c1b_0000_draw_compressed_sprite(DAT_2638_backscreen, x + 2, y, spriteIndex, DAT_082e_icons_sprite_sheet);
         }
     }
 
@@ -149,10 +157,282 @@ public class Code11 {
      * BX - x
      * DX - flags
      * AX - unit index
+     * <p>
+     *     Flags:
+     *     0x20 - draw order letter/content for ships
+     *     0x40 - maybe unpack transports/show only top most unit. I think this is used when a unit in a stack is
+     *            selected or a unit should leave a shop
+     *     0x80 - draws some rectangles when the transport has something (or there is a stack of units)
      */
     public static void FUN_112b_01ba_draw_unit(int unit_index, int flags, int screenX, int screenY, int zoom_level_percent, int tile_pixel_size) {
+        boolean local_20_flag_privateer_maybe = false;
+        flags &= 0xdf; // 1101 1111
+
+        int local_2c_unit_id_for_icon = 0;
+
+        int local_e_unit_icon_index = FUN_112b_010e_get_unit_icon_topmost(unit_index, (flags & 0x40) != 0, local_2c_unit_id_for_icon);
+
+        boolean local_1e_flag_has_stuff_in_transportchain2 = false;
+        if ((flags & 0x80) != 0) {
+            int unitIndex = FUN_1415_000a_get_transport_chain_head(unit_index);
+            int foo = FUN_1415_0052_get_transportchain2(unitIndex);
+            if (foo > -1) {
+                local_1e_flag_has_stuff_in_transportchain2 = true;
+            } else  {
+                local_1e_flag_has_stuff_in_transportchain2 = false;
+            }
+        }
+
+        Unit unit = DAT_30fc_units_list[local_2c_unit_id_for_icon];
+        int local_14_icon_size = 1;
+        int local_c_unit_order;
+        int local_3_order_letter;
+
+        // check if unit is a ship
+        // 0xd = 13 "Caravel"
+        // 0x12 = 18 "Man-O-War"
+        if (local_2c_unit_id_for_icon >= 0xd && local_2c_unit_id_for_icon <= 0x12) {
+            switch (local_2c_unit_id_for_icon) {
+                case 0xf: // 15 - "Galeon"
+                case 0x10: // 16 - "Privateer"
+                case 0x11: // 17 - "Frigate"
+                case 0x12: // 18 - "Man-O-War",
+                    local_14_icon_size = 1;
+                    break;
+                default:
+                    local_14_icon_size = 3;
+            }
+        } else {
+            switch (local_2c_unit_id_for_icon) {
+                case 0x4:
+                case 0x5:
+                case 0x7:
+                case 0x8:
+                case 0x15:
+                case 0x16:
+                    local_14_icon_size = 3;
+                    break;
+                case 0xa:
+                case 0xb:
+                case 0xc:
+                    local_14_icon_size = 2;
+                    if (local_2c_unit_id_for_icon == 0xb && (unit.flags_damaged & 0x80) != 0) {
+                        local_14_icon_size = 4;
+                    }
+                    break;
+            }
+        }
 
 
+        local_c_unit_order = unit.order;
+        int nation = unit.nationIndex;
+        if ((nation & 0xf) < 4 ) {
+            local_c_unit_order = 0;
+        }
+        local_3_order_letter = DAT_2b4d_5496_order_letters.charAt(local_c_unit_order);
+
+        if (unit.type >= 0xd && unit.type <= 0x12) {
+            if (nation != DAT_5338_savegame_header.maybe_player_controlled_power) {
+                // display number of used cargo slots as number
+                local_3_order_letter = unit.numCargo + 0x30;
+                if (unit.type == 0x10 && DAT_5338_savegame_header.field_0x22_maybe_current_turn != 0) {
+                    local_3_order_letter = ':';
+                    local_20_flag_privateer_maybe = true;
+                }
+            }
+        }
+
+        // display debug stuff
+        if ((nation < 4)
+                && DAT_53c6_player_list[nation].control != 0
+                && (DAT_5338_savegame_header.field2_0x3 & 0x20) != 0
+                && (DAT_0884_debug_info_flags & 0x8) != 0) {
+            local_3_order_letter = unit.field_0x7 & 0xff;
+            if (local_3_order_letter > 0x80) {
+                local_3_order_letter = '-';
+            }
+        }
+
+        int local_21_power_color_index = DAT_0838_minimap_fractions_colors_table[nation];
+        int local_2a_power = nation;
+        int local_11_color = local_21_power_color_index;
+        if (local_20_flag_privateer_maybe) {
+            local_11_color = 0;
+        }
+
+        boolean local_1a_flag_artillery_damaged = false;
+        if (unit.type == 0xb && (unit.flags_damaged & 0x80) != 0) {
+            local_1a_flag_artillery_damaged = true;
+        }
+
+        if (local_1a_flag_artillery_damaged) {
+            int attack = DAT_51e8_unit_config_array[unit.type].attack - unit.attack_penalty_maybe;
+            if (FUN_1373_000e_is_tile_in_drawable_rect(unit.x, unit.y)) {
+                int halfAttack = (attack + 1) >> 1;
+                if (halfAttack >= 10) {
+                    local_3_order_letter = '+';
+                } else {
+                    local_3_order_letter = '0' + halfAttack;
+                }
+            }
+        }
+
+        String local_34_cargo_digit_string = Character.toString(local_3_order_letter);
+        int stringWidth = FUN_1c0e_000c_get_string_width_in_pixels(local_34_cargo_digit_string, DAT_088e_fonttiny_address) + 3;
+
+        int local_26_text_frame_height = DAT_088e_fonttiny_address.height + 3;
+        int local_28_sprite_width = DAT_082e_icons_sprite_sheet.field_0x42[local_e_unit_icon_index].field_0x08_width;
+        int local_a_sprite_width;
+        int local_1c_sprite_height;
+        if (zoom_level_percent == 100) {
+            local_a_sprite_width = local_28_sprite_width + stringWidth;
+            local_1c_sprite_height = DAT_082e_icons_sprite_sheet.field_0x42[local_e_unit_icon_index].field_0x0A_height;
+        } else {
+            SpriteDimensions spriteDimension = FUN_1c67_0008_calculate_center_offset(zoom_level_percent, DAT_082e_icons_sprite_sheet, local_e_unit_icon_index, screenX, screenY);
+            local_a_sprite_width = spriteDimension.x;
+            local_1c_sprite_height = spriteDimension.y;
+        }
+
+        int x = screenX;
+        // center sprite if it does not fit into a tile
+        if (local_a_sprite_width > tile_pixel_size) {
+            x += (tile_pixel_size - local_a_sprite_width) / 2;
+        }
+
+
+        int local_4_cargo_digit_sprite_x = 0;
+        int local_8_sprite_y = 0;
+        int local_24_text_frame_width = 0;
+
+        // reuse cargo digit as x
+        if (zoom_level_percent != 100) {
+            if (zoom_level_percent == 50) {
+                int local_10_some_x = x;
+                local_4_cargo_digit_sprite_x = screenX + 5;
+                local_8_sprite_y = screenY + 5;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+
+                FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(DAT_2638_backscreen, local_10_some_x + local_28_sprite_width / 2, screenY + local_1c_sprite_height - 1, zoom_level_percent, local_e_unit_icon_index, DAT_082e_icons_sprite_sheet);
+
+            } else if (zoom_level_percent == 25) {
+                local_4_cargo_digit_sprite_x = screenX + 1;
+                local_8_sprite_y = screenY + 1;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+            } else {
+                local_4_cargo_digit_sprite_x = screenX;
+                local_8_sprite_y = screenY;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+            }
+
+            FUN_1b83_0000_fill_rectangle(local_4_cargo_digit_sprite_x, local_8_sprite_y, 2, 2, DAT_2638_backscreen, local_11_color);
+            return;
+        }
+
+        // zoom level == 100%
+        int local_10_some_x = x;
+        if ((flags & 0x20) != 0 ) {
+            local_24_text_frame_width = 4;
+            local_26_text_frame_height = 4;
+        }
+
+        int dx = x + local_28_sprite_width;
+        int local_6_some_x = x;
+        int local_48_some_width = local_24_text_frame_width + local_28_sprite_width;
+        if (local_48_some_width > 0x10) {
+            dx = dx - local_48_some_width - 0x10;
+        }
+
+        int local_16_some_x;
+        int local_18_some_y;
+        switch (local_14_icon_size) {
+            case 1:
+                local_16_some_x = dx - 2;
+                local_8_sprite_y = screenY;
+                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_14_icon_size = 0;
+                local_4_cargo_digit_sprite_x = dx;
+                break;
+            case 2:
+            case 4:
+                dx = (local_10_some_x - local_24_text_frame_width / 2) + 9;
+                local_16_some_x = dx - 2;
+                int bx = screenY + (local_14_icon_size == 4 ? 2 : 0);
+                local_18_some_y = bx + 2;
+                local_14_icon_size = 1;
+                local_8_sprite_y = bx;
+                break;
+            case 3:
+                dx = local_10_some_x;
+                local_4_cargo_digit_sprite_x = dx;
+                local_8_sprite_y = screenY;
+                local_16_some_x = dx + 2;
+                local_18_some_y = screenY + 2;
+                local_14_icon_size = 1;
+                local_6_some_x = dx + local_24_text_frame_width;
+                int ax = local_48_some_width + 2;
+                if (ax > 0x10) {
+                    local_6_some_x -= (local_48_some_width - 0xe);
+                }
+
+                break;
+            default:
+                local_16_some_x = dx - 2;
+                local_8_sprite_y = screenY - local_26_text_frame_height + local_1c_sprite_height;
+                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_14_icon_size = 0;
+                local_4_cargo_digit_sprite_x = dx;
+                break;
+        }
+
+        if (local_14_icon_size != 0) {
+            // draw silhouette
+            FUN_112b_015c_draw_icon_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x1);
+        }
+
+        if (local_1e_flag_has_stuff_in_transportchain2) {
+            FUN_1b83_0000_fill_rectangle(local_16_some_x, local_18_some_y, local_24_text_frame_width, local_26_text_frame_height, DAT_2638_backscreen, 0);
+            FUN_1b83_0000_fill_rectangle(local_16_some_x + 1, local_18_some_y + 1, local_24_text_frame_width - 2, local_26_text_frame_height - 2, DAT_2638_backscreen, local_11_color);
+        }
+        FUN_1b83_0000_fill_rectangle(local_4_cargo_digit_sprite_x, local_8_sprite_y, local_24_text_frame_width, local_26_text_frame_height, DAT_2638_backscreen, 0);
+        FUN_1b83_0000_fill_rectangle(local_4_cargo_digit_sprite_x+1, local_8_sprite_y+1, local_24_text_frame_width-2, local_26_text_frame_height-2, DAT_2638_backscreen, 0);
+
+        if (local_14_icon_size == 0) {
+            // draw silhouette
+            FUN_112b_015c_draw_icon_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x1);
+        }
+
+        // draw unit sprite
+        FUN_112b_015c_draw_icon_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x2);
+
+        if ((flags & 0x20) == 0) {
+            if ((local_c_unit_order == 0x1 || local_c_unit_order == 0x6)) {
+                if (local_2a_power < 4) {
+                    local_21_power_color_index -= 8;
+                } else {
+                    local_21_power_color_index = 8;
+                }
+            } else {
+                local_21_power_color_index = 0;
+            }
+
+            if (local_20_flag_privateer_maybe) {
+                local_21_power_color_index = 0xf;
+            }
+
+            if (local_1a_flag_artillery_damaged) {
+                local_21_power_color_index = local_2a_power == 2 ? 0xc : 0xf;
+            }
+
+            FUN_1c0d_0000_set_text_blit_colors(0xff, local_21_power_color_index, local_21_power_color_index, local_21_power_color_index );
+            FUN_1bf6_0002_blit_text_to_bitmap(DAT_2638_backscreen, DAT_088e_fonttiny_address, local_34_cargo_digit_string, local_4_cargo_digit_sprite_x+2, local_8_sprite_y+2, 0);
+        }
+
+        if (local_1a_flag_artillery_damaged && zoom_level_percent == 100) {
+            FUN_1c1b_0000_draw_compressed_sprite(DAT_2638_backscreen, local_6_some_x+4, screenY+4, 0x38, DAT_082e_icons_sprite_sheet);
+        }
     }
 
     /**

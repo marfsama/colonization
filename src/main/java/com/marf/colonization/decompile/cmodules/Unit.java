@@ -14,7 +14,9 @@ public class Unit {
     /** 0x05 */
     public int usedMoves;
     /** 0x06 */
-    public byte[] dummy2 = new byte[2];
+    public byte field_0x6;
+    /** 0x06 */
+    public byte field_0x7;
     /** 0x08 */
     public int order;
     /** 0x09 */
@@ -30,7 +32,7 @@ public class Unit {
     /** 0x10 */
     public byte[] cargoAmount = new byte[6];
     /** 0x16 */
-    public byte dummy4;
+    public byte attack_penalty_maybe;
     /** 0x17 */
     public int profession;
     /** 0x18 - Unit id. maybe fist unit in transport? */

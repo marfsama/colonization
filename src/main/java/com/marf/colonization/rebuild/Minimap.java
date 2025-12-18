@@ -1324,9 +1324,9 @@ public class Minimap {
 
         drawMapViewport(power);
         drawTribesViewport();
-        FUN_7f88_0248_module_14_83_render_colonies_viewport();
+        renderColoniesViewport();
 //        FUN_7f61_012a_module_14_5c_flip_viewport_backscreen();
-//        FUN_7f88_058e_module_14_render_units_in_viewport();
+        FUN_7f88_058e_module_14_render_units_in_viewport();
 //        if (DAT_017a_zoom_level == 3) {
 //            // draw continent name
 //            //local_52[0] = 0;
@@ -1553,12 +1553,12 @@ public class Minimap {
 
 
     /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_0248_module_14_83_render_colonies_viewport */
-    public void FUN_7f88_0248_module_14_83_render_colonies_viewport() {
-        FUN_7f88_0102_module_14_83_render_colonies(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
+    public void renderColoniesViewport() {
+        renderColonies(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
     }
 
     /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_0102_module_14_83_render_colonies */
-    public void FUN_7f88_0102_module_14_83_render_colonies(int x, int y, int width, int height) {
+    public void renderColonies(int x, int y, int width, int height) {
         int playerMask = 0x10 << gameData.savegameHeader.maybe_player_controlled_power;
         int x2 = x + width - 1;
         int y2 = y + height - 1;
@@ -1582,7 +1582,7 @@ public class Minimap {
                 boolean displayPopulation = gameData.zoomLevel == 0 && gameData.DAT_0880 == false;
                 boolean displayColonyName = gameData.zoomLevel == 0 && gameData.DAT_0880 == false;
 
-                FUN_112b_0c64_draw_colony(
+                drawColony(
                         canvas.getScratch(),
                         gameData.zoomLevelPercent,
                         screenX,
@@ -1597,7 +1597,7 @@ public class Minimap {
     }
 
     /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_0c64_draw_colony */
-    public void FUN_112b_0c64_draw_colony(BufferedImage destination, int zoom_level_percent, int screenX, int screenY, boolean displayColonyName, boolean displayPopulation, int colony_index) {
+    public void drawColony(BufferedImage destination, int zoom_level_percent, int screenX, int screenY, boolean displayColonyName, boolean displayPopulation, int colony_index) {
         Colony colony = gameData.gameMap.colonies.get(colony_index);
 
         int local_2c_param_x_in_pixels = screenX;
@@ -1691,6 +1691,14 @@ public class Minimap {
         }
 
 
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_058e_module_14_render_units_in_viewport */
+    public void FUN_7f88_058e_module_14_render_units_in_viewport() {
+        FUN_7f88_04bc_module_14_83_draw_units(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
+    }
+
+    public void FUN_7f88_04bc_module_14_83_draw_units(int param_1_x, int param_2_y, int param_3_width, int param_4_height) {
     }
 
 }

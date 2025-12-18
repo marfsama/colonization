@@ -17,6 +17,13 @@ public class Code1c {
 
     }
 
+    /**
+     * - param_1 - spritesheet (far ptr)
+     * - param_2 - y
+     * - AX - x
+     * - DX - sprite index
+     * - BX - destination
+     */
     public static void FUN_1c1b_0000_draw_compressed_sprite(Sprite destination, int x, int y, int spriteIndex, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
 
 
@@ -35,9 +42,45 @@ public class Code1c {
      * - BX - destination
      *
      */
-    public static void FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(Sprite destination, int x, int y, int zoomLevelPercent, int spriteIndex, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
+    public static void FUN_1c3a_000a_draw_sprite_flippable_centered_zoomed(Sprite destination, int x, int y, int zoomLevelPercent, int spriteIndex, Module1a.SpriteSheetSomeStructure spriteSheet) {
 
     }
+
+
+    public static class SpriteDimensions {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
+
+    public static SpriteDimensions FUN_1c67_0008_calculate_center_offset(int zoomPercent,
+                                                              Module1a.SpriteSheetSomeStructure spriteSheet,
+                                                              int iconIndex,
+                                                              int x,
+                                                              int y) {
+        // 1. Calculate pointer to sprite data
+        // Each sprite entry is 12 bytes, with data starting at offset 0x36
+
+        // 2. Read original dimensions from sprite data
+        int originalWidth = spriteSheet.field_0x42[iconIndex].field_0x08_width;
+        int originalHeight = spriteSheet.field_0x42[iconIndex].field_0x0A_height;
+
+        // 3. Apply zoom with rounding: ((dimension * zoom%) + 50) / 100
+        int zoomedWidth = ((originalWidth * zoomPercent) + 50) / 100;
+        int zoomedHeight = ((originalHeight * zoomPercent) + 50) / 100;
+
+        SpriteDimensions outParam = new SpriteDimensions();
+        // 4. Store zoomed dimensions
+        outParam.width = zoomedWidth;
+        outParam.height = zoomedHeight;
+
+        // 5. Calculate centering offsets
+        outParam.x = x - (zoomedWidth / 2);
+        outParam.y = y - zoomedHeight + 1;
+        return outParam;
+    }
+
 
     public static void FUN_1c6d_000c(Sprite destination, int x, int y, Module1a.SpriteSheetSomeStructure surfaceSpriteSheet) {
 
@@ -54,4 +97,15 @@ public class Code1c {
     }
 
 
+    /**
+     * param_1 - color
+     * param_2 - y
+     * param_3 - sprite sheet
+     * AX = icon index
+     * BX = destination
+     * DX = x
+     */
+    public static void FUN_1cbc_000a_draw_sprite_silhouette(Sprite destination, Module1a.SpriteSheetSomeStructure spriteSheet, int x, int y, int spriteIndex, int color) {
+
+    }
 }

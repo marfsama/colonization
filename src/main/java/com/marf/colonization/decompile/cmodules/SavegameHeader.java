@@ -8,6 +8,8 @@ public class SavegameHeader {
      * 0x02	0x1	byte
      */
     public int field1_0x2_independence_flag;
+    /** 0x03	0x1	byte     */
+    public int field2_0x3;
     /** 0x10	0x2	byte	*/
     public int field9_0x10;
     /** 0x12	0x2	byte	*/
