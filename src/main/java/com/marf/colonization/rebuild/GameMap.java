@@ -1,8 +1,6 @@
 package com.marf.colonization.rebuild;
 
-import com.marf.colonization.saves.section.Colony;
 import com.marf.colonization.saves.section.IndianTribe;
-import com.marf.colonization.saves.section.IndianVillage;
 import com.marf.colonization.saves.section.Unit;
 
 import java.util.ArrayList;

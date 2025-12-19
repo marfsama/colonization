@@ -123,7 +123,7 @@ public class Module14_83 {
         int unitOwner = unit.nationIndex & 0x0F;
 
         if (unitOwner != DAT_5338_savegame_header.maybe_player_controlled_power) {
-            flags |= 0x20;  // Add flag for non-player-owned units
+            flags |= 0x20;  // draw order letters
         }
 
         // Convert to screen coordinates

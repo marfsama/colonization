@@ -1,12 +1,7 @@
 package com.marf.colonization.rebuild;
 
 
-import com.marf.colonization.decompile.cmodules.Data;
-import com.marf.colonization.mpskit.Ff;
 import com.marf.colonization.mpskit.Ss;
-import com.marf.colonization.saves.section.Colony;
-import com.marf.colonization.saves.section.IndianTribe;
-import com.marf.colonization.saves.section.IndianVillage;
 import com.marf.colonization.saves.section.Unit;
 
 import java.awt.image.BufferedImage;
@@ -47,16 +42,6 @@ public class Minimap {
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_84ec_number_of_y_tiles_in_viewport
      */
     private Point viewportTiles = new Point();
-
-    /**
-     * @see com.marf.colonization.decompile.cmodules.Data#DAT_0838_minimap_fractions_colors_table
-     */
-    private int[] fractionsColorsTable = new int[]{
-            0xC, 0x9, 0xE, 0xD,
-            0xF, 0x95, 0x36, 0xB,
-            0x43, 0x6F, 0x75, 0x47,
-            0x7, 0xB, 0x9, 0xA
-    };
 
     /**
      * @see com.marf.colonization.decompile.cmodules.Data#DAT_a526_terrain_minimap_colors
@@ -203,7 +188,7 @@ public class Minimap {
         // Check for village/tribe
         if ((surfaceFlags & 0x02) != 0) {
             int index = (visitorData >> 4) & 0x0F;
-            return fractionsColorsTable[index];
+            return gameData.fractionsColorsTable[index];
         }
 
         // Check for units
@@ -216,7 +201,7 @@ public class Minimap {
                 // Check if unit belongs to current player
                 if ((unit.getNationIndex().getId() & playerMask) != 0 || gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
                     int index = (visitorData >> 4) & 0x0F;
-                    color = fractionsColorsTable[index];
+                    color = gameData.fractionsColorsTable[index];
                 }
 
                 // Check for privateer
@@ -1377,180 +1362,11 @@ public class Minimap {
                 if ((gameData.gameMap.getVisibilityAt(village.getX(), village.getY()) & playerMask) > 0 || gameData.savegameHeader.field_0x22_maybe_current_turn > 0) {
                     int screenX = gameData.viewportOffset.x + (village.getX() - x) * gameData.tileSize;
                     int screenY = gameData.viewportOffset.y + (village.getY() - y) * gameData.tileSize;
-                    drawIndianVillage(canvas.getScratch(), gameData.zoomLevelPercent, screenX, screenY, villageIndex);
-
+                    village.drawIndianVillage(gameData, canvas, resources, canvas.getScratch(), gameData.zoomLevelPercent, screenX, screenY);
                 }
             }
         }
     }
-
-    /** @see com.marf.colonization.decompile.cmodules.Modulea#FUN_6158_03fa_module_a_maybe_get_max_european_threat */
-    public int[] FUN_6158_03fa_module_a_maybe_get_max_european_threat(int villageIndex) {
-        // TODO: implement
-        return new int[] {0, 10};
-    }
-
-    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_0790_draw_indian_village */
-    public void drawIndianVillage(BufferedImage destination, int zoomLevelPercent, int screenX, int screenY, int villageIndex) {
-        IndianVillage village = gameData.gameMap.indianVillages.get(villageIndex);
-        int tribeIndex = village.getNation().getId() - 4;
-        IndianTribe tribe = gameData.gameMap.indianTribes.get(tribeIndex);
-        int tribeLevel = tribe.getLevel();
-
-        int tileSize = 16;
-        if (zoomLevelPercent < 100) {
-            screenX -= (2 >> gameData.tileSize) & 0x3;
-            tileSize = gameData.tileSize;
-        }
-
-        // draw base icon
-        int screen_x = screenX + (tileSize >> 1);
-        int screen_y = screenY + tileSize;
-        canvas.drawSpriteFlippableCenteredZoomed(destination, screen_x, screen_y, zoomLevelPercent, Math.min(tribeLevel, 3) + 0xb, resources.getIcons());
-
-        // draw tribe colors on villages of size 0 and 1
-        int color = fractionsColorsTable[tribeIndex + 4];
-        if (zoomLevelPercent == 100) {
-            if (tribeLevel == 0) {
-                canvas.fillRect(destination, screenX + 3, screenY + 4, 1, 1, color);
-                canvas.fillRect(destination, screenX + 12, screenY + 4, 1, 1, color);
-                canvas.fillRect(destination, screenX + 9, screenY + 6, 1, 1, color);
-            } else if (tribeLevel == 1) {
-                canvas.fillRect(destination, screenX + 4, screenY + 9, 2, 1, color);
-                canvas.fillRect(destination, screenX + 9, screenY + 11, 3, 1, color);
-            }
-            // no tribe colors for level 2 and 3
-        }
-        if (zoomLevelPercent == 50) {
-            if (tribeLevel == 0) {
-                canvas.fillRect(destination, screenX + 2, screenY + 2, 1, 1, color);
-                canvas.fillRect(destination, screenX + 6, screenY + 2, 1, 1, color);
-                canvas.fillRect(destination, screenX + 5, screenY + 3, 1, 1, color);
-            } else if (tribeLevel == 1) {
-                canvas.fillRect(destination, screenX + 2, screenY + 4, 1, 1, color);
-                canvas.fillRect(destination, screenX + 5, screenY + 5, 3, 1, color);
-            }
-            // no tribe colors for level 2 and 3
-        }
-
-        // is the village a capital?
-        if ((village.getState() & 4) != 0) {
-            //  draw the capital icon
-            canvas.drawSpriteFlippableCenteredZoomed(destination, screen_x, screen_y, zoomLevelPercent, 0x12, resources.getIcons());
-        }
-
-        if (zoomLevelPercent == 100) {
-            screen_x = screenX + 6;
-            screen_y = screenY;
-
-            // draw threat level
-            int[] out_thread_level = FUN_6158_03fa_module_a_maybe_get_max_european_threat(villageIndex);;
-            int aggressor = out_thread_level[0];
-            int threatLevel = out_thread_level[1];
-
-            if (aggressor >= 0) {
-                int panicBackgroundColor;
-                int panicColor;
-                if (gameData.savegameHeader.maybe_current_player == aggressor) {
-                    int panic = village.getPanic()[aggressor];
-                    if (panic < 0) {
-                        village.getPanic()[aggressor] = 0;
-                    }
-                    int panicLevel = panic >> 5;
-                    if (panicLevel > 3) {
-                        panicLevel = 3;
-                    }
-                    int tribeAggression = gameData.gameMap.getTribeAggressionForPower(tribeIndex, aggressor);
-                    if (tribeAggression >= 0x4b) {
-                        panicLevel = 3;
-                    }
-
-                    panicColor = switch (panicLevel) {
-                        case 0 -> 0xa;
-                        case 1 -> 0xb;
-                        case 2 -> 0xe;
-                        default -> 0xc;
-                    };
-                    panicBackgroundColor = 0;
-                } else {
-                    threatLevel = 1;
-                    panicColor = fractionsColorsTable[aggressor];
-                    // TODO: check this. the panic color cannot be the same as the background color
-                    panicBackgroundColor = panicColor;
-                }
-
-                if (threatLevel > 0) {
-                    screen_y += 4;
-                    do {
-                        // for half an aggression level show darker color
-                        if (threatLevel < 3) {
-                            panicColor -= 8;
-                        }
-                        // draw background: for the player black, for other powers the color of the power
-                        canvas.fillRect(destination, screen_x, screen_y, 3, 7, panicBackgroundColor);
-                        // long part of the exclamation mark
-                        canvas.fillRect(destination, screen_x+1, screen_y+1, 1, 3, panicColor);
-                        // dot of the exclamation mark
-                        canvas.fillRect(destination, screen_x+1, screen_y+5, 1, 1, panicColor);
-
-                        screen_x += 2;
-                        threatLevel -= 4;
-                    } while (threatLevel > 0);
-                }
-                screen_x += 2;
-            }
-            // draw mission
-            byte mission = (byte) village.getMission();
-            if (mission > -1) {
-                int missionPower = mission & 0x7;
-                int upperNibble = mission & 0xf8;
-                screen_y = screenY;
-
-                int missionColor = fractionsColorsTable[missionPower] + (upperNibble != 0 ? 0xf8 : 0);
-                // draw background
-                canvas.fillRect(destination, screen_x, screen_y+5, 5, 6, 0);
-                // draw cross
-                canvas.fillRect(destination, screen_x+2, screen_y+6, 1, 4, missionColor);
-                canvas.fillRect(destination, screen_x+1, screen_y+7, 3, 1, missionColor);
-            }
-
-            if ((gameData.debugInfoFlags & 1) > 0) {
-                int panic = village.getPanic()[aggressor];
-                // draw panic value to screen
-                String panicString = String.valueOf(panic);
-                Ff.Font font = resources.getFontTiny();
-                int stringWidth = font.getStringWidth(panicString);
-                canvas.fillRect(destination, screenX+2, screenY+2+font.getHeight(), stringWidth+1, font.getHeight()+1, 0);
-                canvas.setTextColors( 0xff, 0xf, 0xf, 0xf);
-                canvas.drawString(destination, font, panicString, screenX+3, screenY+3, 0);
-            }
-        }
-
-        if (zoomLevelPercent <= 25) {
-            // draw colored rectangles for the two smallest zoom levels
-            canvas.fillRect(destination,screenX, screenY, tileSize, tileSize, color);
-        }
-    }
-
-    /** @see com.marf.colonization.decompile.cmodules.Module02#FUN_4af1_1b76_module_2_is_colony_visible */
-    public boolean FUN_4af1_1b76_module_2_is_colony_visible(int playerIndex, int colonyIndex) {
-        Colony colony = gameData.gameMap.colonies.get(colonyIndex);
-        // TODO: check this. this doesn't seem to be right
-        if (colony.getNation() == 0) {
-            return true;
-        }
-
-        if (gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
-            return true;
-        }
-
-        if (colony.getColonistsSeenInColony(playerIndex) > 0) {
-            return true;
-        }
-
-        return false;
-    }
-
 
     /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_0248_module_14_83_render_colonies_viewport */
     public void renderColoniesViewport() {
@@ -1574,7 +1390,7 @@ public class Minimap {
             // check if the cillage is in the visible area
             // check if the tile is visible to the current player
             if (colony.getX() >= x && colony.getY() >= y && colony.getX() <= x2 && colony.getY() <= y2
-                    && FUN_4af1_1b76_module_2_is_colony_visible(gameData.savegameHeader.maybe_player_controlled_power, colonyIndex)
+                    && colony.isColonyVisible(gameData, gameData.savegameHeader.maybe_player_controlled_power)
                     && (gameData.gameMap.getVisibilityAt(colony.getX(), colony.getY()) & playerMask) > 0) {
                 int screenX = gameData.viewportOffset.x + (colony.getX() - x) * gameData.tileSize;
                 int screenY = gameData.viewportOffset.y + (colony.getY() - y) * gameData.tileSize;
@@ -1582,116 +1398,15 @@ public class Minimap {
                 boolean displayPopulation = gameData.zoomLevel == 0 && gameData.DAT_0880 == false;
                 boolean displayColonyName = gameData.zoomLevel == 0 && gameData.DAT_0880 == false;
 
-                drawColony(
-                        canvas.getScratch(),
-                        gameData.zoomLevelPercent,
-                        screenX,
-                        screenY,
-                        displayPopulation,
-                        displayColonyName,
-                        colonyIndex
-                );
+                colony.drawColony(
+                        canvas, gameData, resources, canvas.getScratch(),
+                        gameData.zoomLevelPercent, screenX, screenY, displayPopulation,displayColonyName);
 
             }
         }
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_0c64_draw_colony */
-    public void drawColony(BufferedImage destination, int zoom_level_percent, int screenX, int screenY, boolean displayColonyName, boolean displayPopulation, int colony_index) {
-        Colony colony = gameData.gameMap.colonies.get(colony_index);
 
-        int local_2c_param_x_in_pixels = screenX;
-        int local_2a_param_y_in_pixels = screenY;
-
-        int nation = colony.getNation();
-        int numColonists = colony.getNumColonists();
-
-        int fortificationLevel = 0;
-        // check for stockade
-        if (colony.hasBuilding(0)) {
-            fortificationLevel++;
-        }
-        // check for fort
-        if (colony.hasBuilding(1)) {
-            fortificationLevel++;
-        }
-        // check for fortress
-        if (colony.hasBuilding(2)) {
-            fortificationLevel++;
-        }
-
-        if (nation != gameData.savegameHeader.maybe_player_controlled_power) {
-            int seenColonists = colony.getColonistsSeenInColony(gameData.savegameHeader.maybe_player_controlled_power);
-            if (seenColonists == 0) {
-                seenColonists = 1;
-                colony.setColonistsSeenInColony(gameData.savegameHeader.maybe_player_controlled_power, 1);
-            }
-            numColonists = seenColonists;
-            fortificationLevel = colony.getSeenFortificationLevel(gameData.savegameHeader.maybe_player_controlled_power);
-        }
-
-        // note: 0 wraps around to 0xffff and therefor to 0x3
-        int colonySprite = (fortificationLevel - 1) & 0x3;
-
-        if (zoom_level_percent < 100 ) {
-            screenX -= 2 >> Data.DAT_017a_zoom_level;
-        }
-
-
-        int local_10_x = screenX + (gameData.tileSize / 2);
-        int local_12_y = screenY + gameData.tileSize;
-
-        int local_a_another_x;
-        int local_c_another_y;
-
-        // this looks like some rotation
-        if (zoom_level_percent == 100) {
-            local_a_another_x = screenX + 6;
-            local_c_another_y = screenY + gameData.tileSize;
-        } else {
-            local_a_another_x = screenX + 2;
-            local_c_another_y = screenY + 3;
-        }
-
-        // draw base icon
-        canvas.drawSpriteFlippableCenteredZoomed(destination, local_10_x, local_12_y, zoom_level_percent, colonySprite+1, resources.getIcons());
-        // draw flag
-        int flagOwner = nation;
-        int flagSprite = 0x77 + flagOwner;
-        if ((gameData.savegameHeader.field1_0x2_independence_flag & 1) != 0 &&
-                gameData.savegameHeader.rebels_nation_maybe == gameData.savegameHeader.maybe_current_player) {
-            flagSprite = 0x83;
-        }
-        canvas.drawSpriteFlippableCenteredZoomed(destination, local_a_another_x, local_c_another_y, zoom_level_percent, flagSprite, resources.getIcons());
-
-        // draw population and colony name only in max zoom
-        if (zoom_level_percent == 100) {
-            int populationColor = 0xf;
-            if ((colony.getSonsOfLibertyLevel() & 0x4) != 0) {
-                populationColor = 0xa;
-                if ((colony.getSonsOfLibertyLevel() & 0x2) != 0) {
-                    populationColor = 0xb;
-                }
-            }
-
-            canvas.setTextColors(0xff, populationColor, populationColor, populationColor);
-            if (displayPopulation) {
-                canvas.drawString(destination, resources.getFontTiny(), "" + numColonists, local_2c_param_x_in_pixels + 7, local_2a_param_y_in_pixels, 0);
-            }
-            if (displayColonyName) {
-                canvas.setTextColors(0xff, 0xf, 0x0, 0x0);
-                canvas.drawString(destination, resources.getFontIntr(), colony.getName(), screenX + 2, screenY+8-1, 0);
-            }
-
-        }
-        if (zoom_level_percent <= 25) {
-            // draw colored rectangle in smaller zoom modes
-            int color = fractionsColorsTable[colony.getNation()];
-            canvas.fillRect(destination, screenX, screenY, gameData.tileSize, gameData.tileSize, color);
-        }
-
-
-    }
 
     /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_058e_module_14_render_units_in_viewport */
     public void FUN_7f88_058e_module_14_render_units_in_viewport() {

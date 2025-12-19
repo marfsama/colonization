@@ -89,4 +89,16 @@ public class GameData {
 
     /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0880 */
     public boolean DAT_0880;
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Data#DAT_0838_minimap_fractions_colors_table
+     */
+    public int[] fractionsColorsTable = new int[]{
+            0xC, 0x9, 0xE, 0xD,
+            0xF, 0x95, 0x36, 0xB,
+            0x43, 0x6F, 0x75, 0x47,
+            0x7, 0xB, 0x9, 0xA
+    };
+
+
 }

@@ -52,9 +52,9 @@ public class Savegame {
             gameData.gameMap.visitor = saveFile.getMap().getVisitor();
             gameData.gameMap.visibility = saveFile.getMap().getVisibility();
             gameData.gameMap.units = saveFile.getUnits();
-            gameData.gameMap.indianVillages = saveFile.getIndianVillages();
+            gameData.gameMap.indianVillages = saveFile.getIndianVillages().stream().map(IndianVillage::new).toList();
             gameData.gameMap.indianTribes = saveFile.getIndianTribes();
-            gameData.gameMap.colonies = saveFile.getColonies();
+            gameData.gameMap.colonies = saveFile.getColonies().stream().map(Colony::new).toList();
 
 
         }

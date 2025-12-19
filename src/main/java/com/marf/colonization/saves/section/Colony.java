@@ -62,29 +62,4 @@ public class Colony extends GameDataSection {
     /** 0xc2 0x8 */
     private long bells;
     // total size: 0xca
-
-    /** @see com.marf.colonization.decompile.cmodules.Code15#FUN_15d9_0368_is_building_in_colony */
-    public boolean hasBuilding(int buildingIndex) {
-        if (buildingIndex < 0) {
-            return false;
-        }
-
-        // building / 8
-        int building = buildingIndex >> 3;
-        int mask = 0x1 << (buildingIndex & 7);
-
-        return (buildings.get(building) & mask) > 0;
-    }
-
-    public int getColonistsSeenInColony(int power) {
-        return colonistsSeenInColony.get(power);
-    }
-
-    public void setColonistsSeenInColony(int power, int population) {
-        colonistsSeenInColony.set(power, population);
-    }
-
-    public int getSeenFortificationLevel(int power) {
-        return seenFortificationLevel.get(power);
-    }
 }
