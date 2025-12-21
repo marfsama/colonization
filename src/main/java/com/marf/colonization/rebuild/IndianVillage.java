@@ -168,7 +168,7 @@ public class IndianVillage {
                 int stringWidth = font.getStringWidth(panicString);
                 canvas.fillRect(destination, screenX+2, screenY+2+font.getHeight(), stringWidth+1, font.getHeight()+1, 0);
                 canvas.setTextColors( 0xff, 0xf, 0xf, 0xf);
-                canvas.drawString(destination, font, panicString, screenX+3, screenY+3, 0);
+                canvas.drawString(destination, font, panicString, screenX+3, screenY+3 + resources.getFontTiny().getHeight(), 0);
             }
         }
 

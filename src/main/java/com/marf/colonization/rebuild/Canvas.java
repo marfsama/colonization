@@ -185,7 +185,7 @@ public class Canvas {
                         int color = textColors[pixel];
                         if (color != 0xff) {
                             int px = x1 + currentX;
-                            int py = y1 + y + font.getHeight();
+                            int py = y1 + y;
                             if (px >= 0 && py >= 0 && px < destination.getWidth() && py < destination.getHeight()) {
                                 setPixel(destination, px, py, color);
                             }

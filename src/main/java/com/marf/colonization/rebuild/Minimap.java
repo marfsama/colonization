@@ -467,11 +467,11 @@ public class Minimap {
                 FUN_8007_0938_module_14_102_draw_map_tile(x, y, valid);
 
 // draw rectangle around each tiles
-                canvas.drawRect(canvas.getScratch(),
-                        DAT_a554_draw_map_x_in_pixels-8,
-                        DAT_a556_draw_map_y_in_pixels-15,
-                        DAT_a554_draw_map_x_in_pixels + gameData.tileSize-8,
-                        DAT_a556_draw_map_y_in_pixels + gameData.tileSize-15, 15);
+//                canvas.drawRect(canvas.getScratch(),
+//                        DAT_a554_draw_map_x_in_pixels-8,
+//                        DAT_a556_draw_map_y_in_pixels-15,
+//                        DAT_a554_draw_map_x_in_pixels + gameData.tileSize-8,
+//                        DAT_a556_draw_map_y_in_pixels + gameData.tileSize-15, 15);
 // draw x/y of each tile
 //                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15,  15,""+x);
 //                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15+7,  15,""+y);
@@ -1720,15 +1720,15 @@ public class Minimap {
         }
 
         Unit unit = gameData.gameMap.units.get(local_2c_unit_id_for_icon);
-        int local_14_icon_size = 1;
+        int local_14_icon_size = 0;
         int local_c_unit_order;
         int local_3_order_letter;
 
         // check if unit is a ship
         // 0xd = 13 "Caravel"
         // 0x12 = 18 "Man-O-War"
-        if (local_2c_unit_id_for_icon >= 0xd && local_2c_unit_id_for_icon <= 0x12) {
-            switch (local_2c_unit_id_for_icon) {
+        if (unit.getType() >= 0xd && unit.getType() <= 0x12) {
+            switch (unit.getType()) {
                 case 0xf: // 15 - "Galeon"
                 case 0x10: // 16 - "Privateer"
                 case 0x11: // 17 - "Frigate"
@@ -1739,7 +1739,7 @@ public class Minimap {
                     local_14_icon_size = 3;
             }
         } else {
-            switch (local_2c_unit_id_for_icon) {
+            switch (unit.getType()) {
                 case 0x4:
                 case 0x5:
                 case 0x7:
@@ -1752,7 +1752,7 @@ public class Minimap {
                 case 0xb:
                 case 0xc:
                     local_14_icon_size = 2;
-                    if (local_2c_unit_id_for_icon == 0xb && (unit.getFlags_damaged() & 0x80) != 0) {
+                    if (unit.getType() == 0xb && (unit.getFlags_damaged() & 0x80) != 0) {
                         local_14_icon_size = 4;
                     }
                     break;
@@ -1813,15 +1813,15 @@ public class Minimap {
             }
         }
 
-        String local_34_cargo_digit_string = Character.toString(local_3_order_letter);
-        int stringWidth = resources.getFontTiny().getStringWidth(local_34_cargo_digit_string) + 3;
+        String local_34_order_letter_string = Character.toString(local_3_order_letter);
+        int local_24_info_box_width = resources.getFontTiny().getStringWidth(local_34_order_letter_string) + 3;
 
-        int local_26_text_frame_height = resources.getFontTiny().getHeight() + 3;
-        int local_28_sprite_width = resources.getIcons().get(local_e_unit_icon_index).getWidth();
+        int local_26_info_box_height = resources.getFontTiny().getHeight() + 3;
+        int local_28_sprite_width = resources.getIcons().get(local_e_unit_icon_index-1).getWidth();
         int local_a_sprite_width;
         int local_1c_sprite_height;
         if (zoom_level_percent == 100) {
-            local_a_sprite_width = local_28_sprite_width + stringWidth;
+            local_a_sprite_width = local_28_sprite_width + local_24_info_box_width;
             local_1c_sprite_height = resources.getIcons().get(local_e_unit_icon_index).getHeight();
         } else {
             SpriteDimensions spriteDimension = FUN_1c67_0008_calculate_center_offset(zoom_level_percent, resources.getIcons(), local_e_unit_icon_index, screenX, screenY);
@@ -1836,90 +1836,100 @@ public class Minimap {
         }
 
 
-        int local_4_cargo_digit_sprite_x = 0;
-        int local_8_sprite_y = 0;
-        int local_24_text_frame_width = 0;
+        int local_4_info_box_x = 0;
+        int local_8_info_box_y = 0;
 
         // reuse cargo digit as x
         if (zoom_level_percent != 100) {
             if (zoom_level_percent == 50) {
                 int local_10_some_x = x;
-                local_4_cargo_digit_sprite_x = screenX + 5;
-                local_8_sprite_y = screenY + 5;
-                local_24_text_frame_width = 2;
-                local_26_text_frame_height = 2;
+                local_4_info_box_x = screenX + 5;
+                local_8_info_box_y = screenY + 5;
+                local_24_info_box_width = 2;
+                local_26_info_box_height = 2;
 
                 canvas.drawSpriteFlippableCenteredZoomed(canvas.getScratch(), local_10_some_x + local_28_sprite_width / 2, screenY + local_1c_sprite_height - 1, zoom_level_percent, local_e_unit_icon_index, resources.getIcons());
 
             } else if (zoom_level_percent == 25) {
-                local_4_cargo_digit_sprite_x = screenX + 1;
-                local_8_sprite_y = screenY + 1;
-                local_24_text_frame_width = 2;
-                local_26_text_frame_height = 2;
+                local_4_info_box_x = screenX + 1;
+                local_8_info_box_y = screenY + 1;
+                local_24_info_box_width = 2;
+                local_26_info_box_height = 2;
             } else {
-                local_4_cargo_digit_sprite_x = screenX;
-                local_8_sprite_y = screenY;
-                local_24_text_frame_width = 2;
-                local_26_text_frame_height = 2;
+                local_4_info_box_x = screenX;
+                local_8_info_box_y = screenY;
+                local_24_info_box_width = 2;
+                local_26_info_box_height = 2;
             }
 
-            canvas.fillRect(canvas.getScratch(),local_4_cargo_digit_sprite_x, local_8_sprite_y, 2, 2,  local_11_color);
+            canvas.fillRect(canvas.getScratch(),local_4_info_box_x, local_8_info_box_y, 2, 2,  local_11_color);
             return;
         }
 
         // zoom level == 100%
         int local_10_some_x = x;
         if ((flags & 0x20) != 0 ) {
-            local_24_text_frame_width = 4;
-            local_26_text_frame_height = 4;
+            local_24_info_box_width = 4;
+            local_26_info_box_height = 4;
         }
 
-        int dx = x + local_28_sprite_width;
+        // dx = right side of sprite (start of info box)
+        int infoBoxX = x + local_28_sprite_width;
         int local_6_some_x = x;
-        int local_48_some_width = local_24_text_frame_width + local_28_sprite_width;
-        if (local_48_some_width > 0x10) {
-            dx = dx - local_48_some_width - 0x10;
+        int local_48_sprite_and_info_box_width = local_24_info_box_width + local_28_sprite_width;
+        // if the sprite and info box wont fit in the 16 pixel tile size...
+        if (local_48_sprite_and_info_box_width > 0x10) {
+            // place the info box on the left side of the sprite
+            infoBoxX = infoBoxX - local_48_sprite_and_info_box_width - 0x10;
         }
 
-        int local_16_some_x;
-        int local_18_some_y;
+        int local_16_transport_info_x;
+        int local_18_transport_info_y;
+        // switch starts at 112b:0559
         switch (local_14_icon_size) {
             case 1:
-                local_16_some_x = dx - 2;
-                local_8_sprite_y = screenY;
-                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_4_info_box_x = infoBoxX;
+                local_8_info_box_y = screenY;
+
+                local_16_transport_info_x = local_4_info_box_x - 2;
+                local_18_transport_info_y = local_8_info_box_y + local_1c_sprite_height - 2;
+
                 local_14_icon_size = 0;
-                local_4_cargo_digit_sprite_x = dx;
                 break;
             case 2:
             case 4:
-                dx = (local_10_some_x - local_24_text_frame_width / 2) + 9;
-                local_16_some_x = dx - 2;
-                int bx = screenY + (local_14_icon_size == 4 ? 2 : 0);
-                local_18_some_y = bx + 2;
+                local_4_info_box_x = (local_10_some_x - local_24_info_box_width / 2) + 9;
+                local_8_info_box_y = screenY + (local_14_icon_size == 4 ? 2 : 0);
+
+                local_16_transport_info_x = local_4_info_box_x - 2;
+                local_18_transport_info_y = local_8_info_box_y + 2;
+
                 local_14_icon_size = 1;
-                local_8_sprite_y = bx;
                 break;
             case 3:
-                dx = local_10_some_x;
-                local_4_cargo_digit_sprite_x = dx;
-                local_8_sprite_y = screenY;
-                local_16_some_x = dx + 2;
-                local_18_some_y = screenY + 2;
+                local_4_info_box_x = local_10_some_x;
+                local_8_info_box_y = screenY;
+
+                local_16_transport_info_x = local_4_info_box_x + 2;
+                local_18_transport_info_y = screenY + 2;
+
                 local_14_icon_size = 1;
-                local_6_some_x = dx + local_24_text_frame_width;
-                int ax = local_48_some_width + 2;
+
+                local_6_some_x = local_4_info_box_x + local_24_info_box_width;
+                int ax = local_48_sprite_and_info_box_width + 2;
                 if (ax > 0x10) {
-                    local_6_some_x -= (local_48_some_width - 0xe);
+                    local_6_some_x -= (local_48_sprite_and_info_box_width - 0xe);
                 }
 
                 break;
             default:
-                local_16_some_x = dx - 2;
-                local_8_sprite_y = screenY - local_26_text_frame_height + local_1c_sprite_height;
-                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_4_info_box_x = infoBoxX;
+                local_8_info_box_y = screenY - local_26_info_box_height + local_1c_sprite_height;
+
+                local_16_transport_info_x = local_4_info_box_x - 2;
+                local_18_transport_info_y = screenY + local_1c_sprite_height - 2;
+
                 local_14_icon_size = 0;
-                local_4_cargo_digit_sprite_x = dx;
                 break;
         }
 
@@ -1929,11 +1939,11 @@ public class Minimap {
         }
 
         if (local_1e_flag_has_stuff_in_transportchain2) {
-            canvas.fillRect(canvas.getScratch(), local_16_some_x, local_18_some_y, local_24_text_frame_width, local_26_text_frame_height, 0);
-            canvas.fillRect(canvas.getScratch(), local_16_some_x + 1, local_18_some_y + 1, local_24_text_frame_width - 2, local_26_text_frame_height - 2, local_11_color);
+            canvas.fillRect(canvas.getScratch(), local_16_transport_info_x, local_18_transport_info_y, local_24_info_box_width, local_26_info_box_height, 0);
+            canvas.fillRect(canvas.getScratch(), local_16_transport_info_x + 1, local_18_transport_info_y + 1, local_24_info_box_width - 2, local_26_info_box_height - 2, local_11_color);
         }
-        canvas.fillRect(canvas.getScratch(), local_4_cargo_digit_sprite_x, local_8_sprite_y, local_24_text_frame_width, local_26_text_frame_height, 0);
-        canvas.fillRect(canvas.getScratch(), local_4_cargo_digit_sprite_x + 1, local_8_sprite_y + 1, local_24_text_frame_width - 2, local_26_text_frame_height - 2, 0);
+        canvas.fillRect(canvas.getScratch(), local_4_info_box_x, local_8_info_box_y, local_24_info_box_width, local_26_info_box_height, 0);
+        canvas.fillRect(canvas.getScratch(), local_4_info_box_x + 1, local_8_info_box_y + 1, local_24_info_box_width - 2, local_26_info_box_height - 2, local_11_color);
 
         if (local_14_icon_size == 0) {
             // draw silhouette
@@ -1963,7 +1973,7 @@ public class Minimap {
             }
 
             canvas.setTextColors(0xff, local_21_power_color_index, local_21_power_color_index, local_21_power_color_index );
-            canvas.drawString(canvas.getScratch(), resources.getFontTiny(), local_34_cargo_digit_string, local_4_cargo_digit_sprite_x+2, local_8_sprite_y+2, 0);
+            canvas.drawString(canvas.getScratch(), resources.getFontTiny(), local_34_order_letter_string, local_4_info_box_x+2, local_8_info_box_y+2, 0);
         }
 
         if (local_1a_flag_artillery_damaged && zoom_level_percent == 100) {

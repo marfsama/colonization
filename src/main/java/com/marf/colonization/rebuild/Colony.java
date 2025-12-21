@@ -206,11 +206,11 @@ public class Colony {
 
             canvas.setTextColors(0xff, populationColor, populationColor, populationColor);
             if (displayPopulation) {
-                canvas.drawString(destination, resources.getFontTiny(), "" + numColonists, local_2c_param_x_in_pixels + 7, local_2a_param_y_in_pixels, 0);
+                canvas.drawString(destination, resources.getFontTiny(), "" + numColonists, local_2c_param_x_in_pixels + 7, local_2a_param_y_in_pixels + resources.getFontTiny().getHeight(), 0);
             }
             if (displayColonyName) {
                 canvas.setTextColors(0xff, 0xf, 0x0, 0x0);
-                canvas.drawString(destination, resources.getFontIntr(), this.getName(), screenX + 2, screenY+8-1, 0);
+                canvas.drawString(destination, resources.getFontIntr(), this.getName(), screenX + 2, screenY+8-1 + resources.getFontIntr().getHeight(), 0);
             }
 
         }
