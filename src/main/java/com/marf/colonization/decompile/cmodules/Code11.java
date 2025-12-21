@@ -229,7 +229,7 @@ public class Code11 {
         if ((nation & 0xf) < 4 ) {
             local_c_unit_order = 0;
         }
-        local_3_order_letter = DAT_2b4d_5496_order_letters.charAt(local_c_unit_order);
+        local_3_order_letter = DAT_5496_order_letters.charAt(local_c_unit_order);
 
         if (unit.type >= 0xd && unit.type <= 0x12) {
             if (nation != DAT_5338_savegame_header.maybe_player_controlled_power) {

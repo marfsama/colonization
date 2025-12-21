@@ -250,4 +250,105 @@ public class GameMap {
         return indianTribes.get(tribeIndex).getAggressions().get(aggressor);
     }
 
+    /** @see com.marf.colonization.decompile.cmodules.Code13#FUN_1373_0346_surface_get_european_unit_owner */
+    public int FUN_1373_0346_surface_get_european_unit_owner(int x,int y) {
+        int surfaceType = getSurfaceAt(x,y);
+        // bit 0 set means there is a unit
+        if ((surfaceType & 1) != 0) {
+            int lastVisitor = visitorGetLastVisitor(x,y);
+            // only return when the last visitor of the tile is european
+            if (lastVisitor <= 3) {
+                return lastVisitor;
+            }
+        }
+        return -1;
+    }
+
+
+    /**
+     * returns the colony index at pos x,y or -1 if there is no colony
+     * @see com.marf.colonization.decompile.cmodules.Code15#FUN_15d9_0a80_find_colony_at
+     */
+    public int findColonyAt(int x, int y) {
+        int result = -1;
+        if (isTileInDrawableRect(x, y)) {
+            int owner =  FUN_1373_0346_surface_get_european_unit_owner(x, y);
+            if (owner > -1) {
+                for (int colonyIndex = 0; colonyIndex < colonies.size(); colonyIndex++) {
+                    Colony colony = colonies.get(colonyIndex);
+                    if (colony.getX() == x && colony.getY() == y) {
+                        result = colonyIndex;
+                        break;
+                    }
+                }
+                if (result < 0) {
+                    // colony not found: display error message "Colony Flags Error."
+                    // FUN_83d9_3730_module_16_draw_text_from_gametxt("COLONYFLAG");
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Traverses the transport chain of the unit until the head and returns the head.
+     * <p>
+     * param:
+     * ax = unit index
+     * return
+     * ax = unit index at the head of the transport chain
+     *
+     * @see com.marf.colonization.decompile.cmodules.Code14#FUN_1415_000a_get_transport_chain_head
+     */
+    public int FUN_1415_000a_get_transport_chain_head(int unitIndex) {
+        if (unitIndex < 0) {
+            return -1;
+        }
+
+        Unit unit = units.get(unitIndex);
+        while (unit.getPrevious() > 0) {
+            unitIndex = unit.getPrevious();
+            unit = units.get(unitIndex);
+        }
+        return unitIndex;
+    }
+
+    /**
+     * Traverses the tranport chain of the unit until the tail and returns the tail.
+     * <p>
+     * param:
+     * ax = unit index
+     * return
+     * ax = unit index at the head of the transport chain
+     *
+     * @see com.marf.colonization.decompile.cmodules.Code14#FUN_1415_002e_get_transport_chain_tail
+     */
+    public int FUN_1415_002e_get_transport_chain_tail(int unitIndex) {
+        if (unitIndex < 0) {
+            return -1;
+        }
+
+        Unit unit = units.get(unitIndex);
+        while (unit.getNext() > 0) {
+            unitIndex = unit.getNationIndex();
+            unit = units.get(unitIndex);
+        }
+        return unitIndex;
+    }
+
+    /**
+     * param:
+     * ax = unit index
+     * return
+     * ax = transport chain 2
+     * @see com.marf.colonization.decompile.cmodules.Code14#FUN_1415_0052_get_transportchain2
+     */
+    public int FUN_1415_0052_get_transportchain2(int unitIndex) {
+        if (unitIndex < 0) {
+            return -1;
+        }
+
+        return units.get(unitIndex).getNext();
+    }
+
 }

@@ -14,6 +14,6 @@ public class Player extends GameDataSection {
     private String name;
     private String continent;
     private int byte1;
-    private TableValue control; // Raw byte value
+    private int control; // Raw byte value
     private int diplomacy;
 }

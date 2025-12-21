@@ -2,6 +2,7 @@ package com.marf.colonization.rebuild;
 
 
 import com.marf.colonization.mpskit.Ss;
+import com.marf.colonization.saves.section.Player;
 import com.marf.colonization.saves.section.Unit;
 
 import java.awt.image.BufferedImage;
@@ -199,13 +200,13 @@ public class Minimap {
 
             if (unit != null) {
                 // Check if unit belongs to current player
-                if ((unit.getNationIndex().getId() & playerMask) != 0 || gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
+                if ((unit.getNationIndex() & playerMask) != 0 || gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
                     int index = (visitorData >> 4) & 0x0F;
                     color = gameData.fractionsColorsTable[index];
                 }
 
                 // Check for privateer
-                if (unit.getType().getId() == 0x10 && gameData.savegameHeader.field_0x22_maybe_current_turn != 0 && unit.getPrevious() < 0) {
+                if (unit.getType() == 0x10 && gameData.savegameHeader.field_0x22_maybe_current_turn != 0 && unit.getPrevious() < 0) {
                     color = 0x08; // don't show color
                 }
 
@@ -466,11 +467,11 @@ public class Minimap {
                 FUN_8007_0938_module_14_102_draw_map_tile(x, y, valid);
 
 // draw rectangle around each tiles
-//                canvas.drawRect(canvas.getScratch(),
-//                        DAT_a554_draw_map_x_in_pixels-8,
-//                        DAT_a556_draw_map_y_in_pixels-15,
-//                        DAT_a554_draw_map_x_in_pixels + gameData.tileSize - 1-8,
-//                        DAT_a556_draw_map_y_in_pixels + gameData.tileSize - 1-15, 15);
+                canvas.drawRect(canvas.getScratch(),
+                        DAT_a554_draw_map_x_in_pixels-8,
+                        DAT_a556_draw_map_y_in_pixels-15,
+                        DAT_a554_draw_map_x_in_pixels + gameData.tileSize-8,
+                        DAT_a556_draw_map_y_in_pixels + gameData.tileSize-15, 15);
 // draw x/y of each tile
 //                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15,  15,""+x);
 //                canvas.drawTextSmall(canvas.getScratch(), DAT_a554_draw_map_x_in_pixels-8,DAT_a556_draw_map_y_in_pixels-15+7,  15,""+y);
@@ -1413,7 +1414,609 @@ public class Minimap {
         FUN_7f88_04bc_module_14_83_draw_units(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
     }
 
-    public void FUN_7f88_04bc_module_14_83_draw_units(int param_1_x, int param_2_y, int param_3_width, int param_4_height) {
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_04bc_module_14_render_units */
+    public void FUN_7f88_04bc_module_14_83_draw_units(int x1, int y1, int width, int height) {
+        int x2 = x1 + width - 1;
+        int y2 = y1 + height - 1;
+        int[] viewport = clampToViewport(x1, y1, x2, y2);
+        x1 = viewport[0];
+        y1 = viewport[1];
+        x2 = viewport[2];
+        y2 = viewport[3];
+
+        int player_id = gameData.savegameHeader.maybe_player_controlled_power;
+        int visibilityMask = 1 << (player_id + 4);
+
+        if (gameData.gameMap.units.size() > 0) {
+            for (int unitIndex = 0; unitIndex < gameData.gameMap.units.size(); unitIndex++) {
+                Unit unit = gameData.gameMap.units.get(unitIndex);
+
+                // only unit not in a transport
+                if (unit.getNext() >= 0) {
+                    continue;
+                }
+                int x = unit.getX();
+                int y = unit.getY();
+
+                if (x < x1 || x > x2 || y < y1 || y > y2) {
+                    continue;
+                }
+
+                boolean shouldDraw = false;
+                if (unit.getNationIndex() == player_id)  {
+                    // Unit owned by current player - check fog of war
+                    int visibility = gameData.gameMap.getVisibilityAt(x,y);
+                    if ((visibility & visibilityMask) != 0) {
+                        shouldDraw = true;
+                    }
+                }
+                else {
+                    // Unit owned by other player - check if visible to current player
+                    // Check if unit has visibility flag for current player
+                    byte playerMask = (byte)(0x10 << player_id);
+                    if ((unit.getNationIndex() & playerMask) != 0) {
+                        shouldDraw = true;
+                    }
+                }
+
+                // Special case: observer/debug mode shows all units
+                if (gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
+                    shouldDraw = true;
+                }
+
+                // Draw the unit if visible
+                if (shouldDraw) {
+                    FUN_7f88_0428_module_14_83_draw_unit(unitIndex);
+                }
+            }
+        }
     }
 
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_0428_module_14_83_draw_unit */
+    public void FUN_7f88_0428_module_14_83_draw_unit(int unitIndex) {
+        // Early exit conditions
+        if (gameData.savegameHeader.field9_0x10 != 0 ||
+                gameData.DAT_0816 != 0 ||
+                gameData.DAT_0818 != 0) {
+
+            FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
+            return;
+        }
+
+        if (gameData.savegameHeader.active_unit >= 0) {
+            Unit activeUnit = gameData.gameMap.units.get(gameData.savegameHeader.active_unit);
+            if (activeUnit.getNationIndex() >= 4) {
+                FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
+                return;
+            }
+
+            Player player = gameData.playerList.get(activeUnit.getNationIndex());
+            if (player.getControl() != 0) {
+                FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
+                return;
+            }
+
+            if (FUN_1415_1338_unit_is_selectable(gameData.savegameHeader.active_unit) == false) {
+                FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
+                return;
+            }
+
+            // only draw when the current unit is not active. The active unit was drawn above already
+            Unit unit = gameData.gameMap.units.get(unitIndex);
+            if (unit.getX() != activeUnit.getX() || unit.getY() != activeUnit.getY()) {
+                FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
+                return;
+            }
+            FUN_7f88_03f6(true);
+        }
+
+    }
+
+    public void FUN_7f88_03f6(boolean b) {
+
+        if (gameData.DAT_1e70_some_flag) {
+            FUN_7f88_034c_module_14_83_draw_unit(gameData.savegameHeader.active_unit, false, true);
+            if (b) {
+                FUN_7f88_034c_module_14_83_draw_unit(gameData.savegameHeader.active_unit, true, true);
+            }
+            return;
+        }
+
+        FUN_7f88_034c_module_14_83_draw_unit(gameData.savegameHeader.active_unit, false, false);
+    }
+
+
+    public static boolean FUN_1415_1338_unit_is_selectable(int unitId) {
+        // TODO
+        return false;
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_034c_module_14_83_draw_unit  */
+    public void FUN_7f88_034c_module_14_83_draw_unit(int unit_index, boolean param2_maybe_is_active, boolean param3) {
+        // Early exit: param2 != 0 AND param3 == 0
+        if (param2_maybe_is_active == true && param3 == false) {
+            return;
+        }
+
+        // If param2 == 0, check if unit is on a colony
+        if (param2_maybe_is_active == false) {
+            // Get unit coordinates
+            Unit unit = gameData.gameMap.units.get(unit_index);
+            int x = unit.getX();
+            int y = unit.getY();
+
+            // Check if there's a colony at this location
+            int colonyId = gameData.gameMap.findColonyAt(x, y);
+            if (colonyId >= 0) {
+                return; // Unit is in a colony, don't draw separately
+            }
+        }
+
+        int flags;
+
+        // Base flags based on param2
+        if (param2_maybe_is_active == true) {
+            flags = 0x80;  // Some special drawing mode
+        } else {
+            flags = 0xC0;  // Default drawing mode (0x40 + 0x80)
+        }
+
+        // Check if unit is owned by current player
+        Unit unit = gameData.gameMap.units.get(unit_index);
+        int unitOwner = unit.getNationIndex() & 0x0F;
+
+        if (unitOwner != gameData.savegameHeader.maybe_player_controlled_power) {
+            flags |= 0x20;  // draw order letters
+        }
+
+        // Convert to screen coordinates
+        int screenX = (unit.getX() - gameData.viewportMin.x + gameData.viewportOffset.x) * gameData.tileSize;
+        int screenY = (unit.getY() - gameData.viewportMin.y + gameData.viewportOffset.y) * gameData.tileSize;
+
+        FUN_112b_01ba_draw_unit(
+                unit_index,
+                flags,
+                screenX,
+                screenY,
+                gameData.zoomLevelPercent,
+                gameData.tileSize
+        );
+    }
+
+    /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_0002_get_profession_icon_index */
+    public int FUN_112b_0002_get_profession_icon_index(int profession) {
+        return switch (profession) {
+            case 0x13 -> 0x65;   // 0x13 -> 0x65
+            case 0x14 -> 0x3B;   // 0x14 -> 0x3B
+            case 0x15 -> 0x3C;   // 0x15 -> 0x3C
+            case 0x16 -> 0x3D;   // 0x16 -> 0x3D
+            case 0x17 -> profession + 0x52; // 0x17 -> default
+            case 0x18 -> 0x3E;   // 0x18 -> 0x3E
+            case 0x19 -> 0x6B;   // 0x19 -> 0x6B
+            case 0x1a -> 0x6C;   // 0x1A -> 0x6C
+            case 0x1b -> 0x43;   // 0x1B -> 0x43
+            case 0x1c -> 0x65;   // 0x1C -> 0x65 (same as 0x13)
+            default -> profession + 0x52;
+        };
+    }
+
+    /**
+     * @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_0060_get_unit_icon
+     */
+    public int FUN_112b_0060_get_unit_icon(int unitIndex) {
+        Unit unit = gameData.gameMap.units.get(unitIndex);
+
+        int icon = resources.getUnitTypeConfigs().get(unit.getType()).getIcon();
+
+        // colonist
+        if (unit.getType() == 0) {
+            icon = FUN_112b_0002_get_profession_icon_index(unit.getProfession());
+        }
+
+        // hardy pioneer
+        if (unit.getType() == 2 && unit.getProfession() == 0x14 ) {
+            icon = 0x4a;
+        }
+
+        // veteran soldier
+        if (unit.getType() == 1 && unit.getProfession() == 0x15 ) {
+            icon = 0x4b;
+        }
+
+        // veteran dragoon
+        if (unit.getType() == 4 && unit.getProfession() == 0x15 ) {
+            icon = 0x4d;
+        }
+
+        // seasoned scout
+        if (unit.getType() == 5 && unit.getProfession() == 0x16 ) {
+            icon = 0x4c;
+        }
+
+        // jesuit missionar
+        if (unit.getType() == 3 && unit.getProfession() == 0x18 ) {
+            icon = 0x4e;
+        }
+
+        // damaged artillery
+        if (unit.getType() == 11 && ((unit.getFlags_damaged() & 0x80) != 0) ) {
+            icon = 0x42;
+        }
+        return icon;
+    }
+
+
+    /**
+     * parms:
+     *   AX - unit index
+     *   DX - flag - unpack transports
+     *   BX - ptr to store the final unit id (output parameter)
+     * return:
+     *   AX - unit icon
+     *
+     * @see com.marf.colonization.decompile.cmodules.Code11#FUN_112b_010e_get_unit_icon_topmost
+     */
+    public int[] FUN_112b_010e_get_unit_icon_topmost(int unitIndex, boolean showTopmostInStack) {
+        // notes: why are only transports checked for "transportchain2"?
+
+        int topmost = unitIndex;
+        if (showTopmostInStack) {
+            // first unpack transports
+            int head = gameData.gameMap.FUN_1415_000a_get_transport_chain_head(topmost);
+            if (head >= 0) {
+                Unit unit = gameData.gameMap.units.get(head);
+
+                int tail = head;
+                // it seems that this loops searches the last unit from the chain/stack
+                do {
+                    unit = gameData.gameMap.units.get(tail);
+                    // is the transport a ship?
+                    // 0xd = caravel, 0x12 = man-o-war
+                    if (unit.getType() >= 0xd && unit.getType() <= 0x12 ) {
+                        topmost = tail;
+                    }
+                    tail = gameData.gameMap. FUN_1415_0052_get_transportchain2(tail);
+                } while (tail >= 0);
+            }
+        }
+
+        // note: out_unitId is an out parameter
+        return new int[]{FUN_112b_0060_get_unit_icon(topmost), topmost};
+    }
+
+
+    /**
+     * Draw the unit
+     * param_1 - zoom_level_percent
+     * param_2 - tile_pixel_size
+     * param_3 - y
+     * BX - x
+     * DX - flags
+     * AX - unit index
+     * <p>
+     *     Flags:
+     *     0x20 - draw order letter/content for ships
+     *     0x40 - maybe unpack transports/show only top most unit. I think this is used when a unit in a stack is
+     *            selected or a unit should leave a shop
+     *     0x80 - draws some rectangles when the transport has something (or there is a stack of units)
+     */
+    public void FUN_112b_01ba_draw_unit(int unit_index, int flags, int screenX, int screenY, int zoom_level_percent, int tile_pixel_size) {
+        boolean local_20_flag_privateer_maybe = false;
+        flags &= 0xdf; // 1101 1111
+
+        int[] res = FUN_112b_010e_get_unit_icon_topmost(unit_index, (flags & 0x40) != 0);
+        int local_e_unit_icon_index = res[0];
+        int local_2c_unit_id_for_icon = res[1];
+
+        boolean local_1e_flag_has_stuff_in_transportchain2 = false;
+        if ((flags & 0x80) != 0) {
+            int unitIndex = gameData.gameMap.FUN_1415_000a_get_transport_chain_head(unit_index);
+            int foo = gameData.gameMap.FUN_1415_0052_get_transportchain2(unitIndex);
+            if (foo > -1) {
+                local_1e_flag_has_stuff_in_transportchain2 = true;
+            } else  {
+                local_1e_flag_has_stuff_in_transportchain2 = false;
+            }
+        }
+
+        Unit unit = gameData.gameMap.units.get(local_2c_unit_id_for_icon);
+        int local_14_icon_size = 1;
+        int local_c_unit_order;
+        int local_3_order_letter;
+
+        // check if unit is a ship
+        // 0xd = 13 "Caravel"
+        // 0x12 = 18 "Man-O-War"
+        if (local_2c_unit_id_for_icon >= 0xd && local_2c_unit_id_for_icon <= 0x12) {
+            switch (local_2c_unit_id_for_icon) {
+                case 0xf: // 15 - "Galeon"
+                case 0x10: // 16 - "Privateer"
+                case 0x11: // 17 - "Frigate"
+                case 0x12: // 18 - "Man-O-War",
+                    local_14_icon_size = 1;
+                    break;
+                default:
+                    local_14_icon_size = 3;
+            }
+        } else {
+            switch (local_2c_unit_id_for_icon) {
+                case 0x4:
+                case 0x5:
+                case 0x7:
+                case 0x8:
+                case 0x15:
+                case 0x16:
+                    local_14_icon_size = 3;
+                    break;
+                case 0xa:
+                case 0xb:
+                case 0xc:
+                    local_14_icon_size = 2;
+                    if (local_2c_unit_id_for_icon == 0xb && (unit.getFlags_damaged() & 0x80) != 0) {
+                        local_14_icon_size = 4;
+                    }
+                    break;
+            }
+        }
+
+
+        local_c_unit_order = unit.getOrder();
+        int nation = unit.getNationIndex() & 0xf;
+        if ((nation) < 4 ) {
+            local_c_unit_order = 0;
+        }
+        local_3_order_letter = resources.getOrderConfigs().get(local_c_unit_order).getOrderLetter();
+
+        if (unit.getType() >= 0xd && unit.getType() <= 0x12) {
+            if (nation != gameData.savegameHeader.maybe_player_controlled_power) {
+                // display number of used cargo slots as number
+                local_3_order_letter = unit.getNumCargo() + 0x30;
+                if (unit.getType() == 0x10 && gameData.savegameHeader.field_0x22_maybe_current_turn != 0) {
+                    local_3_order_letter = ':';
+                    local_20_flag_privateer_maybe = true;
+                }
+            }
+        }
+
+        // display debug stuff
+        if ((nation < 4)
+                && gameData.playerList.get(nation).getControl() != 0
+                && (gameData.savegameHeader.field2_0x3 & 0x20) != 0
+                && (gameData.debugInfoFlags & 0x8) != 0) {
+            local_3_order_letter = unit.getField_0x7() & 0xff;
+            if (local_3_order_letter > 0x80) {
+                local_3_order_letter = '-';
+            }
+        }
+
+        int local_21_power_color_index = gameData.fractionsColorsTable[nation];
+        int local_2a_power = nation;
+        int local_11_color = local_21_power_color_index;
+        if (local_20_flag_privateer_maybe) {
+            local_11_color = 0;
+        }
+
+        boolean local_1a_flag_artillery_damaged = false;
+        if (unit.getType() == 0xb && (unit.getFlags_damaged() & 0x80) != 0) {
+            local_1a_flag_artillery_damaged = true;
+        }
+
+        if (local_1a_flag_artillery_damaged) {
+            int attack = resources.getUnitTypeConfigs().get(unit.getType()).getAttack() - unit.getAttack_penalty_maybe();
+            if (gameData.gameMap.isTileInDrawableRect(unit.getX(), unit.getY())) {
+                int halfAttack = (attack + 1) >> 1;
+                if (halfAttack >= 10) {
+                    local_3_order_letter = '+';
+                } else {
+                    local_3_order_letter = '0' + halfAttack;
+                }
+            }
+        }
+
+        String local_34_cargo_digit_string = Character.toString(local_3_order_letter);
+        int stringWidth = resources.getFontTiny().getStringWidth(local_34_cargo_digit_string) + 3;
+
+        int local_26_text_frame_height = resources.getFontTiny().getHeight() + 3;
+        int local_28_sprite_width = resources.getIcons().get(local_e_unit_icon_index).getWidth();
+        int local_a_sprite_width;
+        int local_1c_sprite_height;
+        if (zoom_level_percent == 100) {
+            local_a_sprite_width = local_28_sprite_width + stringWidth;
+            local_1c_sprite_height = resources.getIcons().get(local_e_unit_icon_index).getHeight();
+        } else {
+            SpriteDimensions spriteDimension = FUN_1c67_0008_calculate_center_offset(zoom_level_percent, resources.getIcons(), local_e_unit_icon_index, screenX, screenY);
+            local_a_sprite_width = spriteDimension.x;
+            local_1c_sprite_height = spriteDimension.y;
+        }
+
+        int x = screenX;
+        // center sprite if it does not fit into a tile
+        if (local_a_sprite_width > tile_pixel_size) {
+            x += (tile_pixel_size - local_a_sprite_width) / 2;
+        }
+
+
+        int local_4_cargo_digit_sprite_x = 0;
+        int local_8_sprite_y = 0;
+        int local_24_text_frame_width = 0;
+
+        // reuse cargo digit as x
+        if (zoom_level_percent != 100) {
+            if (zoom_level_percent == 50) {
+                int local_10_some_x = x;
+                local_4_cargo_digit_sprite_x = screenX + 5;
+                local_8_sprite_y = screenY + 5;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+
+                canvas.drawSpriteFlippableCenteredZoomed(canvas.getScratch(), local_10_some_x + local_28_sprite_width / 2, screenY + local_1c_sprite_height - 1, zoom_level_percent, local_e_unit_icon_index, resources.getIcons());
+
+            } else if (zoom_level_percent == 25) {
+                local_4_cargo_digit_sprite_x = screenX + 1;
+                local_8_sprite_y = screenY + 1;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+            } else {
+                local_4_cargo_digit_sprite_x = screenX;
+                local_8_sprite_y = screenY;
+                local_24_text_frame_width = 2;
+                local_26_text_frame_height = 2;
+            }
+
+            canvas.fillRect(canvas.getScratch(),local_4_cargo_digit_sprite_x, local_8_sprite_y, 2, 2,  local_11_color);
+            return;
+        }
+
+        // zoom level == 100%
+        int local_10_some_x = x;
+        if ((flags & 0x20) != 0 ) {
+            local_24_text_frame_width = 4;
+            local_26_text_frame_height = 4;
+        }
+
+        int dx = x + local_28_sprite_width;
+        int local_6_some_x = x;
+        int local_48_some_width = local_24_text_frame_width + local_28_sprite_width;
+        if (local_48_some_width > 0x10) {
+            dx = dx - local_48_some_width - 0x10;
+        }
+
+        int local_16_some_x;
+        int local_18_some_y;
+        switch (local_14_icon_size) {
+            case 1:
+                local_16_some_x = dx - 2;
+                local_8_sprite_y = screenY;
+                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_14_icon_size = 0;
+                local_4_cargo_digit_sprite_x = dx;
+                break;
+            case 2:
+            case 4:
+                dx = (local_10_some_x - local_24_text_frame_width / 2) + 9;
+                local_16_some_x = dx - 2;
+                int bx = screenY + (local_14_icon_size == 4 ? 2 : 0);
+                local_18_some_y = bx + 2;
+                local_14_icon_size = 1;
+                local_8_sprite_y = bx;
+                break;
+            case 3:
+                dx = local_10_some_x;
+                local_4_cargo_digit_sprite_x = dx;
+                local_8_sprite_y = screenY;
+                local_16_some_x = dx + 2;
+                local_18_some_y = screenY + 2;
+                local_14_icon_size = 1;
+                local_6_some_x = dx + local_24_text_frame_width;
+                int ax = local_48_some_width + 2;
+                if (ax > 0x10) {
+                    local_6_some_x -= (local_48_some_width - 0xe);
+                }
+
+                break;
+            default:
+                local_16_some_x = dx - 2;
+                local_8_sprite_y = screenY - local_26_text_frame_height + local_1c_sprite_height;
+                local_18_some_y = screenY + local_1c_sprite_height - 2;
+                local_14_icon_size = 0;
+                local_4_cargo_digit_sprite_x = dx;
+                break;
+        }
+
+        if (local_14_icon_size != 0) {
+            // draw silhouette
+            FUN_112b_015c_draw_sprite_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x1);
+        }
+
+        if (local_1e_flag_has_stuff_in_transportchain2) {
+            canvas.fillRect(canvas.getScratch(), local_16_some_x, local_18_some_y, local_24_text_frame_width, local_26_text_frame_height, 0);
+            canvas.fillRect(canvas.getScratch(), local_16_some_x + 1, local_18_some_y + 1, local_24_text_frame_width - 2, local_26_text_frame_height - 2, local_11_color);
+        }
+        canvas.fillRect(canvas.getScratch(), local_4_cargo_digit_sprite_x, local_8_sprite_y, local_24_text_frame_width, local_26_text_frame_height, 0);
+        canvas.fillRect(canvas.getScratch(), local_4_cargo_digit_sprite_x + 1, local_8_sprite_y + 1, local_24_text_frame_width - 2, local_26_text_frame_height - 2, 0);
+
+        if (local_14_icon_size == 0) {
+            // draw silhouette
+            FUN_112b_015c_draw_sprite_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x1);
+        }
+
+        // draw unit sprite
+        FUN_112b_015c_draw_sprite_maybe(local_6_some_x, screenY, local_e_unit_icon_index, 0x2);
+
+        if ((flags & 0x20) == 0) {
+            if ((local_c_unit_order == 0x1 || local_c_unit_order == 0x6)) {
+                if (local_2a_power < 4) {
+                    local_21_power_color_index -= 8;
+                } else {
+                    local_21_power_color_index = 8;
+                }
+            } else {
+                local_21_power_color_index = 0;
+            }
+
+            if (local_20_flag_privateer_maybe) {
+                local_21_power_color_index = 0xf;
+            }
+
+            if (local_1a_flag_artillery_damaged) {
+                local_21_power_color_index = local_2a_power == 2 ? 0xc : 0xf;
+            }
+
+            canvas.setTextColors(0xff, local_21_power_color_index, local_21_power_color_index, local_21_power_color_index );
+            canvas.drawString(canvas.getScratch(), resources.getFontTiny(), local_34_cargo_digit_string, local_4_cargo_digit_sprite_x+2, local_8_sprite_y+2, 0);
+        }
+
+        if (local_1a_flag_artillery_damaged && zoom_level_percent == 100) {
+            canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getIcons(), local_6_some_x+4, screenY+4, 0x38);
+        }
+    }
+
+    public SpriteDimensions FUN_1c67_0008_calculate_center_offset(int zoomPercent,
+                                                                                List<Ss.Sprite> spriteSheet,
+                                                                                int iconIndex,
+                                                                                int x,
+                                                                                int y) {
+        // 2. Read original dimensions from sprite data
+        int originalWidth = spriteSheet.get(iconIndex).getWidth();
+        int originalHeight = spriteSheet.get(iconIndex).getHeight();
+
+        // 3. Apply zoom with rounding: ((dimension * zoom%) + 50) / 100
+        int zoomedWidth = ((originalWidth * zoomPercent) + 50) / 100;
+        int zoomedHeight = ((originalHeight * zoomPercent) + 50) / 100;
+
+        SpriteDimensions outParam = new SpriteDimensions();
+        // 4. Store zoomed dimensions
+        outParam.width = zoomedWidth;
+        outParam.height = zoomedHeight;
+
+        // 5. Calculate centering offsets
+        outParam.x = x - (zoomedWidth / 2);
+        outParam.y = y - zoomedHeight + 1;
+        return outParam;
+    }
+
+
+
+    /**
+     * param_1 - flags
+     * AX - icon index
+     * DX - x
+     * BX - y
+     */
+    public void FUN_112b_015c_draw_sprite_maybe(int x, int y, int spriteIndex, int flags) {
+        if ((flags & 1) != 0) {
+            canvas.drawSpriteSilhouette(canvas.getScratch(), resources.getIcons(), x,y, spriteIndex, (flags & 0x4) != 0 ? 0x5F : 0x00);
+        }
+        if ((flags & 2) != 0) {
+            canvas.drawSpriteSheetSprite(canvas.getScratch(), resources.getIcons(), x + 2, y, spriteIndex);
+        }
+    }
+
+
+    public static class SpriteDimensions {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+    }
 }

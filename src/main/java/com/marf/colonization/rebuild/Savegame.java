@@ -45,6 +45,7 @@ public class Savegame {
             Viewport viewport = saveFile.getViewports().get(saveFile.getHeader().getViewportPower());
             gameData.viewportCenter = new Point(viewport.getX(), viewport.getY());
             gameData.zoomLevel = viewport.getZoom();
+            gameData.playerList = saveFile.getPlayers();
 
             // maps
             gameData.gameMap.terrain = saveFile.getMap().getTerrain();

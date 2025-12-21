@@ -43,6 +43,7 @@ public class Rebuild extends JPanel {
 
         GameData gameData = pico.getComponent(GameData.class);
         gameData.debugInfoFlags = 1;
+        gameData.savegameHeader.field9_0x10 = 1;
 //        gameData.viewportCenter = new Point(29,34);
 
         Minimap minimap = pico.getComponent(Minimap.class);

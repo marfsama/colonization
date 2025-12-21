@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -291,6 +289,23 @@ public class Ss {
         int height;
         byte[] indexedImage;
         BufferedImage image;
+        Map<Integer, BufferedImage> silhouettes = new HashMap<>();
+
+        public BufferedImage getSilhouette(int color) {
+            return silhouettes.computeIfAbsent(color, c -> {
+                BufferedImage silhouette = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                for (int y = 0; y < height; y++) {
+                    for (int x = 0; x < width; x++) {
+                        int originalColor = image.getRGB(x, y);
+                        if ((originalColor) != 0) {
+                            silhouette.setRGB(x,y,color | 0xff000000);
+                        }
+                    }
+                }
+                return silhouette;
+            });
+        }
+
 
     }
 

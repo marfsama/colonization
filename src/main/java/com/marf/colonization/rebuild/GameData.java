@@ -1,6 +1,9 @@
 package com.marf.colonization.rebuild;
 
 import com.marf.colonization.decompile.cmodules.SavegameHeader;
+import com.marf.colonization.saves.section.Player;
+
+import java.util.List;
 
 /** Data parts of the game. Note that the order of the properties do not need to be the same as in the original file. */
 public class GameData {
@@ -100,5 +103,13 @@ public class GameData {
             0x7, 0xB, 0x9, 0xA
     };
 
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_53c6_player_list */
+    public List<Player> playerList;
 
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0816 */
+    public int DAT_0816;
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_0818 */
+    public int DAT_0818;
+    /** @see com.marf.colonization.decompile.cmodules.Data#DAT_1e70 */
+    public boolean DAT_1e70_some_flag;
 }

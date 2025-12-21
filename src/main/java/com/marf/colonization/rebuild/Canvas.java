@@ -55,6 +55,15 @@ public class Canvas {
         graphics.dispose();
     }
 
+    /** @see com.marf.colonization.decompile.cmodules.Code1c#FUN_1cbc_000a_draw_sprite_silhouette */
+    public void drawSpriteSilhouette(BufferedImage destination, List<Ss.Sprite> spriteSheet, int x, int y, int spriteIndex, int color) {
+        Graphics2D graphics = destination.createGraphics();
+        BufferedImage image = spriteSheet.get(spriteIndex - 1).getSilhouette(resources.getPalette()[color].getRGB());
+        graphics.drawImage(image, x,y,null);
+        graphics.dispose();
+    }
+
+
     /** @see com.marf.colonization.decompile.cmodules.Code11#FUN_1101_01dc_blit_sprite_sheet_sprite_only_over_black_pixels */
     public void drawSpriteSheetSpriteOverBlackPixels(BufferedImage destination, List<Ss.Sprite> spriteSheet, int x, int y, int spriteIndex) {
         // overwrites only the pixels which are black

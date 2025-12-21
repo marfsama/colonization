@@ -13,27 +13,43 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Unit extends GameDataSection {
+    /** 0x00 */
     private int x;
+    /** 0x01 */
     private int y;
-    private TableValue type; // Will use Lookup enum later
-    private TableValue nationIndex;
-    private int dummy0;
-    private int dummy1;
+    /** 0x02 */
+    private int type;
+    /** 0x03 */
+    private int nationIndex;
+    /** 0x04 (bit 7 = 1 => damaged artillery) */
+    private int flags_damaged;
+    /** 0x05 */
     private int usedMoves;
-    private byte[] dummy2;
-    private TableValue order;
+    /** 0x06 */
+    private byte field_0x6;
+    /** 0x06 */
+    private byte field_0x7;
+    /** 0x08 */
+    private int order;
+    /** 0x09 */
     private int gotoX;
+    /** 0x0a */
     private int gotoY;
-    private byte[] dummy3;
+    /** 0x0b */
+    private int dummy3;
+    /** 0x0c */
     private int numCargo;
-    private List<TableValue> cargoTypes;
+    /** 0x0d */
+    private List<Integer> cargoTypes;
+    /** 0x10 */
     private List<Integer> cargoAmount;
-    private byte[] dummy4;
-    private TableValue profession;
-    /** Unit id. maybe fist unit in transport? */
+    /** 0x16 */
+    private int attack_penalty_maybe;
+    /** 0x17 */
+    private int profession;
+    /** 0x18 - Unit id. maybe fist unit in transport? */
     private int previous;
-    /** Unit id. maybe last unit in transport? */
+    /** 0x1a - Unit id. this. might be the next unit in a stack of units (on the map or in colony) */
     private int next;
+    // total size: 0x1c
 }
-
-

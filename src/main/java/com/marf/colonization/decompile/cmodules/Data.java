@@ -89,6 +89,7 @@ public class Data {
 
     public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
 
+    public boolean DAT_1e70;
     public static int DAT_1e72_sub_tile_x;
     public static int DAT_1e73_sub_tile_y;
 
@@ -143,7 +144,7 @@ public class Data {
 
     public static Player[] DAT_53c6_player_list = new Player[4];
 
-    public static String DAT_2b4d_5496_order_letters = "-STGLFFBPR---";
+    public static String DAT_5496_order_letters = "-STGLFFBPR---";
     public static IndianVillage[] DAT_54a4_indian_village_list = new IndianVillage[0];
 
     public static int DAT_5a8c_tile_pixel_size;
@@ -188,6 +189,9 @@ public class Data {
 
 
     public static Building[] DAT_8f2c_buildings_table = new Building[42];
+
+    /** String indices for the orders, i.e. "Fortify" */
+    public static int[] DAT_977e_order_name_indices = new int[0xd];
 
     public static int[] DAT_9c60_int_placeholder;
     public static int DAT_9c7a_minimap_min_y;

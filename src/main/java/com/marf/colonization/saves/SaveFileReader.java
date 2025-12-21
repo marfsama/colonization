@@ -103,12 +103,12 @@ public class SaveFileReader extends BaseReader {
         header.setPadding3(readBytes(stream, 2));
 
         // Read active unit (2 bytes)
-        header.setActiveUnit(stream.readUnsignedShort());
+        header.setActiveUnit(stream.readShort());
 
         // Read padding (6 bytes)
-        header.setViewportPower(stream.readUnsignedShort());
-        header.setPlayerControlledPower(stream.readUnsignedShort());
-        header.setMaybe_current_player(stream.readUnsignedShort());
+        header.setViewportPower(stream.readShort());
+        header.setPlayerControlledPower(stream.readShort());
+        header.setMaybe_current_player(stream.readShort());
 
         // Read counts (each 2 bytes)
         header.setNumTribes(stream.readUnsignedShort());
@@ -151,7 +151,7 @@ public class SaveFileReader extends BaseReader {
         player.setByte1(stream.readUnsignedByte());
 
         // Read control (1 byte) - use lookup
-        player.setControl(readTableValue(tables.getControls(), stream::readUnsignedByte));
+        player.setControl(stream.readUnsignedByte());
         // Read diplomacy (2 bytes)
         player.setDiplomacy(stream.readUnsignedShort());
 
@@ -230,31 +230,29 @@ public class SaveFileReader extends BaseReader {
         unit.setY(stream.readUnsignedByte());
 
         // Read type (1 byte)
-        unit.setType(readTableValue(tables.getUnits(), stream::readUnsignedByte));
+        unit.setType(stream.readUnsignedByte());
 
         // Read nation index (1 byte)
-        int nationIndex = stream.readUnsignedByte();
-        unit.setNationIndex(readTableValue(tables.getNations(), () -> nationIndex & 0xf));
-        unit.setDummy0((nationIndex >> 4) & 0xf);
+        unit.setNationIndex(stream.readUnsignedByte());
 
         // Read dummy1 (1 byte)
-        unit.setDummy1(stream.readUnsignedByte());
+        unit.setFlags_damaged(stream.readUnsignedByte());
 
         // Read used moves (1 byte)
         unit.setUsedMoves(stream.readUnsignedByte());
 
-        // Read dummy2 (2 bytes) - order related
-        unit.setDummy2(readBytes(stream, 2));
+        unit.setField_0x6(stream.readByte());
+        unit.setField_0x7(stream.readByte());
 
         // Read order (1 byte)
-        unit.setOrder(readTableValue(tables.getOrders(), stream::readUnsignedByte));
+        unit.setOrder(stream.readUnsignedByte());
 
         // Read goto position
         unit.setGotoX(stream.readUnsignedByte());
         unit.setGotoY(stream.readUnsignedByte());
 
         // Read dummy3 (1 byte)
-        unit.setDummy3(readBytes(stream, 1));
+        unit.setDummy3(stream.readUnsignedByte());
 
         // Read num cargo (1 byte)
         unit.setNumCargo(stream.readUnsignedByte());
@@ -267,10 +265,10 @@ public class SaveFileReader extends BaseReader {
         unit.setCargoAmount(readByteList(6, stream));
 
         // Read dummy4 (1 byte)
-        unit.setDummy4(readBytes(stream, 1));
+        unit.setAttack_penalty_maybe(stream.read());
 
         // Read profession (1 byte)
-        unit.setProfession(readTableValue(tables.getOccupations(), stream::readUnsignedByte));
+        unit.setProfession(stream.readUnsignedByte());
 
         unit.setPrevious(stream.readShort());
         unit.setNext(stream.readShort());
@@ -281,14 +279,14 @@ public class SaveFileReader extends BaseReader {
     /**
      * Helper method to read packed cargo types (4 bits per cargo type, 6 cargo slots)
      */
-    private List<TableValue> readPackedCargoTypes(ImageInputStream stream) throws IOException {
-        List<TableValue> cargoTypes = new ArrayList<>();
+    private List<Integer> readPackedCargoTypes(ImageInputStream stream) throws IOException {
+        List<Integer> cargoTypes = new ArrayList<>();
 
         // Extract 6 values of 4 bits each
         for (int i = 0; i < 3; i++) {
             int b = stream.readUnsignedByte();
-            cargoTypes.add(readTableValue(tables.getGoods(), () -> b & 0xf));
-            cargoTypes.add(readTableValue(tables.getGoods(), () -> (b >> 4) & 0xf));
+            cargoTypes.add(b & 0xf);
+            cargoTypes.add((b >> 4) & 0xf);
         }
 
         return cargoTypes;
