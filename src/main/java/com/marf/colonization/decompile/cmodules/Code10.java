@@ -68,4 +68,11 @@ public class Code10 {
 
          */
     }
+
+    public static void FUN_1009_02ae_set_panel_dimensions(int x, int y, int width, int height) {
+        DAT_2c92_x = x;
+        DAT_2c94_y = y;
+        DAT_2c8e_width = width;
+        DAT_2c90_height = height;
+    }
 }

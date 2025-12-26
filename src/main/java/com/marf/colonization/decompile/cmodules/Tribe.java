@@ -15,8 +15,12 @@ public class Tribe {
      * more: incas
      */
     public int level;
-    /** 0x03  db[4] */
-    public int[] unk2 = new int[4];
+    /** 0x03  0x2 */
+    public int unk2;
+    /** 0x05  0x2
+     * Number of tiles purchased from the tribe. Is used to increase the cost of each new tile to purchase.
+     * */
+    public int tiles_purchased;
     /** 0x07 db */
     public int armedBraves;
     /** 0x08 db */

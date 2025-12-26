@@ -845,11 +845,11 @@ public class Module14_102_Map {
 
 
 
-    // AX = DAT_82e2_viewport_x_min
-    // DX = DAT_82e6_viewport_y_min
-    // BX = DAT_84ea_number_of_x_tiles_in_viewport
-    // param_1 = DAT_84ec_number_of_y_tiles_in_viewport
-    // param_2 = inAX
+    // AX = x
+    // DX = y
+    // BX = width
+    // param_1 = height
+    // param_2 = power
     public static void FUN_8007_0d60_module_14_102_draw_map(int x_min, int y_min, int width_in_tiles, int height_in_tiles, int power) {
         if (power < 0) {
             DAT_a862_power_mask = 0;

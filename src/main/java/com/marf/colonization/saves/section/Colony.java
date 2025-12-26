@@ -37,8 +37,6 @@ public class Colony extends GameDataSection {
     private List<Integer> colonistTime;
     /** 0x70 0x8 */
     private List<Integer> tileUsage;
-    /** 0x78 0xc */
-    private List<Integer> field0x78;
     /** 0x84 0x6 */
     private List<Integer> buildings;
     /** 0x8a 0x2 */

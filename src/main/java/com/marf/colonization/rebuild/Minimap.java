@@ -1297,7 +1297,7 @@ public class Minimap {
     }
 
     /**
-     * @see com.marf.colonization.decompile.cmodules.Module14_df#FUN_7fe4_00c0_draw_map_and_minimap
+     * @see com.marf.colonization.decompile.cmodules.Module14_df#FUN_7fe4_00c0_module_14_df_draw_map_and_minimap
      */
     public void drawMapAndMinimap(boolean flushToScreen) {
         canvas.drawRect(canvas.getBackscreen(), -1, 7,
@@ -1414,7 +1414,7 @@ public class Minimap {
         FUN_7f88_04bc_module_14_83_draw_units(gameData.viewportMin.x, gameData.viewportMin.y, viewportTiles.x, viewportTiles.y);
     }
 
-    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_04bc_module_14_render_units */
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_04bc_module_14_83_draw_units */
     public void FUN_7f88_04bc_module_14_83_draw_units(int x1, int y1, int width, int height) {
         int x2 = x1 + width - 1;
         int y2 = y1 + height - 1;
@@ -1507,13 +1507,13 @@ public class Minimap {
                 FUN_7f88_034c_module_14_83_draw_unit(unitIndex, false, false);
                 return;
             }
-            FUN_7f88_03f6(true);
+            FUN_7f88_03f6_draw_active_unit(true);
         }
 
     }
 
-    public void FUN_7f88_03f6(boolean b) {
-
+    /** @see com.marf.colonization.decompile.cmodules.Module14_83#FUN_7f88_03f6_draw_active_unit */
+    public void FUN_7f88_03f6_draw_active_unit(boolean b) {
         if (gameData.DAT_1e70_some_flag) {
             FUN_7f88_034c_module_14_83_draw_unit(gameData.savegameHeader.active_unit, false, true);
             if (b) {

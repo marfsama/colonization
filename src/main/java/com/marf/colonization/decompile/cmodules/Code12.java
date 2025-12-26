@@ -14,6 +14,20 @@ public class Code12 {
         return value;
     }
 
+    public static int FUN_124c_0034_distance(int dx, int dy) {
+        // Take absolute values
+        int abs_dx = (dx < 0) ? -dx : dx;
+        int abs_dy = (dy < 0) ? -dy : dy;
+
+        if (abs_dy < abs_dx) {
+            // dy is the smaller component
+            return abs_dy / 2 + abs_dx;
+        } else {
+            // dx is the smaller component (or equal)
+            return abs_dx / 2 + abs_dy;
+        }
+    }
+
     public static int FUN_1261_00de_wait_for_keystroke() {
         return 0;
     }
@@ -22,6 +36,7 @@ public class Code12 {
         // TODO
         return 0;
     }
+
 
     public static void FUN_12e8_0092_copy_sprite_to_sprite
             (Sprite param_1_dest,Sprite param_2_src,int param_3_src_x,int param_4_src_y,

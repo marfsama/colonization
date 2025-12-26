@@ -5,6 +5,16 @@ import static com.marf.colonization.decompile.cmodules.Data.*;
 
 public class Module14_5c {
 
+    public static void FUN_7f61_00c0_module_14_5c_flip_backscreen_in_tile_coordinates(int x, int y, int width, int height) {
+        int screenY = (DAT_82e4_viewport_y_offset - DAT_82e6_viewport_y_min + y) * DAT_82de_tile_pixel_size + 8;
+        int screenX = (DAT_82e0_viewport_x_offset - DAT_82e2_viewport_x_min + x) * DAT_82de_tile_pixel_size;
+        int screenWidth = width * DAT_82de_tile_pixel_size;
+        int screenHeight = height * DAT_82de_tile_pixel_size;
+
+        FUN_1b8e_000c_draw_sprite(DAT_2640_2nd_backscreen, DAT_2638_backscreen, screenWidth, screenHeight, screenX, screenY, screenX, screenY);
+    }
+
+
     public static void FUN_7f61_012a_module_14_5c_flip_viewport_backscreen() {
         FUN_1b8e_000c_draw_sprite(DAT_2638_backscreen, DAT_2640_2nd_backscreen, DAT_84f6_viewport_width, DAT_84f8_viewport_height, 8,0,0,0);
     }
@@ -100,6 +110,15 @@ public class Module14_5c {
 
     public static void FUN_7f61_0214_module_14_flip_viewport_rectangle() {
         FUN_1b54_0040_flip_backscreen_rectangle(0, 8, 0, 8, DAT_84f6_viewport_width, DAT_84f8_viewport_height);
+    }
+
+    public static void FUN_7f61_022c_flip_backscreen_in_tiles(int x, int y, int width, int height) {
+        int screenY = (DAT_82e4_viewport_y_offset - DAT_82e6_viewport_y_min + y) * DAT_82de_tile_pixel_size + 8;
+        int screenX = (DAT_82e0_viewport_x_offset - DAT_82e2_viewport_x_min + x) * DAT_82de_tile_pixel_size;
+        int screenWidth = width * DAT_82de_tile_pixel_size;
+        int screenHeight = height * DAT_82de_tile_pixel_size;
+
+        FUN_1b54_0040_flip_backscreen_rectangle(screenX, screenY, screenX, screenY, screenWidth, screenHeight);
     }
 
 }

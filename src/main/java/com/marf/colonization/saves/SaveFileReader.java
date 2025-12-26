@@ -185,11 +185,8 @@ public class SaveFileReader extends BaseReader {
         // Read colonists time (16 bytes)
         colony.setColonistTime(readByteList(16, stream));
 
-        // Read tile usage (8 bytes)
-        colony.setTileUsage(readByteList(8, stream));
-
-        // Read dummy2 (12 bytes)
-        colony.setField0x78(readByteList(12, stream));
+        // Read tile usage (20 bytes)
+        colony.setTileUsage(readByteList(20, stream));
 
         // Read buildings bitset (6 bytes)
         colony.setBuildings(readByteList(6, stream));
@@ -294,7 +291,7 @@ public class SaveFileReader extends BaseReader {
 
     private Europe readEurope(Europe europe, ImageInputStream stream) throws IOException {
         // Read padding1 (1 byte)
-        europe.setPadding1(readBytes(stream, 1));
+        europe.setFlags(stream.readUnsignedByte());
 
         // Read tax rate (1 byte)
         europe.setTaxRate(stream.readUnsignedByte());
@@ -329,11 +326,8 @@ public class SaveFileReader extends BaseReader {
         // Read padding6 (11 bytes)
         europe.setPadding6(readBytes(stream, 11));
 
-        // Read gold (2 bytes)
-        europe.setGold(stream.readUnsignedShort());
-
-        // Read padding7 (2 bytes)
-        europe.setPadding7(readBytes(stream, 2));
+        // Read gold (4 bytes)
+        europe.setGold(stream.readInt());
 
         // Read current crosses (2 bytes)
         europe.setCurrentCrosses(stream.readUnsignedShort());

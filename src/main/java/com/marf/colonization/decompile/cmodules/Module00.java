@@ -50,6 +50,6 @@ public class Module00 {
                 FUN_7f61_0160_module_14_5c_flip_all_tiles_in_random_order();
             }
         }
-        FUN_7fe4_00c0_draw_map_and_minimap(true);
+        FUN_7fe4_00c0_module_14_df_draw_map_and_minimap(true);
     }
 }

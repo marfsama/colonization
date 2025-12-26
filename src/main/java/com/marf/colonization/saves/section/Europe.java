@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class Europe extends GameDataSection {
-    private byte[] padding1;
+    private int flags;
     private int taxRate;
     private List<TableValue> nextRecruits;
     private byte[] padding2;
@@ -26,7 +26,6 @@ public class Europe extends GameDataSection {
     private int boughtArtillery;
     private byte[] padding6;
     private int gold;
-    private byte[] padding7;
     private int currentCrosses;
     private int neededCrosses;
     private byte[] padding8;

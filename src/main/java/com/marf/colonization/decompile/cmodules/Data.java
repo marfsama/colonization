@@ -11,13 +11,32 @@ public class Data {
 
     public static String DAT_0042 = "$STRING";
 
-    public static int[] DAT_00a8_x_directions = new int[] {0, 1, 0, -1, 0, 0};
-    public static int[] DAT_00ae_y_directions = new int[] {-1, 0, 1, 0, 0, 0};
+    public static int[] DAT_00a8_x_directions = new int[]{0, 1, 0, -1, 0, 0};
+    public static int[] DAT_00ae_y_directions = new int[]{-1, 0, 1, 0, 0, 0};
 
-    public static int[] DAT_00b4_directions_x = new int[] {0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
-    public static int[] DAT_00be_directions_y = new int[] {-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
+    public static int[] DAT_00b4_directions_x = new int[]{0, 1, 1, 1, 0, -1, -1, -1, 0, 0};
+    public static int[] DAT_00be_directions_y = new int[]{-1, -1, 0, 1, 1, 1, 0, -1, 0, 0};
 
-    /** maybe "map loaded" flag or so */
+
+    /*   -2   -1   0    +1   +2
+     * +----+----+----+----+----+
+     * |    | 12 |  8 | 13 |    | -2
+     * +----+----+----+----+----+
+     * | 16 |  4 |  0 |  5 | 18 | -1
+     * +----+----+----+----+----+
+     * | 11 |  3 |    |  1 |  9 |  0
+     * +----+----+----+----+----+
+     * | 17 |  7 |  2 |  6 | 19 | +1
+     * +----+----+----+----+----+
+     * |    | 14 | 10 | 15 |    | +2
+     * +----+----+----+----+----+
+     */
+    public static int[] DAT_00c8_directions_x = new int[]{0, 1, 0, -1, -1, 1, 1, -1, 0, 2, 0, -2, -1, 1, -1, 1, -2, -2, 2, 2};
+    public static int[] DAT_00de_directions_y = new int[]{-1, 0, 1, 0, -1, -1, 1, 1, -2, 0, 2, 0, -2, -2, 2, 2, -1, 1, -1, 1};
+
+    /**
+     * maybe "map loaded" flag or so
+     */
     public static int DAT_0150_some_flag;
 
     /**
@@ -52,7 +71,9 @@ public class Data {
     public static int DAT_017c_zoom_level_percent;
     public static int DAT_017e_maybe_scroll_amount;
 
-    /** 0 - map view, 1 = colony view */
+    /**
+     * 0 - map view, 1 = colony view
+     */
     public static int DAT_0180_maybe_colony_vs_map_view;
     public static int DAT_0184_show_hidden_terrain_state = 0;
 
@@ -62,8 +83,13 @@ public class Data {
     public static byte DAT_0186_map_seed;
     public static int[] DAT_0188_maybe_prime_resource_per_terrain_type = {6, 1, 2, 3, 4, 5, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, 9, 1, 8, 9, 0xA, 0xA, 6, 6, -1, 7, -1, 0xC, 0xD};
 
+    public static int DAT_0332;
+    public static int DAT_0334;
+    public static int DAT_0336;
+
     public static int DAT_033e_some_flag;
-    public static int DAT_0342_some_flag;
+    public static boolean DAT_0342_flag_colony_tiles_analyzed;
+    public static boolean DAT_0343_some_flag;
 
     public static int DAT_07d6_mouse_x;
     public static int DAT_07d8_mouse_y;
@@ -75,11 +101,11 @@ public class Data {
     public static Module1a.SpriteSheetSomeStructure DAT_082e_icons_sprite_sheet;
     public static Module1a.SpriteSheetSomeStructure DAT_0832_buildings_sprite_sheet;
 
-    public static int[] DAT_0838_minimap_fractions_colors_table = new int[] {
-               0xC, 0x9, 0xE, 0xD,
-               0xF, 0x95, 0x36, 0xB,
-               0x43, 0x6F, 0x75, 0x47,
-               0x7, 0xB, 0x9, 0xA
+    public static int[] DAT_0838_minimap_fractions_colors_table = new int[]{
+            0xC, 0x9, 0xE, 0xD,
+            0xF, 0x95, 0x36, 0xB,
+            0x43, 0x6F, 0x75, 0x47,
+            0x7, 0xB, 0x9, 0xA
     };
 
     public static int DAT_0880;
@@ -89,10 +115,16 @@ public class Data {
 
     public static Sprite DAT_14a0_address_of_woodtile_sprite_maybe;
 
-    public boolean DAT_1e70;
+    public static boolean DAT_1e70_some_flag;
     public static int DAT_1e72_sub_tile_x;
     public static int DAT_1e73_sub_tile_y;
 
+    public static int DAT_1f2a;
+    public static int DAT_1f2c_show_text_box_boolean_flag;
+    public static int DAT_1f2e;
+    public static int DAT_1f34;
+    public static Font DAT_1f6c_current_font_address;
+    public static int DAT_1f70_current_font_data_size;
 
     public static int DAT_235c;
     public static int DAT_2360_available_sprite_sheet_memory;
@@ -121,12 +153,16 @@ public class Data {
     public static int DAT_2c92_x;
     public static int DAT_2c94_y;
 
-    public static int[] DAT_2cec_adjection_land_stuff = new int[] {};
+    public static int[] DAT_2cec_adjection_land_stuff = new int[]{};
 
 
-    /** Memory Block structure pointing to a list of null terminated strings. */
+    /**
+     * Memory Block structure pointing to a list of null terminated strings.
+     */
     public static List<String> DAT_2d00_string_table = new ArrayList<>();
-    /** number of strings in the {@link #DAT_2d00_string_table} list*/
+    /**
+     * number of strings in the {@link #DAT_2d00_string_table} list
+     */
     public static int DAT_2d12_string_count = 0;
 
     public static int DAT_2d64_max_timeout;
@@ -171,35 +207,58 @@ public class Data {
 
     public static int DAT_84f2_some_x;
     public static int DAT_84f4_some_y;
+    public static int DAT_84f6_viewport_width = 0xf0;
+    public static int DAT_84f8_viewport_height = 0xc0;
+
 
 
     public static int DAT_87aa_viewport_x_max = 0;
     public static int DAT_87ac_viewport_y_max = 0;
     public static Europe[] DAT_87e2_europe = new Europe[4];
 
-    public static int DAT_a862_power_mask;
-
-    /** shorts, text index into power names: 46 (0x2e): English, 47 (0x2f): French, 48 (0x30): Spanish, 49 (0x31): Dutch */
+    /**
+     * shorts, text index into power names: 46 (0x2e): English, 47 (0x2f): French, 48 (0x30): Spanish, 49 (0x31): Dutch
+     */
     public static int[] DAT_8cb0_power_names = new int[4];
-    /** ie: 268 (0x10c): Incas, 269 (0x10d): Inca, 270 (0x10e): Jewelled Relics */
+    /**
+     * ie: 268 (0x10c): Incas, 269 (0x10d): Inca, 270 (0x10e): Jewelled Relics
+     */
     public static TribesNames[] DAT_8cb8_tribes_names = new TribesNames[8];
 
+    public static IndianVillage DAT_8cf0_current_village;
+    public static int DAT_8cf2_village_index;
+    public static Tribe DAT_8cf4_current_tribe;
+    public static int DAT_8cf6_tribe_index_plus_4;
+    public static int DAT_8cf8_tribe_index;
+
     public static byte[] DAT_8d08_building_type_stuff = new byte[16];
+
+    public static int DAT_8d5e_min_distance_to_indian_village;
     public static Colony DAT_8d6c_current_colony_ptr;
 
 
     public static Building[] DAT_8f2c_buildings_table = new Building[42];
 
-    /** String indices for the orders, i.e. "Fortify" */
+
+    public static int DAT_9246_selected_tile_x;
+    public static int DAT_9248_selected_tile_y;
+
+
+
+    /**
+     * String indices for the orders, i.e. "Fortify"
+     */
     public static int[] DAT_977e_order_name_indices = new int[0xd];
 
     public static int[] DAT_9c60_int_placeholder;
     public static int DAT_9c7a_minimap_min_y;
     public static int DAT_9c7c_minimap_min_x;
-    /** Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots. */
+    /**
+     * Array of preallocated string buffer slots. Each slot is 0x40 (64) bytes in size. There are 5 slots.
+     */
     public static String[] DAT_9c82_string_placeholder_array = new String[5];
 
-    public static int[] DAT_a526_terrain_minimap_colors = new int[] {
+    public static int[] DAT_a526_terrain_minimap_colors = new int[]{
 
     };
 
@@ -207,10 +266,6 @@ public class Data {
     public static int DAT_a548_terrain_map_pointer_to_current_position;
     public static int DAT_a54c_visibility_map_pointer;
 
-
-
-    public static int DAT_84f6_viewport_width = 0xf0;
-    public static int DAT_84f8_viewport_height = 0xc0;
 
     public static int DAT_a550_draw_map_x_in_tiles;
     public static int DAT_a552_draw_map_y_in_tiles;
@@ -227,6 +282,7 @@ public class Data {
 
     public static int[] DAT_a62a_random_slot_availability = new int[4];
 
+    public static int DAT_a862_power_mask;
     // stuff for calculating adjected land tiles
     public static int DAT_a863_value_from_terrain_map;
     public static int DAT_a864_value_from_visibility_map;
@@ -239,6 +295,10 @@ public class Data {
 
 
     public static byte DAT_a85b_colony_valid_flag;
+
+    public static int[] DAT_8d44_something_with_colony_tiles = new int[25];
+
+    public static int[] DAT_8d98_colony_tile_assessments = new int[25];
 
 
 

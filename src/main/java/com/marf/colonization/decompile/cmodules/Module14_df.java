@@ -9,7 +9,31 @@ import static com.marf.colonization.decompile.cmodules.Module14_Minimap.*;
 
 public class Module14_df {
 
-    public static void FUN_7fe4_00c0_draw_map_and_minimap(boolean flushToScreen) {
+    /** draws a selected portion of the map. */
+    public static void FUN_7fe4_0004_module_14_df_draw_map_section(int x, int y, int width,
+                                                                   int height, boolean flushToScreen) {
+        FUN_7f61_004a_module_14_5c_clamp_to_viewport(x, y, width, height);
+
+        int power;
+        if (DAT_5338_savegame_header.field_0x22_maybe_current_turn == 0) {
+            power = DAT_5338_savegame_header.maybe_player_controlled_power;
+        }
+        else {
+            power = 0xffff;
+        }
+        FUN_8007_0d60_module_14_102_draw_map(x,y,width, height, power);
+        FUN_7f88_00ea_module_14_draw_tribes_viewport();
+        FUN_7f88_0248_module_14_83_render_colonies_viewport();
+        FUN_7f61_00c0_module_14_5c_flip_backscreen_in_tile_coordinates(x,y,width, height);
+        FUN_7f88_04bc_module_14_83_draw_units(x,y,width, height);
+
+        FUN_7f05_0360_module_14_draw_minimap(x,y,width, height, false, power, false);
+        if (flushToScreen) {
+            FUN_7f61_022c_flip_backscreen_in_tiles(x,y,width, height);
+        }
+    }
+
+    public static void FUN_7fe4_00c0_module_14_df_draw_map_and_minimap(boolean flushToScreen) {
         FUN_1bae_0008_draw_rectangle(DAT_2638_backscreen, 0, -1, 7, DAT_84f6_viewport_width, 0x8);
 
         int power = DAT_5338_savegame_header.field_0x22_maybe_current_turn == 0

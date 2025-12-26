@@ -23,10 +23,8 @@ public class Colony {
     public byte[] colonist_specialization = new byte[32];
     /** 0x60 0x10 */
     public byte[] colonist_time = new byte[16];
-    /** 0x70 0x8 */
-    public byte[] tile_usage = new byte[8];
-    /** 0x78 0xc */
-    public byte[] field_x_0x78 = new byte[12];
+    /** 0x70 0x14 */
+    public byte[] tile_usage = new byte[20];
     /** 0x84 0x6 */
     public byte[] buildings = new byte[6];
     /** 0x8a 0x2 */

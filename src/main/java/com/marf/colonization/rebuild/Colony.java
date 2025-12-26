@@ -71,7 +71,6 @@ public class Colony {
         this.colonistSpecialization = other.getColonistSpecialization();
         this.colonistTime = other.getColonistTime();
         this.tileUsage = other.getTileUsage();
-        this.field0x78 = other.getField0x78();
         this.buildings = other.getBuildings();
         this.customsHouse = other.getCustomsHouse();
         this.field0x8c = other.getField0x8c();

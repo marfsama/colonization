@@ -147,7 +147,16 @@ public class Module14_83 {
         );
     }
 
-    public static void FUN_7f88_03f6(boolean b) {
+    public static void FUN_7f88_03f6_draw_active_unit(boolean b) {
+        if (DAT_1e70_some_flag) {
+            FUN_7f88_034c_module_14_83_draw_unit(DAT_5338_savegame_header.active_unit, false, true);
+            if (b) {
+                FUN_7f88_034c_module_14_83_draw_unit(DAT_5338_savegame_header.active_unit, true, true);
+            }
+            return;
+        }
+
+        FUN_7f88_034c_module_14_83_draw_unit(DAT_5338_savegame_header.active_unit, false, false);
 
     }
 
@@ -185,11 +194,11 @@ public class Module14_83 {
             return;
         }
 
-        FUN_7f88_03f6(true);
+        FUN_7f88_03f6_draw_active_unit(true);
     }
 
 
-    public static void FUN_7f88_04bc_module_14_render_units(int x1, int y1, int width, int height) {
+    public static void FUN_7f88_04bc_module_14_83_draw_units(int x1, int y1, int width, int height) {
         int x2 = x1 + width - 1;
         int y2 = y1 + height - 1;
         FUN_7f61_0004_module_14_5c_clamp_to_viewport(x1, y1, x2, y2);
@@ -243,6 +252,6 @@ public class Module14_83 {
     }
 
     public static void FUN_7f88_058e_module_14_render_units_in_viewport() {
-        FUN_7f88_04bc_module_14_render_units(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport);
+        FUN_7f88_04bc_module_14_83_draw_units(DAT_82e2_viewport_x_min, DAT_82e6_viewport_y_min, DAT_84ea_number_of_x_tiles_in_viewport, DAT_84ec_number_of_y_tiles_in_viewport);
     }
 }

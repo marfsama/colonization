@@ -28,6 +28,8 @@ public class SavegameHeader {
     public int num_colonies;
     /** 0x22	0x2	short */
     public int field_0x22_maybe_current_turn;
+    /** 0x26	0x1	short */
+    public int difficulty;
     // [..]
     /** 0x50	0x2	short */
     public int tories_nation_maybe;
